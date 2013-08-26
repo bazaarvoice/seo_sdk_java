@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-seo_sdk_java
-============
-
-Java BV SEO SDK
-=======
 Java BV SEO SDK
 ================
 
@@ -94,4 +88,3 @@ Finally, there are two static versions of these methods which take in a Configur
 Configuration object is built using the client defined properties file, but individual options can be configured
 per instance.
 
->>>>>>> e9810c1e23fa2f4241e89a6e6024558f71d20386
