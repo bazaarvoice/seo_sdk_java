@@ -1,97 +1,140 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-    <!--[if lt IE 9]>
+<head>
+<meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+<link rel="shortcut icon" href="http://s3.amazonaws.com/bv-bootstrap/misc/favicon.ico">
+<link rel="stylesheet" href="http://s3.amazonaws.com/bv-bootstrap/v2.1.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://s3.amazonaws.com/bv-bootstrap/v2.1.3/css/bootstrap-responsive.min.css">
+<link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print"/>
+<!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>SEO SDK for Java by bazaarvoice</title>
-  </head>
+<title>Bazaarvoice: SEO Integration SDK for Java</title>
+</head>
+<body>
+<div style="height:50px;">
+</div>
+<div class="navbar navbar-portal navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container-fluid">
+			<a id="nav" class="brand brand-bv" href="http://www.bazaarvoice.com/">
+			<span class="visuallyhidden">Bazaarvoice</span>
+			</a>
+		</div>
+	</div>
+</div>
+<div id="container">
+	
+	<div class="inner">
+		<header>
+		<h1>Get the SEO Integration SDK</h1>
+		<h2>Language: Java</h2>
+		</header>
 
-  <body>
-    <div id="container">
-      <div class="inner">
-
-        <header>
-          <h1>SEO SDK for Java</h1>
-          <h2>Bazaarvoice SEO SDK for Java release binaries</h2>
-        </header>
-
-        <!-- section id="downloads" class="clearfix">
-          <a href="https://github.com/bazaarvoice/HostedUIResources/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/bazaarvoice/HostedUIResources/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/bazaarvoice/HostedUIResources" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section -->
-
-        <hr>
-
-        <section id="main_content">
-          
-<p>This page contains released binaries. For source code please check out github link <a href="https://github.com/bazaarvoice/seo_sdk_java">https://github.com/bazaarvoice/seo_sdk_java</a> .</p>
-
-<hr>
-
-<p>Release 1.1.1 - 31 July 2013</p>
-
-<ul>
-<li>1.1.1 standalone JAR - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.1.1/bvseosdk-1.1.1.jar">bvseosdk-1.1.1.jar</a>
-</li>
-<li>1.1.1 JAR with dependencies - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.1.1/bvseosdk-1.1.1-jar-with-dependencies.jar">bvseosdk-1.1.1-jar-with-dependencies.jar</a>
-</li>
-<li>
-<strong>release notes</strong>
-
-<ul>
-<li>Related to the 1.1 configuration changes, additional default properties are now included in the JAR so clients don't need to include bvclient.properties in order to define all default properties.</li>
-</ul>
-</li>
-</ul><hr><p>Release 1.1 - 26 July 2013</p>
-
-<ul>
-<li>1.1 standalone JAR - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.1/bvseosdk-1.1.jar">bvseosdk-1.1.jar</a>
-</li>
-<li>1.1 JAR with dependencies - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.1/bvseosdk-1.1-jar-with-dependencies.jar">bvseosdk-1.1-jar-with-dependencies.jar</a>
-</li>
-<li>
-<strong>release notes</strong>
-
-<ul>
-<li>SDK support for multiple configuration instances added</li>
-<li>a default Configuration object is still built from the properties file defaults if defined</li>
-<li>Note: the method signature for the static <em>getBVContent()</em> methods has now changed.  They require a Configuration object to be passed in.<br>
-</li>
-</ul>
-</li>
-</ul><hr><p>Release 1.0.1 - 26 June 2013</p>
-
-<ul>
-<li>1.0.1 standalone JAR - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.0.1/bvseosdk-1.0.1.jar">bvseosdk-1.0.1.jar</a>
-</li>
-<li>1.0.1 JAR with dependencies - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.0.1/bvseosdk-1.0.1-jar-with-dependencies.jar">bvseosdk-1.0.1-jar-with-dependencies.jar</a>
-</li>
-<li>
-<strong>release notes</strong>
-
-<ul>
-<li>Adds support for loading bvclient.properties from anywhere in the classpath</li>
-<li>Any user agent string containing "Google" now includes the SEO content</li>
-</ul>
-</li>
-</ul><hr><p>Release 1.0</p>
-
-<ul>
-<li>1.0 standalone JAR - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.0/bvseosdk-1.0.jar">bvseosdk-1.0.jar</a>
-</li>
-<li>1.0 JAR with dependencies - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.0/bvseosdk-1.0-jar-with-dependencies.jar">bvseosdk-1.0-jar-with-dependencies.jar</a>
-</li>
-</ul>
-        </section>        
-      </div>
-    </div>
-  </body>
+		<section id="main_content">
+		<div style="padding-left:18px; height:300px; float:right;">
+			<div style="padding-left:18px; height:250px; border-left:solid #ccc 1px;">
+				
+				<h3>Language Options</h3>
+				<ul>
+					<li>dot net</li>
+					<li>php</li>
+					<li>python</li>
+				</ul>
+				<h3>Latest Stable Release</h3>
+				<a href="#latest_release" id="download-zip" class="button"><span>Download</span></a><br>
+          		<!-- a href="https://github.com/bazaarvoice/HostedUIResources/tarball/master" id="download-tar-gz" class="button"><span>1.1.1.tar.gz</span></a -->
+				
+			</div>					
+		</div>
+		<p>This Bazaarvoice SEO Integration SDK provides you with the tools necessary to deploy 
+		   a search-friendly implementation of Bazaarvoice hosted displays in Java environments.</p>
+		
+		<p>Whether you are working on a first-time Bazaarvoice integration, or if you are upgrading the
+		   from an older integration, we strongly recommend reading the latest 
+		   <a href="http://j.mp/HelpDoc-SEOIntegration" target="_new">Bazaarvoice SEO Implementation Guide</a>.</p>
+		
+		<p>Once your integration is complete, don't forget to request the Bazaarvoice SEO Audit by 
+		   submitting a request at <a href="http://spark.bazaarvoice.com" target=_new">spark.bazaarvoice.com</a>.
+		   We will review your implementation and check for typical issues that may prevent search 
+		   engines from properly indexing your Bazaarvoice-managed content.</p>
+		
+		<hr>
+		<h2>Source</h2>
+		
+		<p>The binaries contained in this page should meet the needs for most clients.  However, you can
+		   find source code on Github at <a href="https://github.com/bazaarvoice/seo_sdk_java">https://github.com/bazaarvoice/seo_sdk_java</a>.</p>
+		<hr>
+		<h2>Binaries</h2>
+		<a id="latest_release">Latest stable release : </a>
+		<!--INSERT_RELEASE_CONTENT-->
+		<p>
+			Release 1.1.1 - 31 July 2013
+		</p>
+		<ul>
+			<li>1.1.1 standalone JAR - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.1.1/bvseosdk-1.1.1.jar">bvseosdk-1.1.1.jar</a>
+			</li>
+			<li>1.1.1 JAR with dependencies - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.1.1/bvseosdk-1.1.1-jar-with-dependencies.jar">bvseosdk-1.1.1-jar-with-dependencies.jar</a>
+			</li>
+			<li>
+			<strong>release notes</strong>
+			<ul>
+				<li>Related to the 1.1 configuration changes, additional default properties are now included in the JAR so clients don't need to include bvclient.properties in order to define all default properties.</li>
+			</ul>
+			</li>
+		</ul>
+		<hr>
+		<p>
+			Release 1.1 - 26 July 2013
+		</p>
+		<ul>
+			<li>1.1 standalone JAR - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.1/bvseosdk-1.1.jar">bvseosdk-1.1.jar</a>
+			</li>
+			<li>1.1 JAR with dependencies - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.1/bvseosdk-1.1-jar-with-dependencies.jar">bvseosdk-1.1-jar-with-dependencies.jar</a>
+			</li>
+			<li>
+			<strong>release notes</strong>
+			<ul>
+				<li>SDK support for multiple configuration instances added</li>
+				<li>a default Configuration object is still built from the properties file defaults if defined</li>
+				<li>Note: the method signature for the static <em>getBVContent()</em> methods has now changed. They require a Configuration object to be passed in.<br>
+				</li>
+			</ul>
+			</li>
+		</ul>
+		<hr>
+		<p>
+			Release 1.0.1 - 26 June 2013
+		</p>
+		<ul>
+			<li>1.0.1 standalone JAR - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.0.1/bvseosdk-1.0.1.jar">bvseosdk-1.0.1.jar</a>
+			</li>
+			<li>1.0.1 JAR with dependencies - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.0.1/bvseosdk-1.0.1-jar-with-dependencies.jar">bvseosdk-1.0.1-jar-with-dependencies.jar</a>
+			</li>
+			<li>
+			<strong>release notes</strong>
+			<ul>
+				<li>Adds support for loading bvclient.properties from anywhere in the classpath</li>
+				<li>Any user agent string containing "Google" now includes the SEO content</li>
+			</ul>
+			</li>
+		</ul>
+		<hr>
+		<p>
+			Release 1.0
+		</p>
+		<ul>
+			<li>1.0 standalone JAR - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.0/bvseosdk-1.0.jar">bvseosdk-1.0.jar</a>
+			</li>
+			<li>1.0 JAR with dependencies - <a href="http://bazaarvoice.github.io/seo_sdk_java/binaries/seosdk/java/1.0/bvseosdk-1.0-jar-with-dependencies.jar">bvseosdk-1.0-jar-with-dependencies.jar</a>
+			</li>
+		</ul>
+		</section>
+	</div>
+</div>
+</body>
 </html>
