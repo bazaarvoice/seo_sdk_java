@@ -3,6 +3,13 @@ package com.bazaarvoice.seo.sdk;
 import java.io.IOException;
 import java.net.URI;
 import java.text.MessageFormat;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +61,17 @@ public class BVManagedUIContent implements BVUIContent {
 	
 	private BVConfiguration _bvConfiguration;
 	private BVValidator bvParamValidator;
+	
 	private BVSeoSdkUrl bvSeoSdkUrl;
+	private StringBuilder uiContent;
+	private StringBuilder message;
+	private String bvRootFolder;
+	private String version;
+	private String queryString;
+	private URI seoContentUrl;
+	private boolean isBotDetection;
+	private BVParameters bvParameters;
+	private boolean isSdkEnabled;
 	
 	/**
 	 * Default constructor.
@@ -78,6 +95,15 @@ public class BVManagedUIContent implements BVUIContent {
 		}
 		
 		bvParamValidator = new BVParameterValidator();
+		init();
+	}
+	
+	private void init() {
+		bvRootFolder = _bvConfiguration.getProperty(BVClientConfig.BV_ROOT_FOLDER.getPropertyName());
+		version = _bvConfiguration.getProperty(BVCoreConfig.VERSION.getPropertyName());
+		isBotDetection = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.BOT_DETECTION.getPropertyName()));
+		isSdkEnabled = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.SEO_SDK_ENABLED.getPropertyName()));
+		message = new StringBuilder();
 	}
 	
 	/**
@@ -85,51 +111,46 @@ public class BVManagedUIContent implements BVUIContent {
 	 *  
 	 */
 	public String getContent(BVParameters bvParameters) {
-		
-		/*
-		 * Check if sdk is enabled or not and additionally check if queryString does not contain BVREVEAL string
-		 */
-		boolean isSdkEnabled = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.SEO_SDK_ENABLED.getPropertyName()));
-		
-		/*
-		 * Validator to check if all the bvParameters are valid.
-		 */
-		bvParamValidator.validate(bvParameters);
-		
-		bvSeoSdkUrl = new BVSeoSdkURLBuilder(_bvConfiguration, bvParameters);
-		String queryString = bvSeoSdkUrl.queryString();
+		StringBuilder sb = getAllContent(bvParameters);
 		
 		if (!isSdkEnabled && !queryString.contains(BVREVEAL)) {
 			_logger.info(BVMessageUtil.getMessage("MSG0003"));
 			return "";
 		}
 		
+		uiContent.append(composeLog());
+		
+		return sb.toString();
+	}
+
+	private StringBuilder getAllContent(BVParameters bvParameters) {
+		
+		/*
+		 * Validator to check if all the bvParameters are valid.
+		 */
+		bvParamValidator.validate(bvParameters);
+		this.bvParameters = bvParameters;
+		bvSeoSdkUrl = new BVSeoSdkURLBuilder(_bvConfiguration, bvParameters);
+		queryString = bvSeoSdkUrl.queryString();
+		uiContent = new StringBuilder();
 		
 		long startTime = System.currentTimeMillis();
-		StringBuilder sb = new StringBuilder();
-		String bvRootFolder = _bvConfiguration.getProperty(BVClientConfig.BV_ROOT_FOLDER.getPropertyName());
-		String version = _bvConfiguration.getProperty(BVCoreConfig.VERSION.getPropertyName());
-		boolean isBotDetection = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.BOT_DETECTION.getPropertyName()));
+		
 		
 //		int page = BVUtilty.getPageNumber(queryString);
 		String displayJSOnly = null;
-		StringBuilder message = new StringBuilder();
+		seoContentUrl = null;
 		try {
 			//includes integration script if one is enabled.
-			includeIntegrationCode(sb, bvParameters.getContentType(), bvParameters.getSubjectType(), bvParameters.getSubjectId());
-			
+			includeIntegrationCode(uiContent, bvParameters.getContentType(), bvParameters.getSubjectType(), bvParameters.getSubjectId());
 			/*
 			 * Hit only when botDetection is disabled or if the queryString is appended with bvreveal or if it matches any 
 			 * crawler pattern that is configured at the client configuration. 
 			 */
 			if (!isBotDetection || queryString.contains(BVREVEAL) || showUserAgentSEOContent(bvParameters.getUserAgent())) {
-				URI seoContentUrl = bvSeoSdkUrl.seoContentUri();
+				seoContentUrl = bvSeoSdkUrl.seoContentUri();
 				String correctedBaseUri = bvSeoSdkUrl.correctedBaseUri();
-				getBvContent(sb, seoContentUrl, correctedBaseUri);
-				if (queryString.contains(DBG_BVREVEAL)) {
-					boolean isStaging = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.STAGING.getPropertyName()));
-					addDebugMsg(sb, bvParameters, queryString, isBotDetection, isStaging, seoContentUrl.toString());
-				}
+				getBvContent(uiContent, seoContentUrl, correctedBaseUri);
 			} else {
 				displayJSOnly = JS_DISPLAY_MSG;
 			}
@@ -140,21 +161,19 @@ public class BVManagedUIContent implements BVUIContent {
 		
 		long endTime = System.currentTimeMillis();
 		
-		
 		message.append("timer:").append(Long.toString(endTime - startTime) + "ms");
 		if (displayJSOnly != null) {
 			message.append("|").append(displayJSOnly);
 		}
 		
-		//Used to output the total time taken to get the contents, also displays client and api information
-		sb.append(composeLog(bvRootFolder, version, message.toString()));
-		
-		return sb.toString();
+		return uiContent;
 	}
-
+	
 	private void addDebugMsg(StringBuilder sb, BVParameters bvParameters, String queryString, boolean isBotDetection, boolean isStaging, String seoContentUrl) {
-		sb.append("\n    userAgent: ").append(bvParameters.getUserAgent())
+		sb.append("|debug:")
+		.append("\n    userAgent: ").append(bvParameters.getUserAgent())
     	.append("\n    baseURL: ").append(bvParameters.getBaseURI())
+    	.append("\n    pageURI: ").append(bvParameters.getPageURI())
     	.append("\n    seoContentUrl: ").append(seoContentUrl)
     	.append("\n    seo.sdk.enabled: ").append(_bvConfiguration.getProperty(BVClientConfig.SEO_SDK_ENABLED.getPropertyName()))
         .append("\n    queryString: ").append(queryString)
@@ -185,7 +204,11 @@ public class BVManagedUIContent implements BVUIContent {
 		}
 		
         String crawlerAgentPattern = _bvConfiguration.getProperty(BVClientConfig.CRAWLER_AGENT_PATTERN.getPropertyName());
+        if (!StringUtils.isBlank(crawlerAgentPattern)) {
+        	crawlerAgentPattern = ".*(" + crawlerAgentPattern + ").*";
+        }
         Pattern pattern = Pattern.compile(crawlerAgentPattern, Pattern.CASE_INSENSITIVE);
+        _logger.info("userAgent is : " + userAgent);
 
         return (pattern.matcher(userAgent).matches() || userAgent.toLowerCase().contains("google"));
     }
@@ -204,24 +227,6 @@ public class BVManagedUIContent implements BVUIContent {
         
         sb.append(integrationScript);
     }
-
-	private String loadContentFromHttp(URI path) {
-        
-        int connectionTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.CONNECT_TIMEOUT.getPropertyName()));
-        int socketTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.SOCKET_TIMEOUT.getPropertyName()));
-		String content = null;
-		try {
-			content = Request.Get(path).connectTimeout(connectionTimeout).
-					socketTimeout(socketTimeout).execute().returnContent().asString();
-		} catch (ClientProtocolException e) {
-			throw new BVSdkException("ERR0012");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        return content;
-	}
 
 	private String loadContentFromFile(URI path) {
 		
@@ -258,15 +263,20 @@ public class BVManagedUIContent implements BVUIContent {
 		return content;
 	}
 
-	private String composeLog(String deploymentZoneId, String version, String message) {
-		return "\n<!--BVSEO|dz:" + deploymentZoneId + "|sdk:v" + version + "-j|" + message + "-->\n";
+	private String composeLog() {
+		if (queryString.contains(DBG_BVREVEAL)) {
+			boolean isStaging = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.STAGING.getPropertyName()));
+			addDebugMsg(message, bvParameters, queryString, isBotDetection, isStaging, seoContentUrl.toString());
+		}
+		
+		return "\n<!--BVSEO|dz:" + bvRootFolder + "|sdk:v" + version + "-j|" + message.toString() + "-->\n";
 	}
 	
 	public String getContent(BVConfiguration bvConfig, BVParameters bvParameters) {
 		if (bvConfig == null) {
 			throw new BVSdkException("ERR0007");
 		}
-		
+		this._bvConfiguration = bvConfig;
 		return getContent(bvParameters);
 	}
 	
@@ -274,5 +284,164 @@ public class BVManagedUIContent implements BVUIContent {
 		boolean loadFromFile = Boolean.parseBoolean(_bvConfiguration.
 				getProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY.getPropertyName()));
 		return loadFromFile;
+	}
+
+	public String getAggregateRating(BVParameters bvQueryParams) {
+		
+		if (uiContent == null) {
+			uiContent = getAllContent(bvQueryParams);
+		}
+		
+		if (!isSdkEnabled && !queryString.contains(BVREVEAL)) {
+			_logger.info(BVMessageUtil.getMessage("MSG0003"));
+			return "";
+		}
+		
+		StringBuilder sb = new StringBuilder(uiContent);
+		int startIndex = uiContent.indexOf("<!--begin-reviews-->");
+		if (startIndex == -1) {
+			if ((!isBotDetection || showUserAgentSEOContent(bvQueryParams.getUserAgent())) && message.indexOf("msg:") == -1) {
+				String messageString = BVMessageUtil.getMessage("ERR0003");
+				message.append("|msg:").append(messageString);
+			}
+			sb.append(composeLog());
+			return sb.toString();
+		}
+		
+		String endReviews = "<!--end-reviews-->";
+		int endIndex = uiContent.indexOf(endReviews) + endReviews.length();
+		sb.delete(startIndex, endIndex);
+		
+		startIndex = sb.indexOf("<!--begin-pagination-->");
+		if (startIndex != -1) {
+			String endPagination = "<!--end-pagination-->";
+			endIndex = sb.indexOf(endPagination) + endPagination.length();
+			sb.delete(startIndex, endIndex);	
+		}
+		
+		sb.append(composeLog());
+		
+		return sb.toString();
+	}
+
+	public String getAggregateRating(BVConfiguration bvConfig,
+			BVParameters bvQueryParams) {
+		if (bvConfig == null) {
+			throw new BVSdkException("ERR0007");
+		}
+		
+		this._bvConfiguration = bvConfig;
+		
+		return getAggregateRating(bvQueryParams);
+	}
+
+	public String getReviews(BVParameters bvQueryParams) {
+		if (uiContent == null) {
+			uiContent = getAllContent(bvQueryParams);
+		}
+		
+		if (!isSdkEnabled && !queryString.contains(BVREVEAL)) {
+			_logger.info(BVMessageUtil.getMessage("MSG0003"));
+			return "";
+		}
+		
+		int startIndex = uiContent.indexOf("<!--begin-aggregate-rating-->");
+		
+		StringBuilder sb = new StringBuilder(uiContent);
+		
+		if (startIndex == -1) {
+			if ((!isBotDetection || showUserAgentSEOContent(bvQueryParams.getUserAgent())) && message.indexOf("msg:") == -1) {
+				String messageString = BVMessageUtil.getMessage("ERR0013");
+				message.append("|msg:").append(messageString);
+			}
+			sb.append(composeLog());
+			return sb.toString();
+		}
+		
+		String endAggregateRating = "<!--end-aggregate-rating-->";
+		int endIndex = uiContent.indexOf(endAggregateRating) + endAggregateRating.length();
+		
+		
+		sb.delete(startIndex, endIndex);
+		sb.append(composeLog());
+		
+		return sb.toString();
+	}
+
+	public String getReviews(BVConfiguration bvConfig,
+			BVParameters bvQueryParams) {
+		if (bvConfig == null) {
+			throw new BVSdkException("ERR0007");
+		}
+		
+		this._bvConfiguration = bvConfig;
+		
+		return getReviews(bvQueryParams);
+	}
+	
+	/*private String loadContentFromHttp(URI path) {
+		int connectionTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.CONNECT_TIMEOUT.getPropertyName()));
+        int socketTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.SOCKET_TIMEOUT.getPropertyName()));
+		String content = null;
+		try {
+			content = Request.Get(this.path).connectTimeout(connectionTimeout).
+					socketTimeout(socketTimeout).execute().returnContent().asString();
+		} catch (ClientProtocolException e) {
+			throw new BVSdkException("ERR0012");
+		} catch (IOException e) {
+			throw new BVSdkException(e.getMessage());
+		}
+		
+		return content;
+	}*/
+	
+	private String loadContentFromHttp(URI path) {
+        
+        ExecutionCaller execCaller = new ExecutionCaller(path);
+        long executionTimeout = Long.parseLong(_bvConfiguration.getProperty(BVClientConfig.EXECUTION_TIMEOUT.getPropertyName()));
+        
+        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
+        Future<String> future = executorService.submit(execCaller);
+        String content = null;
+		try {
+			content = future.get(executionTimeout, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			if (e.getCause() instanceof BVSdkException) {
+				throw new BVSdkException(e.getCause().getMessage());				
+			}
+		} catch (TimeoutException e) {
+			throw new BVSdkException("ERR0014");
+		}
+        
+        return content;
+	}
+	
+	private class ExecutionCaller implements Callable<String> {
+
+		private URI path;
+		
+		public ExecutionCaller(URI path) {
+			this.path = path;
+		}
+		
+		public String call() throws Exception {
+			int connectionTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.CONNECT_TIMEOUT.getPropertyName()));
+	        int socketTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.SOCKET_TIMEOUT.getPropertyName()));
+			String content = null;
+			try {
+				content = Request.Get(this.path).connectTimeout(connectionTimeout).
+						socketTimeout(socketTimeout).execute().returnContent().asString();
+			} catch (ClientProtocolException e) {
+				throw new BVSdkException("ERR0012");
+			} catch (IOException e) {
+				throw new BVSdkException(e.getMessage());
+			}
+			
+			return content;
+		}
+		
 	}
 }

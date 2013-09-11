@@ -12,7 +12,8 @@ public enum BVClientConfig {
 	 BOT_DETECTION ("botDetection"),
 	 CRAWLER_AGENT_PATTERN ("crawlerAgentPattern"),
 	 SEO_SDK_ENABLED ("seo.sdk.enabled"),
-	 STAGING ("staging");
+	 STAGING ("staging"),
+	 EXECUTION_TIMEOUT ("seo.sdk.execution.timeout");
 	 
 	 private String propertyName;
 	 
@@ -23,4 +24,5 @@ public enum BVClientConfig {
 	 public String getPropertyName() {
 		 return propertyName;
 	 }
+	 
 }

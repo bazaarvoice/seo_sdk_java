@@ -114,11 +114,4 @@ public class BVManagedUIContent2_Test {
 		System.out.println(content);
 	}
 	
-	/**
-	 * TODO: Need to code this implementation
-	 */
-	@Test
-	public void test_InteractivePage_AllContents() {
-		
-	}
 }

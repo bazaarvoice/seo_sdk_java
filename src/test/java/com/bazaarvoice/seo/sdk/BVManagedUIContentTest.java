@@ -1,13 +1,18 @@
 package com.bazaarvoice.seo.sdk;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.fail;
 
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
@@ -34,32 +39,18 @@ public class BVManagedUIContentTest {
 	 */
 	@Test
 	public void testValidConstructorArgument() {
-		String errorMessage = null;
 		BVConfiguration bvConfig = null;
-		BVUIContent bvUIContent = null;
 		
 		/*
 		 * Positive scenario when valid configuration is passed
 		 */
 		try {
 			bvConfig = new BVSdkConfiguration();
-			bvUIContent = new BVManagedUIContent(bvConfig);
+			BVUIContent bvUIContent = new BVManagedUIContent(bvConfig);
 		} catch (BVSdkException e) {
 			fail("There should have been an exception when null was passed");
 		}
 		
-		/*
-		 * When null is passed to the bvUIContent.
-		 */
-		errorMessage = null;
-		try {
-			bvUIContent = new BVManagedUIContent();
-			bvUIContent.getContent(null, new BVParameters());
-			fail("Unexpected behaviour should have thrown an exception here.");
-		} catch (BVSdkException e) {
-			errorMessage = e.getMessage();
-		}
-		assertSame(errorMessage, BVMessageUtil.getMessage("ERR0007"), "Error messages do not match.");
 	}
 
 	/**

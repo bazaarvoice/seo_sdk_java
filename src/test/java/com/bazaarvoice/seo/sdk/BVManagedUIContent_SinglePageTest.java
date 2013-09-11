@@ -64,7 +64,7 @@ public class BVManagedUIContent_SinglePageTest {
 		bvParameters.setSubjectId("3000001");
 		
 		String theUIContent = uiContent.getContent(bvParameters);
-		
+		System.out.println(theUIContent);
 		assertEquals(theUIContent.contains("BVRRSourceID"), true, "there should be BvRRSourceID in the content");
 		
 	}
@@ -135,6 +135,35 @@ public class BVManagedUIContent_SinglePageTest {
 		System.out.println(theUIContent);
 		assertEquals(!theUIContent.contains("BVRRSourceID"), true, "there should not be BVRRSourceID in the content");
 		assertEquals(theUIContent.contains("The resource to the URL or file is currently unavailable."), true, "there should be resource unavailable message");
+	}
+	
+	/**
+	 * File content access.
+	 * Test case to test if the content file is unavailable and if it is bvreveal.
+	 * If the file content is unavailable it should display a message file unavailable error.
+	 */
+	@Test
+	public void testSEOContent_SinglePage_File_FileUnavailableError_bvReveal() {
+		BVConfiguration bvConfig = new BVSdkConfiguration();
+		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "True");
+		bvConfig.addProperty(BVClientConfig.LOCAL_SEO_FILE_ROOT, "E:\\alpha-beta-invalid-\\Seo_cyberduck\\myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		
+		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setUserAgent("abcdefghijkl");
+		bvParameters.setContentType(ContentType.REVIEWS);
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setSubjectId("3000001_thisFiledoesNotExist");
+		bvParameters.setBaseURI("http://www.example.com/store/products/data-gen-696yl2lg1kurmqxn88fqif5y2/");
+		bvParameters.setPageURI("http://www.example.com/store/products/data-gen-696yl2lg1kurmqxn88fqif5y2?bvreveal=debug");
+		String theUIContent = uiContent.getContent(bvParameters);
+		System.out.println(theUIContent);
+		assertEquals(!theUIContent.contains("BVRRSourceID"), true, "there should not be BVRRSourceID in the content");
+		assertEquals(theUIContent.contains("The resource to the URL or file is currently unavailable."), true, "there should be resource unavailable message");
+		assertEquals(theUIContent.contains("debug"), true, "there should be debug message");
 	}
 	
 	/**
