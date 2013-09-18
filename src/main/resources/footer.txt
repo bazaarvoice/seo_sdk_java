@@ -1,0 +1,28 @@
+
+<ul id="BVSEOSDK" style="display:none;">
+	<li id="vn">bvseo-${version}</li>
+	<li id="en">bvseo-${sdk_enabled}</li>
+	<li id="sl">bvseo-j</li>
+	<li id="mt">bvseo-${methodType}</li>
+	<li id="et">bvseo-${executionTime}ms</li>
+	<li id="ct">bvseo-${_bvParameters.contentType}</li>
+	<li id="st">bvseo-${_bvParameters.subjectType}</li>
+	<li id="am">bvseo-${accessMethod}</li>
+#if (${message}) 
+	<li id="ms">bvseo-msg: ${message}</li>
+#end
+</ul>
+
+#if (${revealMap})
+<ul id="BVSEOSDK_DEBUG" style="display:none;">
+#foreach (${config} in ${revealMap.entrySet()})
+	<li id=${config.key}>${config.value}</li>
+#end
+	<li id="userAgent">${_bvParameters.userAgent}</li>
+	<li id="baseURI">${_bvParameters.baseURI}</li>
+	<li id="pageURI">${_bvParameters.pageURI}</li>
+	<li id="subjectId">${_bvParameters.subjectId}</li>
+	<li id="contentType">${_bvParameters.contentType}</li>
+	<li id="subjectType">${_bvParameters.subjectType}</li>
+</ul>
+#end

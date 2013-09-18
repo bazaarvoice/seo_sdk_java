@@ -2,8 +2,6 @@ package com.bazaarvoice.seo.sdk;
 
 import static org.testng.Assert.assertEquals;
 
-import org.apache.http.util.Asserts;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
@@ -39,6 +37,6 @@ public class BVManagedUIContent_ExecutionTimeoutTest {
 		
 		String theUIContent = uiContent.getContent(bvParameters);
 		System.out.println(theUIContent);
-		assertEquals(theUIContent.contains(BVMessageUtil.getMessage("ERR0014")), true, "there should be execution timeout message");
+		assertEquals(theUIContent.contains("bvseo-msg: Execution timed out, exceeded"), true, "there should be execution timeout message");
 	}
 }

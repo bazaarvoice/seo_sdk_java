@@ -1,5 +1,8 @@
 package com.bazaarvoice.seo.sdk.model;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * Wrapper for holding the Bazaarvoice content specific query parameters.
  * @author Anandan Narayanaswamy
@@ -56,4 +59,43 @@ public class BVParameters {
 		this.subjectType = subjectType;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
+		if (obj == this) {
+			return true;
+		}
+		
+		if (!(obj instanceof BVParameters)) {
+			return false;
+		}
+		
+		BVParameters rhs = (BVParameters) obj;
+		EqualsBuilder eqBuilder = new EqualsBuilder();
+		eqBuilder.append(getBaseURI(), rhs.getBaseURI())
+		.append(getContentType(), rhs.getContentType())
+		.append(getPageURI(), rhs.getPageURI())
+		.append(getSubjectId(), rhs.getSubjectId())
+		.append(getSubjectType(), rhs.getSubjectType())
+		.append(getUserAgent(), rhs.getUserAgent());
+		
+		return eqBuilder.isEquals();
+	}
+	
+	@Override
+	public int hashCode() {
+		HashCodeBuilder hBuilder = new HashCodeBuilder(17, 31);
+		hBuilder.append(userAgent)
+		.append(baseURI)
+		.append(pageURI)
+		.append(subjectId)
+		.append(contentType)
+		.append(subjectType);
+		
+		return hBuilder.hashCode();
+	}
+
 }

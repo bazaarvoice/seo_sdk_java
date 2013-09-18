@@ -1,5 +1,6 @@
 package com.bazaarvoice.seo.sdk.validation;
 
+import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.exception.BVSdkException;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
 
@@ -12,11 +13,12 @@ import com.bazaarvoice.seo.sdk.model.BVParameters;
 public interface BVValidator {
 
 	/**
-	 * Method to validate bvParameters.
+	 * Method to validate bvConfiguration & bvParameters.
 	 * 
+	 * @param bvConfigration	the bvConfiguration object.
 	 * @param bvParams			the bvParameter object.
-	 * @throws BVSdkException	if invalid attribute is found, throws BVsdkException.
+	 * @return String errors if invalid attribute is found.
 	 */
-	void validate(BVParameters bvParams) throws BVSdkException;
+	String validate(BVConfiguration bvConfiguration, BVParameters bvParams) throws BVSdkException;
 	
 }

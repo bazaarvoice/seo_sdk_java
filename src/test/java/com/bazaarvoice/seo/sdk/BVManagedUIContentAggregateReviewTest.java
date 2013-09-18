@@ -1,6 +1,6 @@
 package com.bazaarvoice.seo.sdk;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 import org.testng.annotations.Test;
 
@@ -69,6 +69,8 @@ public class BVManagedUIContentAggregateReviewTest {
 				"there should not be reviews section in the content");
 		assertEquals(!theUIContent.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
 				true, "there should be BvRRSourceID in the content");
+		assertTrue(theUIContent.contains("<div id=\"BVRRSourceID\"> <div >"), 
+			"schema.org for product should not be present");
 		
 	}
 	
@@ -122,6 +124,56 @@ public class BVManagedUIContentAggregateReviewTest {
 				true, "there should be BvRRSourceID in the content");
 		assertEquals(sBvOutputReviews.contains("JavaScript-only Display"), 
 				true, "There should be JavaScript display element");
+
+	}
+	
+	/**
+	 * Bot detection is enabled and user agent is google with call to aggregateRating and Review
+	 * with same bvparam.
+	 */
+	@Test
+	public void testSEOContent_SinglePageHTTP_aggregateRatingAndReviews() {
+		//Establish a new BVConfiguration.  Properties within this configuration are typically set in bvconfig.properties.
+		//addProperty can be used to override configurations set in bvconfig.properties.
+		BVConfiguration _bvConfig = new BVSdkConfiguration();
+				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
+				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
+				
+				//this SDK supports retrieval of SEO contents from the cloud or local file system
+				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
+				//if LOAD_SEO_FILES_LOCALLY = false, configure CLOUD_KEY and STAGING
+				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
+		"adobe-55d020998d7b4776fb0f9df49278083c"); // get this value from BV
+				_bvConfig.addProperty(BVClientConfig.STAGING, "false");  // set to true for staging environment data
+				
+				//insert root folder with the value provided.
+				//if multiple deployment zones/display codes are used for this implementation, use conditional logic to set the appropriate BV_ROOT_FOLDER
+				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "8814"); //get this value from BV				
+
+		//Create BVParameters for each injection.  If the page contains multiple injections, for example //reviews and questions, set unique parameters for each injection.
+		BVParameters _bvParam = new BVParameters();
+				_bvParam.setUserAgent("googlebot");
+				_bvParam.setBaseURI("/thispage.htm"); // this value is used to build pagination links
+				_bvParam.setPageURI("http://localhost:8080/abcd" + "?" + "notSure=1&letSee=2"); //this value is used to needed BV URL parameters
+				_bvParam.setContentType(ContentType.REVIEWS);
+				_bvParam.setSubjectType(SubjectType.PRODUCT);
+				_bvParam.setSubjectId("PR6");
+
+		BVUIContent _bvOutput = new BVManagedUIContent(_bvConfig);
+				
+
+		String sBvOutputSummary = _bvOutput.getAggregateRating(_bvParam);
+		System.out.println(sBvOutputSummary);
+		assertEquals(sBvOutputSummary.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
+				true, "there should be BvRRSourceID in the content");
+		assertEquals(!sBvOutputSummary.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
+				"there should not be reviews section in the content");
+		
+		String sBvOutputReviews = _bvOutput.getReviews(_bvParam);
+		assertEquals(sBvOutputReviews.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
+				"there should not be reviews section in the content");
+		assertEquals(!sBvOutputReviews.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
+				true, "there should be BvRRSourceID in the content");
 
 	}
 	
@@ -248,14 +300,17 @@ public class BVManagedUIContentAggregateReviewTest {
 						
 
 				String sBvOutputSummary = _bvOutput.getContent(_bvParam); 
-				assertEquals(sBvOutputSummary, "", "There should be empty string");
+				System.out.println(sBvOutputSummary);
+				assertEquals(sBvOutputSummary.contains("<li id=\"en\">bvseo-false</li>"), true, "There should only footer message");
+				assertEquals(sBvOutputSummary.contains("BVRRReviewsSoiSectionID"), false, "There should not be any reviews");
+				assertEquals(sBvOutputSummary.contains("<span itemprop=\"aggregateRating\" itemscope "), false, "There should not be any ratings");
 	}
 	
 	/**
 	 * Test case for getting Aggregate when seo_sdk is disabled.
 	 */
 	@Test
-	public void testGetAggregateReview_SDK_Disabled() {
+	public void testGetAggregateRating_SDK_Disabled() {
 		//Establish a new BVConfiguration.  Properties within this configuration are typically set in bvconfig.properties.
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
@@ -286,7 +341,9 @@ public class BVManagedUIContentAggregateReviewTest {
 						
 
 				String sBvOutputSummary = _bvOutput.getAggregateRating(_bvParam); 
-				assertEquals(sBvOutputSummary, "", "There should be empty string");
+				System.out.println(sBvOutputSummary);
+				assertEquals(sBvOutputSummary.contains("<li id=\"en\">bvseo-false</li>"), true, "There should be only footer string");
+				assertEquals(!sBvOutputSummary.contains("<!--begin-aggregate-rating-->"), true, "there should not be aggregateRating in the content");
 	}
 	
 	/**
@@ -324,7 +381,8 @@ public class BVManagedUIContentAggregateReviewTest {
 						
 
 				String sBvOutputSummary = _bvOutput.getReviews(_bvParam); 
-				assertEquals(sBvOutputSummary, "", "There should be empty string");
+				assertEquals(sBvOutputSummary.contains("<li id=\"en\">bvseo-false</li>"), true, "There should only footer message");
+				assertEquals(sBvOutputSummary.contains("BVRRReviewsSoiSectionID"), false, "There should not be any review contents");
 	}
 	
 	/**
@@ -390,5 +448,101 @@ public class BVManagedUIContentAggregateReviewTest {
 				true, "there should be BvRRSourceID in the content");
 		assertEquals(!theUIContent.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
 				"there should not be reviews section in the content");
+	}
+	
+	/**
+	 * When null subject id was set, there was no proper error message displayed since the refactoring greating affected.
+	 */
+	@Test
+	public void testAggregate_NullSubjectID() {
+		//Establish a new BVConfiguration.  Properties within this configuration are typically set in bvconfig.properties.
+		//addProperty can be used to override configurations set in bvconfig.properties.
+		BVConfiguration _bvConfig = new BVSdkConfiguration();
+				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
+				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
+				
+				//this SDK supports retrieval of SEO contents from the cloud or local file system
+				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
+				//if LOAD_SEO_FILES_LOCALLY = false, configure CLOUD_KEY and STAGING
+				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
+		"hartz-2605f8e4ef6790962627644cc195acf2"); // get this value from BV
+				_bvConfig.addProperty(BVClientConfig.STAGING, "false");  // set to true for staging environment data
+				
+				//insert root folder with the value provided.
+				//if multiple deployment zones/display codes are used for this implementation, use conditional logic to set the appropriate BV_ROOT_FOLDER
+				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "11568-en_US"); //get this value from BV				
+
+				//Create BVParameters for each injection.  If the page contains multiple injections, for example //reviews and questions, set unique parameters for each injection.
+				BVParameters _bvParam = new BVParameters();
+						_bvParam.setUserAgent("google");
+						_bvParam.setBaseURI("/thispage.htm"); // this value is used to build pagination links
+						_bvParam.setPageURI("http://localhost:8080/abcd" + "?" + "notSure=1&letSee=2"); //this value is used to needed BV URL parameters
+						_bvParam.setContentType(ContentType.REVIEWS);
+						_bvParam.setSubjectType(SubjectType.PRODUCT);
+						_bvParam.setSubjectId(null);
+
+				BVUIContent _bvOutput = new BVManagedUIContent(_bvConfig);
+						
+
+				String sBvOutputSummary = _bvOutput.getAggregateRating(_bvParam);
+				System.out.println(sBvOutputSummary);
+				assertEquals(sBvOutputSummary.contains("<li id=\"ms\">bvseo-msg: SubjectId cannot be null or empty.;</li>"), 
+						true, "there should be error message for SubjectId");
+				sBvOutputSummary = _bvOutput.getReviews(_bvParam);
+				System.out.println(sBvOutputSummary);
+				assertEquals(sBvOutputSummary.contains("<li id=\"ms\">bvseo-msg: SubjectId cannot be null or empty.;</li>"), 
+						true, "there should be error message for SubjectId");
+				sBvOutputSummary = _bvOutput.getContent(_bvParam);
+				System.out.println(sBvOutputSummary);
+				assertEquals(sBvOutputSummary.contains("<li id=\"ms\">bvseo-msg: SubjectId cannot be null or empty.;</li>"), 
+						true, "there should be error message for SubjectId");
+	}
+	
+	/**
+	 * When Cloud key is invalid.
+	 */
+	@Test
+	public void testAggregate_InvalidURL() {
+		//Establish a new BVConfiguration.  Properties within this configuration are typically set in bvconfig.properties.
+		//addProperty can be used to override configurations set in bvconfig.properties.
+		BVConfiguration _bvConfig = new BVSdkConfiguration();
+				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
+				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
+				
+				//this SDK supports retrieval of SEO contents from the cloud or local file system
+				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
+				//if LOAD_SEO_FILES_LOCALLY = false, configure CLOUD_KEY and STAGING
+				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
+		"hartz123_invalid-2605f8e4ef6790962627644cc195acf2"); // get this value from BV
+				_bvConfig.addProperty(BVClientConfig.STAGING, "false");  // set to true for staging environment data
+				
+				//insert root folder with the value provided.
+				//if multiple deployment zones/display codes are used for this implementation, use conditional logic to set the appropriate BV_ROOT_FOLDER
+				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "11568-en_US"); //get this value from BV				
+
+				//Create BVParameters for each injection.  If the page contains multiple injections, for example //reviews and questions, set unique parameters for each injection.
+				BVParameters _bvParam = new BVParameters();
+						_bvParam.setUserAgent("google");
+						_bvParam.setBaseURI("/thispage.htm"); // this value is used to build pagination links
+						_bvParam.setPageURI("http://localhost:8080/abcd" + "?" + "notSure=1&letSee=2"); //this value is used to needed BV URL parameters
+						_bvParam.setContentType(ContentType.REVIEWS);
+						_bvParam.setSubjectType(SubjectType.PRODUCT);
+						_bvParam.setSubjectId("1577");
+
+				BVUIContent _bvOutput = new BVManagedUIContent(_bvConfig);
+						
+
+				String sBvOutputSummary = _bvOutput.getAggregateRating(_bvParam);
+				System.out.println(sBvOutputSummary);
+				assertEquals(sBvOutputSummary.contains("<li id=\"ms\">bvseo-msg: The resource to the URL or file is currently unavailable.;</li>"), 
+						true, "there should be error message for resource not found");
+				sBvOutputSummary = _bvOutput.getReviews(_bvParam);
+				System.out.println(sBvOutputSummary);
+				assertEquals(sBvOutputSummary.contains("<li id=\"ms\">bvseo-msg: The resource to the URL or file is currently unavailable.;</li>"), 
+						true, "there should be error message for resource not found");
+				sBvOutputSummary = _bvOutput.getContent(_bvParam);
+				System.out.println(sBvOutputSummary);
+				assertEquals(sBvOutputSummary.contains("<li id=\"ms\">bvseo-msg: The resource to the URL or file is currently unavailable.;</li>"), 
+						true, "there should be error message for resource not found");
 	}
 }

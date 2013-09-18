@@ -218,4 +218,28 @@ public class BVManagedUIContent_SinglePageTest {
 		System.out.println(theUIContent);
 	}
 
+	/**
+	 * Test case for checking with bad cloud key.
+	 */
+	@Test
+	public void testSEOContentFromHTTP_InvalidCloudKey() {
+		BVConfiguration bvConfig = new BVSdkConfiguration();
+		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco_bad_URL-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		
+		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setUserAgent("google");
+		bvParameters.setContentType(ContentType.REVIEWS);
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setSubjectId("3000001");
+		
+		String theUIContent = uiContent.getContent(bvParameters);
+		System.out.println(theUIContent);
+		assertEquals(!theUIContent.contains("BVRRSourceID"), true, "there should be BvRRSourceID in the content");
+		
+	}
+	
 }

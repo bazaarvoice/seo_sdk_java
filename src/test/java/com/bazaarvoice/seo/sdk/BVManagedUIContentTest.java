@@ -1,28 +1,16 @@
 package com.bazaarvoice.seo.sdk;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.fail;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
-import com.bazaarvoice.seo.sdk.exception.BVSdkException;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
-import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
 
 /**
  * Test class for BVManagedUIContent implementation class.
@@ -35,25 +23,6 @@ import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
 public class BVManagedUIContentTest {
 	
 	/**
-	 * Test case for passing a valid constructor argument
-	 */
-	@Test
-	public void testValidConstructorArgument() {
-		BVConfiguration bvConfig = null;
-		
-		/*
-		 * Positive scenario when valid configuration is passed
-		 */
-		try {
-			bvConfig = new BVSdkConfiguration();
-			BVUIContent bvUIContent = new BVManagedUIContent(bvConfig);
-		} catch (BVSdkException e) {
-			fail("There should have been an exception when null was passed");
-		}
-		
-	}
-
-	/**
 	 * Test case to check if null query param is supplied
 	 * to BVManagedUIContent.
 	 */
@@ -61,16 +30,10 @@ public class BVManagedUIContentTest {
 	public void testSearchContentNullBVQueryParams() {
 		BVUIContent bvUIContent = new BVManagedUIContent();
 		String bvContent = null;
-		String errorMessage = null;
 		
-		try {
-			bvContent = bvUIContent.getContent(null);
-			fail("This block should thow an exception.");
-		} catch (BVSdkException e) {
-			errorMessage = e.getMessage();
-		}
-		assertSame(errorMessage, BVMessageUtil.getMessage("ERR0011"), "Message are not same please verify.");
-		assertNull(bvContent, "BVContent should be null.");
+		bvContent = bvUIContent.getContent(null);
+		System.out.println(bvContent);
+		assertEquals(bvContent.contains("<li id=\"ms\">bvseo-msg: BVParameters is null.;</li>"), true, "Message are not same please verify.");
 	}
 	
 	/**
