@@ -6,9 +6,9 @@ import java.net.UnknownHostException;
 import java.text.MessageFormat;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
@@ -54,32 +54,33 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
 	}
 	
 	public StringBuilder call() throws Exception {
-			String displayJSOnly = null;
-			URI seoContentUrl = null;
-			try {
-				//includes integration script if one is enabled.
-				includeIntegrationCode();
-				
-				boolean isBotDetection = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.BOT_DETECTION.getPropertyName()));
-				
-				/*
-				 * Hit only when botDetection is disabled or if the queryString is appended with bvreveal or if it matches any 
-				 * crawler pattern that is configured at the client configuration. 
-				 */
-				if (!isBotDetection || _bvSeoSdkUrl.queryString().contains(BVConstant.BVREVEAL) || showUserAgentSEOContent()) {
-					seoContentUrl = _bvSeoSdkUrl.seoContentUri();
-					String correctedBaseUri = _bvSeoSdkUrl.correctedBaseUri();
-					getBvContent(_uiContent, seoContentUrl, correctedBaseUri);
-				} else {
-					displayJSOnly = BVConstant.JS_DISPLAY_MSG;
-				}
-			} catch (BVSdkException e) {
-				_message.append(e.getMessage());
-			}
+		String displayJSOnly = null;
+		URI seoContentUrl = null;
+		try {
+			//includes integration script if one is enabled.
+			includeIntegrationCode();
 			
-			if (displayJSOnly != null) {
-				_message.append(displayJSOnly);
+			boolean isBotDetection = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.BOT_DETECTION.getPropertyName()));
+			
+			/*
+			 * Hit only when botDetection is disabled or if the queryString is appended with bvreveal or if it matches any 
+			 * crawler pattern that is configured at the client configuration. 
+			 */
+			if (!isBotDetection || _bvSeoSdkUrl.queryString().contains(BVConstant.BVREVEAL) || showUserAgentSEOContent()) {
+				seoContentUrl = _bvSeoSdkUrl.seoContentUri();
+				String correctedBaseUri = _bvSeoSdkUrl.correctedBaseUri();
+				getBvContent(_uiContent, seoContentUrl, correctedBaseUri);
+			} else {
+				displayJSOnly = BVConstant.JS_DISPLAY_MSG;
 			}
+        } catch (BVSdkException e) {
+        	_message.append(e.getMessage());
+        }
+		
+		if (displayJSOnly != null) {
+			_message.append(displayJSOnly);
+		}
+		
 		return _uiContent;
 	}
 
@@ -180,6 +181,7 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
 	
 	/**
 	 * Self executioner method.
+	 * If reload is true && uiContent is gretare than 0 then return from cache.
 	 * @param reload
 	 * @return
 	 */
@@ -187,29 +189,30 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
 		if (reload) {
 			return new StringBuilder(_uiContent);
 		}
-			
-			long executionTimeout = Long.parseLong(_bvConfiguration.getProperty(BVClientConfig.EXECUTION_TIMEOUT.getPropertyName()));
-			ExecutorService executorService = Executors.newCachedThreadPool();
-			Future<StringBuilder> future = executorService.submit(this);
-			
-			try {
-				_uiContent = future.get(executionTimeout, TimeUnit.MILLISECONDS);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-				if (e.getCause() instanceof BVSdkException) {
-					throw new BVSdkException(e.getCause().getMessage());				
-				}
-			} catch (TimeoutException e) {
-				_message.append(MessageFormat.format(BVMessageUtil.getMessage("ERR0018"), new Object[] {executionTimeout}));
+        
+      long executionTimeout = Long.parseLong(_bvConfiguration.getProperty(BVClientConfig.EXECUTION_TIMEOUT.getPropertyName()));
+     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+      Future<StringBuilder> future = executorService.submit(this);
+		
+      try {
+			_uiContent = future.get(executionTimeout, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+			if (e.getCause() instanceof BVSdkException) {
+				throw new BVSdkException(e.getCause().getMessage());				
 			}
+		} catch (TimeoutException e) {
+			_message.append(MessageFormat.format(BVMessageUtil.getMessage("ERR0018"), new Object[] {executionTimeout}));
+		}
       
       return new StringBuilder(_uiContent);
+      
 	}
 	
 	public StringBuilder getMessage() {
-			return _message;
-	}		
+		return _message;
+	}
 }
