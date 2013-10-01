@@ -10,6 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
@@ -27,6 +30,11 @@ import com.bazaarvoice.seo.sdk.util.BVConstant;
  */
 public class BVHTMLFooter implements BVFooter {
 
+	private static final String VE_LOGGER = "ve_logger";
+	private static final Logger veLogger = LoggerFactory.getLogger(VE_LOGGER);
+	
+	private static final String LOG4J_CHUTE = "org.apache.velocity.runtime.log.Log4JLogChute";
+	private static final String LOG4J_LOGGER = "runtime.log.logsystem.log4j.logger";
 	private static final String FOOTER_FILE = "footer.txt"; 
 	
 	private BVConfiguration _bvConfiguration;
@@ -46,8 +54,11 @@ public class BVHTMLFooter implements BVFooter {
 		_bvParameters = bvParameters;
 		
 		_velocityEngine = new VelocityEngine();
+		_velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, LOG4J_CHUTE);
+		_velocityEngine.setProperty(LOG4J_LOGGER, VE_LOGGER);
 		_velocityEngine.addProperty("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 		_velocityEngine.addProperty("file.resource.loader.cache", true);
+		veLogger.debug("Initialized velocity engine..");
 		
 		messageList = new ArrayList<String>();
 	}
@@ -80,6 +91,7 @@ public class BVHTMLFooter implements BVFooter {
 		
 		String methodType = Boolean.parseBoolean(
 				_bvConfiguration.getProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY.getPropertyName())) ? "LOCAL" : "CLOUD";
+		context.put("version", _bvConfiguration.getProperty(BVCoreConfig.VERSION.getPropertyName()));
 		context.put("sdk_enabled", _bvConfiguration.getProperty(BVClientConfig.SEO_SDK_ENABLED.getPropertyName()));
 		context.put("_bvParameters", _bvParameters);
 		context.put("methodType", methodType);

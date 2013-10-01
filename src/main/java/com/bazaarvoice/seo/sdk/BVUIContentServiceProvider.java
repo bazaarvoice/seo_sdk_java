@@ -156,7 +156,7 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
         	crawlerAgentPattern = ".*(" + crawlerAgentPattern + ").*";
         }
         Pattern pattern = Pattern.compile(crawlerAgentPattern, Pattern.CASE_INSENSITIVE);
-        _logger.info("userAgent is : " + _bvParameters.getUserAgent());
+        _logger.debug("userAgent is : " + _bvParameters.getUserAgent());
 
         return (pattern.matcher(_bvParameters.getUserAgent()).matches() || _bvParameters.getUserAgent().toLowerCase().contains("google"));
     }
