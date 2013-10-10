@@ -1,5 +1,8 @@
 package com.bazaarvoice.seo.sdk.validation;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +67,23 @@ public class BVDefaultValidator implements BVValidator {
 		
 		if (StringUtils.isBlank(bvParams.getUserAgent())) {
 			errorMessages.append(BVMessageUtil.getMessage("ERR0017"));
+		}
+		
+		URI uri = null;
+		if (bvParams.getBaseURI() != null) {
+			try {
+				uri = new URI(bvParams.getBaseURI());
+			} catch (URISyntaxException e) {
+				errorMessages.append(BVMessageUtil.getMessage("ERR0023"));
+			}
+		}
+		
+		if (bvParams.getPageURI() != null) {
+			try {
+				uri = new URI(bvParams.getPageURI());
+			} catch (URISyntaxException e) {
+				errorMessages.append(BVMessageUtil.getMessage("ERR0022"));
+			}
 		}
 		
 		if (StringUtils.isBlank(bvParams.getPageURI()) || 

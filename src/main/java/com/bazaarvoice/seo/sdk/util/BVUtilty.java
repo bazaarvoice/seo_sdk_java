@@ -64,7 +64,8 @@ public final class BVUtilty {
 		
         URI _uri = null;
         try {
-            _uri = new URI(URLDecoder.decode(uri, "UTF-8"));
+//            _uri = new URI(URLDecoder.decode(uri, "UTF-8"));
+        	_uri = new URI(uri);
         } catch (Exception ex) {
 //            _log.warn("Unable to parse URL: " + uri);
         	ex.printStackTrace();
