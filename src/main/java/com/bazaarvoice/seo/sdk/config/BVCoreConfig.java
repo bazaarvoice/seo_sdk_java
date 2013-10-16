@@ -7,17 +7,16 @@ package com.bazaarvoice.seo.sdk.config;
  *
  */
 public enum BVCoreConfig {
-
+	
 	STAGING_S3_HOSTNAME("stagingS3Hostname"),
-	PRODUCTION_S3_HOSTNAME("productionS3Hostname"), 
-	VERSION("version");
+	PRODUCTION_S3_HOSTNAME("productionS3Hostname"); 
 
 	private String propertyName;
-	
+
 	private BVCoreConfig(String propertyName) {
 		this.propertyName = propertyName; 
 	}
-	
+
 	public String getPropertyName() {
 		return this.propertyName;
 	}

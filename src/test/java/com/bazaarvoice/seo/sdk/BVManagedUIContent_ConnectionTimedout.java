@@ -58,7 +58,6 @@ public class BVManagedUIContent_ConnectionTimedout {
 			propertyMap = new HashMap<String, String>();
 			propertyMap.put(BVCoreConfig.STAGING_S3_HOSTNAME.getPropertyName(), "google.com:81");
 			propertyMap.put(BVCoreConfig.PRODUCTION_S3_HOSTNAME.getPropertyName(), "google.com:81");
-			propertyMap.put(BVCoreConfig.VERSION.getPropertyName(), "2.00-Beta");
 			
 			propertyMap.put(BVClientConfig.BOT_DETECTION.getPropertyName(), "true");
 			propertyMap.put(BVClientConfig.BV_ROOT_FOLDER.getPropertyName(), "rootFolder");

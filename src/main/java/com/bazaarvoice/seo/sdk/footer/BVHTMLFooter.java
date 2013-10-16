@@ -91,7 +91,6 @@ public class BVHTMLFooter implements BVFooter {
 		
 		String methodType = Boolean.parseBoolean(
 				_bvConfiguration.getProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY.getPropertyName())) ? "LOCAL" : "CLOUD";
-		context.put("version", _bvConfiguration.getProperty(BVCoreConfig.VERSION.getPropertyName()));
 		context.put("sdk_enabled", _bvConfiguration.getProperty(BVClientConfig.SEO_SDK_ENABLED.getPropertyName()));
 		context.put("_bvParameters", _bvParameters);
 		context.put("methodType", methodType);

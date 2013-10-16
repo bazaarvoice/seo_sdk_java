@@ -126,21 +126,4 @@ public class BVUIContentServiceProviderTest {
 		assertTrue(isSdkEnabled, "SDK enabled should be true here.");
 	}
 	
-	/**
-	 * Test case to test executeCall method various scenario is also covered
-	 */
-	@Test
-	public void testExecuteCall() {
-		bvUIContentService = new BVUIContentServiceProvider(bvConfiguration);
-		BVParameters bvParameters = new BVParameters();
-		BVSeoSdkUrl bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParameters);
-		bvUIContentService.setBVSeoSdkUrl(bvSeoSdkUrl);
-		bvUIContentService.setBVParameters(bvParameters);
-		StringBuilder theContent = null;
-		theContent = bvUIContentService.executeCall(false);
-		assertEquals(theContent.length(), 0, "There should not be any message");
-		
-		
-	}
-	
 }

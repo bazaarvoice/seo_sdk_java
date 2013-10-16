@@ -19,8 +19,7 @@ public final class BVMessageUtil {
 	private static ResourceBundle _rsrcBundle;
 	
 	static {
-		Locale locale = Locale.getDefault();
-		_rsrcBundle = ResourceBundle.getBundle("message", locale);
+		_rsrcBundle = ResourceBundle.getBundle("message", Locale.US);
 	}
 	
 	private BVMessageUtil() {

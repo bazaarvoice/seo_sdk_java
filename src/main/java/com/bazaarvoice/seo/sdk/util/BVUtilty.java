@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
@@ -64,10 +63,8 @@ public final class BVUtilty {
 		
         URI _uri = null;
         try {
-//            _uri = new URI(URLDecoder.decode(uri, "UTF-8"));
         	_uri = new URI(uri);
         } catch (Exception ex) {
-//            _log.warn("Unable to parse URL: " + uri);
         	ex.printStackTrace();
         }
         

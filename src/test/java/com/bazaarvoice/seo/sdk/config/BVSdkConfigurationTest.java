@@ -41,26 +41,6 @@ public class BVSdkConfigurationTest {
 	}
 	
 	/**
-	 * Test case to check if bvclient.properties loads properly and overrides the bvconfig.properties.
-	 * Assertions are made randomly to cross verify on the configurations that are provided by default.
-	 * Any change in the property may lead to failure in the test case
-	 * which should be corrected.
-	 * 
-	 * There are no possible error scenarios arising since the property file loads from the 
-	 * resource bundle that is already provided.
-	 * 
-	 */
-	@Test
-	public void testBVClientLoading() {
-		BVConfiguration bvConfiguration = new BVSdkConfiguration();
-		String deploymentZoneId = bvConfiguration.getProperty(BVClientConfig.BV_ROOT_FOLDER.getPropertyName());
-		assertEquals(deploymentZoneId, "12325", "deploymentZoneId are different.");
-		
-		String cloudKey = bvConfiguration.getProperty(BVClientConfig.CLOUD_KEY.getPropertyName());
-		assertEquals(cloudKey, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491", "cloudKey are different.");
-	}
-	
-	/**
 	 * Test case for both add and getProperty methods.
 	 * Contains both positive scenario and negative scenario.
 	 * Add and getProperty are interchangeably used hence
@@ -85,7 +65,7 @@ public class BVSdkConfigurationTest {
 		}
 		assertEquals(actualErrorMessage, BVMessageUtil.getMessage("ERR0006"), "Error message does not match.");
 		actualDepZoneId = bvConfiguration.getProperty(BVClientConfig.BV_ROOT_FOLDER.getPropertyName());
-		assertEquals(actualDepZoneId, "12325", "actualDepZoneId does not match.");
+		assertEquals(actualDepZoneId, null, "actualDepZoneId does not match.");
 		
 		/*
 		 * Negative scenario. trying to add empty value.
@@ -100,7 +80,7 @@ public class BVSdkConfigurationTest {
 		}
 		assertEquals(actualErrorMessage, BVMessageUtil.getMessage("ERR0006"), "Error message does not match.");
 		actualDepZoneId = bvConfiguration.getProperty(BVClientConfig.BV_ROOT_FOLDER.getPropertyName());
-		assertEquals(actualDepZoneId, "12325", "actualDepZoneId does not match.");
+		assertEquals(actualDepZoneId, null, "actualDepZoneId does not match.");
 		
 		/*
 		 * positive scenario. when adding valid value.
@@ -169,10 +149,5 @@ public class BVSdkConfigurationTest {
 		
 		hostName = configuration.getProperty(BVCoreConfig.STAGING_S3_HOSTNAME.getPropertyName());
 		assertEquals(hostName, "seo-stg.bazaarvoice.com",  "staging hostname has been changed please fix.");
-		
-		String version = configuration.getProperty(BVCoreConfig.VERSION.getPropertyName());
-		if (StringUtils.isBlank(version)) {
-			fail("version is empty or blank please correct.");
-		}
 	}
 }
