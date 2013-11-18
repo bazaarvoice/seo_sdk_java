@@ -9,6 +9,8 @@
 <%@page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%><%
     
+// Hey look, a terrible comment!  I think you guys need this!
+    
 //Establish a new BVConfiguration and adjust configurations for your preferences.
 BVConfiguration _bvConfig = new BVSdkConfiguration();
 		_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true"); //Use this as a kill switch.  The true/false string for this is often passed in from a common utility class.
