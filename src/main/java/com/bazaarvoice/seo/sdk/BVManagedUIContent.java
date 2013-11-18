@@ -1,232 +1,88 @@
 package com.bazaarvoice.seo.sdk;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
+import com.bazaarvoice.seo.sdk.config.BVCoreConfig;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
-import com.bazaarvoice.seo.sdk.footer.BVFooter;
-import com.bazaarvoice.seo.sdk.footer.BVHTMLFooter;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
-import com.bazaarvoice.seo.sdk.url.BVSeoSdkURLBuilder;
-import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
-import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
-import com.bazaarvoice.seo.sdk.validation.BVDefaultValidator;
-import com.bazaarvoice.seo.sdk.validation.BVValidator;
+import com.bazaarvoice.seo.sdk.model.ContentType;
+import com.bazaarvoice.seo.sdk.model.SubjectType;
 
 /**
- * Implementation class for BVUIContent.
- * This class is the default implementation class to get Bazaarvoice content.
- * Based on the configurations that are set, the actual contents will be retrieved.
- * 
- * Following are the test classes/cases that this class bound to:
- * ensure test cases are not affected by the changes.
- * Refer to individual test case for an explanation.
- * Most of the test case are use case based implementation.
- * 
- * List of test cases associated with this class "BVManagedUIContent"
- * 1. BVManagedUIContentTest.java
- * 2. BVManagedUIContent1_Test.java
- * 3. 
- * 
+ * Test class to simulate a connection time out scenario
+ *
  * @author Anandan Narayanaswamy
  *
  */
-public class BVManagedUIContent implements BVUIContent {
+public class BVManagedUIContent_ConnectionTimedout {
 
-	private final static Logger _logger = LoggerFactory.getLogger(BVManagedUIContent.class);
-	
-	private BVConfiguration _bvConfiguration;
-	private BVValidator bvParamValidator;
-	
-	private BVSeoSdkUrl bvSeoSdkUrl;
-	private BVFooter bvFooter;
-	private StringBuilder message;
-	private boolean isBotDetection;
-	private BVParameters bvParameters;
-	private boolean reloadContent;
-	private BVUIContentService bvUiContentService;
-	private String validationError;
-	
-	/**
-	 * Default constructor.
-	 * Loads all default configuration within.
-	 * 
-	 */
-	public BVManagedUIContent() {
-		this(null);
-	}
-	
-	/**
-	 * Constructor with BVConfiguration argument.
-	 * 
-	 * @param bvConfiguration	The configuration/settings that has to be supplied for BVcontent to work.
-	 */
-	public BVManagedUIContent(BVConfiguration bvConfiguration) {
-		this._bvConfiguration = bvConfiguration;
-		
-		if (bvConfiguration == null) {
-			this._bvConfiguration = new BVSdkConfiguration();
-		}
-	}
-	
-	/**
-	 * Searches for the bv managed content based on the parameters that are passed.
-	 *  
-	 */
-	public String getContent(BVParameters bvParameters) {
-		long startTime = System.currentTimeMillis();
-		postProcess(bvParameters);
-		
-		StringBuilder uiContent = null;
-		
-		if (StringUtils.isBlank(validationError)) {
-			if (bvUiContentService.isSdkEnabled()) {
-				uiContent = bvUiContentService.executeCall(reloadContent);
-			} else {
-				_logger.info(BVMessageUtil.getMessage("MSG0003"));
-				uiContent = new StringBuilder();
-			}	
-			bvFooter.addMessage(bvUiContentService.getMessage().toString());
-		} else {
-			uiContent = new StringBuilder();
-			bvFooter.addMessage(validationError);
-		}
-		
-		bvFooter.setExecutionTime(System.currentTimeMillis() - startTime);
-		uiContent.append(bvFooter.displayFooter("getContent"));
-		
-		return uiContent.toString();
-	}
+    private BVConfiguration bvConfiguration;
 
-	public String getAggregateRating(BVParameters bvQueryParams) {
-		long startTime = System.currentTimeMillis();
-		postProcess(bvQueryParams);
-		
-		StringBuilder uiContent = null;
-		if (StringUtils.isBlank(validationError)) {
-			if (bvUiContentService.isSdkEnabled()) {
-				uiContent = bvUiContentService.executeCall(reloadContent);
-			} else {
-				_logger.info(BVMessageUtil.getMessage("MSG0003"));
-				uiContent = new StringBuilder();
-			}
-			
-			int startIndex = uiContent.indexOf("<!--begin-reviews-->");
-			if (startIndex == -1) {
-				if ((!isBotDetection || bvUiContentService.showUserAgentSEOContent()) && 
-						bvUiContentService.getMessage().length() == 0 && bvUiContentService.isSdkEnabled()) {
-					String messageString = BVMessageUtil.getMessage("ERR0003");
-					message.append(messageString);
-				}
-			} else {
-				String endReviews = "<!--end-reviews-->";
-				int endIndex = uiContent.indexOf(endReviews) + endReviews.length();
-				uiContent.delete(startIndex, endIndex);
-				
-				startIndex = uiContent.indexOf("<!--begin-pagination-->");
-				if (startIndex != -1) {
-					String endPagination = "<!--end-pagination-->";
-					endIndex = uiContent.indexOf(endPagination) + endPagination.length();
-					uiContent.delete(startIndex, endIndex);	
-				}			
-			}
-			bvFooter.addMessage(bvUiContentService.getMessage().toString());
-		} else {
-			uiContent = new StringBuilder();
-			bvFooter.addMessage(validationError);
-		}
-		
-		
-		bvFooter.addMessage(message.toString());		
-		bvFooter.setExecutionTime(System.currentTimeMillis() - startTime);
-		uiContent.append(bvFooter.displayFooter("getAggretateRating"));
-		
-		return uiContent.toString();
-	}
-	
-	public String getReviews(BVParameters bvQueryParams) {
-		long startTime = System.currentTimeMillis();
-		postProcess(bvQueryParams);
-		
-		StringBuilder uiContent = null;
-		if (StringUtils.isBlank(validationError)) {
+    /**
+     * Test case to simulate connection timeout issue.
+     */
+    @Test
+    public void testConnectionTimeOut() {
+        bvConfiguration = new BVSDKConfigurationSimulator();
 
-			if (bvUiContentService.isSdkEnabled()) {
-				uiContent = bvUiContentService.executeCall(reloadContent);
-			} else {
-				_logger.info(BVMessageUtil.getMessage("MSG0003"));
-				uiContent = new StringBuilder();
-			}
+        BVParameters _bvParam = new BVParameters();
+        _bvParam.setUserAgent("google");
+        _bvParam.setBaseURI("/thispage.htm"); // this value is used to build pagination links
+        _bvParam.setPageURI("http://localhost:8080/abcd" + "?" + "notSure=1&letSee=2"); //this value is used to needed BV URL parameters
+        _bvParam.setContentType(ContentType.REVIEWS);
+        _bvParam.setSubjectType(SubjectType.PRODUCT);
+        _bvParam.setSubjectId("10204080000800000-I");
 
-			int startIndex = uiContent.indexOf("<!--begin-aggregate-rating-->");
+        BVUIContent bvUIContent = new BVManagedUIContent(bvConfiguration);
+        String theContent = bvUIContent.getContent(_bvParam);
+        System.out.println(theContent);
+        Assert.assertEquals(theContent.contains("Connect to google.com:81 timed out"), true, "There should timed out message.");
 
-			if (startIndex == -1) {
-				if ((!isBotDetection || bvUiContentService.showUserAgentSEOContent()) && 
-						bvUiContentService.getMessage().length() == 0 && bvUiContentService.isSdkEnabled()) {
-					String messageString = BVMessageUtil.getMessage("ERR0013");
-					message.append(messageString);
-				}
-			} else {
-				String endReviews = "<!--end-aggregate-rating-->";
-				int endIndex = uiContent.indexOf(endReviews)
-						+ endReviews.length();
-				uiContent.delete(startIndex, endIndex);
-			}
-			bvFooter.addMessage(bvUiContentService.getMessage().toString());
-			bvFooter.addMessage(message.toString());
-		} else {
-			uiContent = new StringBuilder();
-			bvFooter.addMessage(validationError);
-		}
-		
-		
-		/*
-		 * Remove schema.org text from reviews if one exists
-		 * itemscope itemtype="http://schema.org/Product"
-		 */
-		String schemaOrg = "itemscope itemtype=\"http://schema.org/Product\"";
-		int startIndex = uiContent.indexOf(schemaOrg);
-		if (startIndex != -1) {
-			uiContent.delete(startIndex, startIndex + schemaOrg.length());
-		}
-		
-		bvFooter.setExecutionTime(System.currentTimeMillis() - startTime);
-		uiContent.append(bvFooter.displayFooter("getReviews"));
-		
-		return uiContent.toString();
-	}
-	
-	private void postProcess(BVParameters bvParameters) {
-		bvFooter = new BVHTMLFooter(_bvConfiguration, bvParameters);
-		message = new StringBuilder();
-		
-		/*
-		 * Validator to check if all the bvParameters are valid.
-		 */
-		bvParamValidator = new BVDefaultValidator();
-		validationError = bvParamValidator.validate(_bvConfiguration, bvParameters);
-		
-		if (!StringUtils.isBlank(validationError)) {
-			return;
-		}
-		
-		reloadContent = bvParameters.equals(this.bvParameters);
-		
-		if (!reloadContent) {
-			
-			this.bvParameters = bvParameters;
-			
-			bvSeoSdkUrl = new BVSeoSdkURLBuilder(_bvConfiguration, bvParameters);
-			isBotDetection = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.BOT_DETECTION.getPropertyName()));
-			
-			bvUiContentService = new BVUIContentServiceProvider(_bvConfiguration);
-			bvUiContentService.setBVParameters(this.bvParameters);
-			bvUiContentService.setBVSeoSdkUrl(bvSeoSdkUrl);
-		}
-		
-	}
+    }
 
+    /**
+     * Mocked BVConfiguration class to test a sample invalid timout url by
+     * supplying hostname as google.com:81
+     *
+     * @author Anandan Narayanaswamy
+     *
+     */
+    private class BVSDKConfigurationSimulator implements BVConfiguration {
+
+        private Map<String, String> propertyMap;
+
+        public BVSDKConfigurationSimulator() {
+            propertyMap = new HashMap<String, String>();
+            propertyMap.put(BVCoreConfig.STAGING_S3_HOSTNAME.getPropertyName(), "google.com:81");
+            propertyMap.put(BVCoreConfig.PRODUCTION_S3_HOSTNAME.getPropertyName(), "google.com:81");
+            propertyMap.put(BVClientConfig.BOT_DETECTION.getPropertyName(), "true");
+            propertyMap.put(BVClientConfig.BV_ROOT_FOLDER.getPropertyName(), "rootFolder");
+            propertyMap.put(BVClientConfig.CLOUD_KEY.getPropertyName(), "cloudKey");
+            propertyMap.put(BVClientConfig.CONNECT_TIMEOUT.getPropertyName(), "100");
+            propertyMap.put(BVClientConfig.CRAWLER_AGENT_PATTERN.getPropertyName(), ".*(msnbot|google|teoma|bingbot|yandexbot|yahoo).*");
+            propertyMap.put(BVClientConfig.INCLUDE_DISPLAY_INTEGRATION_CODE.getPropertyName(), "false");
+            propertyMap.put(BVClientConfig.LOAD_SEO_FILES_LOCALLY.getPropertyName(), "false");
+            propertyMap.put(BVClientConfig.LOCAL_SEO_FILE_ROOT.getPropertyName(), "/");
+            propertyMap.put(BVClientConfig.SEO_SDK_ENABLED.getPropertyName(), "true");
+            propertyMap.put(BVClientConfig.SOCKET_TIMEOUT.getPropertyName(), "1000");
+            propertyMap.put(BVClientConfig.STAGING.getPropertyName(), "true");
+            propertyMap.put(BVClientConfig.EXECUTION_TIMEOUT.getPropertyName(), "3000");
+        }
+
+        public BVConfiguration addProperty(BVClientConfig bvConfig,
+                String propertyValue) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public String getProperty(String propertyName) {
+            return propertyMap.get(propertyName);
+        }
+    }
 }

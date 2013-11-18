@@ -23,4 +23,6 @@ public final class BVConstant {
 	public static final String SOCKET_TIMEOUT = "1000";
 	public static final String STAGING = "false";
 	public static final String SEO_SDK_ENABLED = "true";
+        public static final String PROXY_HOST = "none";
+        public static final String PROXY_PORT = "0";
 }
