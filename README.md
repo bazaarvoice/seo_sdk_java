@@ -10,3 +10,7 @@ Binaries:
 ------------
 
 * Latest releases of the libraries are available at the following URL: http://bazaarvoice.github.io/seo_sdk_java/
+
+Documentation:
+------------
+* Documention is now available in a non-MS Word format since Mac and Linux developers don't want to have to run MS Word in order to code.  ;-)
