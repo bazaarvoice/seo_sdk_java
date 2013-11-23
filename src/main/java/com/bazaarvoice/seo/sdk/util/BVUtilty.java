@@ -34,8 +34,11 @@ public final class BVUtilty {
         if (queryString != null && queryString.length() > 0) {
             List<NameValuePair> parameters = URLEncodedUtils.parse (queryString, Charset.forName("UTF-8"));
             for(NameValuePair parameter : parameters) {
-                if (parameter.getName().equals("bvrrp") || parameter.getName().equals("bvqap") || parameter.getName().equals("bvsyp")) {
+                if (parameter.getName().equals("bvrrp") || parameter.getName().equals("bvqap")) {
                     final Pattern p = Pattern.compile("^[^/]+/\\w+/\\w+/(\\d+)/[^/]+\\.htm$");
+                    return matchPageNumber(p, parameter.getValue());
+                } else if (parameter.getName().equals("bvsyp")) {
+                	final Pattern p = Pattern.compile("^[^/]+/\\w+/\\w+/(\\d+)[[/\\w+]|[^/]]+\\.htm$");
                     return matchPageNumber(p, parameter.getValue());
                 } else if (parameter.getName().equals("bvpage")) {
                     final Pattern p = Pattern.compile("^\\w+/(\\d+)$");
@@ -73,18 +76,6 @@ public final class BVUtilty {
 	
 	public static String readFile(String path) throws IOException {
         FileInputStream stream = new FileInputStream(new File(path));
-        try {
-            FileChannel fc = stream.getChannel();
-            MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-            return Charset.forName("UTF-8").decode(bb).toString();
-        }
-        finally {
-            stream.close();
-        }
-    }
-	
-	public static String readFile(URI uri) throws IOException {
-        FileInputStream stream = new FileInputStream(new File(uri));
         try {
             FileChannel fc = stream.getChannel();
             MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());

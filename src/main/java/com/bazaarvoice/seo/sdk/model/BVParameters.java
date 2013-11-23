@@ -16,6 +16,7 @@ public class BVParameters {
 	private String subjectId;
 	private ContentType contentType;
 	private SubjectType subjectType;
+	private ContentSubType contentSubType;
 	
 	public String getUserAgent() {
 		return userAgent;
@@ -59,6 +60,13 @@ public class BVParameters {
 		this.subjectType = subjectType;
 	}
 	
+	public ContentSubType getContentSubType() {
+		return contentSubType;
+	}
+	public void setContentSubType(ContentSubType contentSubType) {
+		this.contentSubType = contentSubType;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -93,7 +101,8 @@ public class BVParameters {
 		.append(pageURI)
 		.append(subjectId)
 		.append(contentType)
-		.append(subjectType);
+		.append(subjectType)
+		.append(contentSubType);
 		
 		return hBuilder.hashCode();
 	}

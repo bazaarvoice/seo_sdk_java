@@ -17,6 +17,7 @@ import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVCoreConfig;
 import com.bazaarvoice.seo.sdk.exception.BVSdkException;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
+import com.bazaarvoice.seo.sdk.model.ContentSubType;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
 import com.bazaarvoice.seo.sdk.util.BVUtilty;
@@ -83,7 +84,7 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
 		 * if bvParameters.pageUri contains bvpage then we consider it as C2013 implementation.
 		 * TODO: the above in this is a todo.
 		 */
-		if (queryString.contains(BV_PAGE)) {
+		if (queryString != null && queryString.contains(BV_PAGE)) {
 			return c2013Uri();
 		}
 		
@@ -97,7 +98,8 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
 	}
 
 	private URI prrUri() {
-		String path = getPath(bvParameters.getContentType(), bvParameters.getSubjectType(), getPageNumber(), bvParameters.getSubjectId());
+		String path = getPath(bvParameters.getContentType(), bvParameters.getSubjectType(), getPageNumber(), 
+				bvParameters.getSubjectId(), bvParameters.getContentSubType());
 		if (isContentFromFile()) {
 			return fileUri(path);
 		}
@@ -169,7 +171,7 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
         subjectId = (StringUtils.isBlank(subjectId)) ? bvParameters.getSubjectId() : subjectId;
         pageNumber = (StringUtils.isBlank(pageNumber)) ? NUM_ONE_STR : pageNumber;
         
-        String path = getPath(contentType, subjectType, pageNumber, subjectId);
+        String path = getPath(contentType, subjectType, pageNumber, subjectId, bvParameters.getContentSubType());
 		if (isContentFromFile()) {
 			return fileUri(path);
 		}
@@ -181,11 +183,26 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
 		return valueString.substring(2, valueString.length());
 	}
 
-	private String getPath(ContentType contentType, SubjectType subjectType, String pageNumber, String subjectId) {
-		String path = getRootFolder() + PATH_SEPARATOR + contentType.uriValue() + 
-		PATH_SEPARATOR + subjectType.uriValue() + PATH_SEPARATOR + pageNumber + PATH_SEPARATOR + subjectId + HTML_EXT;
+	private String getPath(ContentType contentType, SubjectType subjectType, String pageNumber, String subjectId, ContentSubType contentSubType) {
+		StringBuilder path = new StringBuilder();
+		path.append(getRootFolder())
+		.append(PATH_SEPARATOR)
+		.append(contentType.uriValue())
+		.append(PATH_SEPARATOR)
+		.append(subjectType.uriValue())
+		.append(PATH_SEPARATOR)
+		.append(pageNumber)
+		.append(PATH_SEPARATOR);
 		
-		return path;
+		if (contentSubType != null && contentSubType != ContentSubType.NONE) {
+			path.append(contentSubType.getContentKeyword())
+			.append(PATH_SEPARATOR);
+		}
+		
+		path.append(subjectId)
+		.append(HTML_EXT);
+		
+		return path.toString();
 	}
 
 	private String getPageNumber() {

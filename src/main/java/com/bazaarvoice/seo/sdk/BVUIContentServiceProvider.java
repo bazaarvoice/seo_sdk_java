@@ -1,5 +1,6 @@
 package com.bazaarvoice.seo.sdk;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -13,7 +14,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Request;
 import org.slf4j.Logger;
@@ -27,7 +30,6 @@ import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
 import com.bazaarvoice.seo.sdk.util.BVConstant;
 import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
 import com.bazaarvoice.seo.sdk.util.BVUtilty;
-import org.apache.http.HttpHost;
 
 /**
  * Implementation class for {@link BVUIContentService}. This class is a self
@@ -105,15 +107,19 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
         int proxyPort = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.PROXY_PORT.getPropertyName()));
         String proxyHost = _bvConfiguration.getProperty(BVClientConfig.PROXY_HOST.getPropertyName());
         String content = null;
+        
         try {
-            if (!"none".equalsIgnoreCase(proxyHost)) {
+        	
+        	Request httpRequest = Request.Get(path).connectTimeout(connectionTimeout).
+                    socketTimeout(socketTimeout); 
+        	
+        	if (!StringUtils.isBlank(proxyHost) && !"none".equalsIgnoreCase(proxyHost)) {
                 HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-                content = Request.Get(path).connectTimeout(connectionTimeout).
-                        socketTimeout(socketTimeout).viaProxy(proxy).execute().returnContent().asString();
-            } else {
-                content = Request.Get(path).connectTimeout(connectionTimeout).
-                        socketTimeout(socketTimeout).execute().returnContent().asString();
-            }
+                httpRequest.viaProxy(proxy);
+            } 
+           
+        	content = httpRequest.execute().returnContent().asString();
+        	
         } catch (ClientProtocolException e) {
             throw new BVSdkException("ERR0012");
         } catch (IOException e) {
@@ -131,7 +137,8 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
 
         String content = null;
         try {
-            content = BVUtilty.readFile(path);
+        	File file = new File(path);
+            content = FileUtils.readFileToString(file, "UTF-8");
         } catch (IOException e) {
             throw new BVSdkException("ERR0012");
         }

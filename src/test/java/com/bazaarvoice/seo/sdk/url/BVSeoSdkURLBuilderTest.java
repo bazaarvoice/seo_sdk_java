@@ -12,6 +12,7 @@ import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
+import com.bazaarvoice.seo.sdk.model.ContentSubType;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
 
@@ -441,5 +442,238 @@ public class BVSeoSdkURLBuilderTest {
 		System.out.println("queryString --> " + actualQueryString);
 		System.out.println("seoContentUri --> " + actualSeoContentUri);*/
 	}
+
+	@Test
+	public void storyTest_default() {
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY,
+				"true");
+
+		BVParameters bvParam = new BVParameters();
+		bvParam.setBaseURI("http://localhost:8080/Sample/Example-1.jsp");
+		bvParam.setPageURI("http://localhost:8080/Sample/Example-1.jsp");
+		bvParam.setContentType(ContentType.STORIES);
+		bvParam.setSubjectType(SubjectType.PRODUCT);
+		
+		bvParam.setSubjectId("ssl-certificates");
+
+		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
+
+		String expectedBaseUri = "http://localhost:8080/Sample/Example-1.jsp";
+		String expectedQueryString = null;
+		String expectedSeoContentUri = new File(
+				"/filePath/6574-en_us/stories/product/1/ssl-certificates.htm")
+				.toURI().toString();
+
+		String actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
+		String actualQueryString = bvSeoSdkUrl.queryString();
+		String actualSeoContentUri = bvSeoSdkUrl.seoContentUri().toString();
+
+		System.out.println(actualBaseUri);
+		System.out.println(actualQueryString);
+		System.out.println(actualSeoContentUri);
+		
+		assertEquals(actualBaseUri, expectedBaseUri,
+				"actual and expected base uri should be same");
+		assertEquals(actualQueryString, expectedQueryString,
+				"actual and expected query string should be same");
+		assertEquals(actualSeoContentUri, expectedSeoContentUri,
+				"actual and expected seo content uri should be same");
+	}
 	
+	@Test
+	public void storyTest_default_none() {
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY,
+				"true");
+
+		BVParameters bvParam = new BVParameters();
+		bvParam.setBaseURI("http://localhost:8080/Sample/Example-1.jsp");
+		bvParam.setPageURI("http://localhost:8080/Sample/Example-1.jsp");
+		bvParam.setContentType(ContentType.STORIES);
+		bvParam.setSubjectType(SubjectType.PRODUCT);
+		bvParam.setContentSubType(ContentSubType.NONE);
+		bvParam.setSubjectId("ssl-certificates");
+
+		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
+
+		String expectedBaseUri = "http://localhost:8080/Sample/Example-1.jsp";
+		String expectedQueryString = null;
+		String expectedSeoContentUri = new File(
+				"/filePath/6574-en_us/stories/product/1/ssl-certificates.htm")
+				.toURI().toString();
+
+		String actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
+		String actualQueryString = bvSeoSdkUrl.queryString();
+		String actualSeoContentUri = bvSeoSdkUrl.seoContentUri().toString();
+
+		System.out.println(actualBaseUri);
+		System.out.println(actualQueryString);
+		System.out.println(actualSeoContentUri);
+		
+		assertEquals(actualBaseUri, expectedBaseUri,
+				"actual and expected base uri should be same");
+		assertEquals(actualQueryString, expectedQueryString,
+				"actual and expected query string should be same");
+		assertEquals(actualSeoContentUri, expectedSeoContentUri,
+				"actual and expected seo content uri should be same");
+	}
+	
+	@Test
+	public void storyTest_stories() {
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY,
+				"true");
+
+		BVParameters bvParam = new BVParameters();
+		bvParam.setBaseURI("http://localhost:8080/Sample/Example-1.jsp");
+		bvParam.setPageURI("http://localhost:8080/Sample/Example-1.jsp");
+		bvParam.setContentType(ContentType.STORIES);
+		bvParam.setSubjectType(SubjectType.PRODUCT);
+		bvParam.setContentSubType(ContentSubType.STORIES_LIST);
+		bvParam.setSubjectId("ssl-certificates");
+
+		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
+
+		String expectedBaseUri = "http://localhost:8080/Sample/Example-1.jsp";
+		String expectedQueryString = null;
+		String expectedSeoContentUri = new File(
+				"/filePath/6574-en_us/stories/product/1/stories/ssl-certificates.htm")
+				.toURI().toString();
+
+		String actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
+		String actualQueryString = bvSeoSdkUrl.queryString();
+		String actualSeoContentUri = bvSeoSdkUrl.seoContentUri().toString();
+
+		System.out.println(actualBaseUri);
+		System.out.println(actualQueryString);
+		System.out.println(actualSeoContentUri);
+		
+		assertEquals(actualBaseUri, expectedBaseUri,
+				"actual and expected base uri should be same");
+		assertEquals(actualQueryString, expectedQueryString,
+				"actual and expected query string should be same");
+		assertEquals(actualSeoContentUri, expectedSeoContentUri,
+				"actual and expected seo content uri should be same");
+	}
+	
+	@Test
+	public void storyTest_storiesGrid() {
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY,
+				"true");
+
+		BVParameters bvParam = new BVParameters();
+		bvParam.setBaseURI("http://localhost:8080/Sample/Example-1.jsp");
+		bvParam.setPageURI("http://localhost:8080/Sample/Example-1.jsp");
+		bvParam.setContentType(ContentType.STORIES);
+		bvParam.setSubjectType(SubjectType.PRODUCT);
+		bvParam.setContentSubType(ContentSubType.STORIES_GRID);
+		bvParam.setSubjectId("ssl-certificates");
+
+		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
+
+		String expectedBaseUri = "http://localhost:8080/Sample/Example-1.jsp";
+		String expectedQueryString = null;
+		String expectedSeoContentUri = new File(
+				"/filePath/6574-en_us/stories/product/1/storiesgrid/ssl-certificates.htm")
+				.toURI().toString();
+
+		String actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
+		String actualQueryString = bvSeoSdkUrl.queryString();
+		String actualSeoContentUri = bvSeoSdkUrl.seoContentUri().toString();
+
+		System.out.println(actualBaseUri);
+		System.out.println(actualQueryString);
+		System.out.println(actualSeoContentUri);
+		
+		assertEquals(actualBaseUri, expectedBaseUri,
+				"actual and expected base uri should be same");
+		assertEquals(actualQueryString, expectedQueryString,
+				"actual and expected query string should be same");
+		assertEquals(actualSeoContentUri, expectedSeoContentUri,
+				"actual and expected seo content uri should be same");
+	}
+	
+	@Test
+	public void storyTest_stories_pagenumber() {
+		/*
+		 * Test case - 1
+		 */
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY,
+				"true");
+
+		BVParameters bvParam = new BVParameters();
+		bvParam.setContentType(ContentType.STORIES);
+		bvParam.setSubjectType(SubjectType.PRODUCT);
+		bvParam.setSubjectId("ssl-certificates");
+
+		bvParam.setContentSubType(ContentSubType.STORIES_GRID);
+		bvParam.setBaseURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvsyp=6574-en_us/stories/product/2/storiesgrid/ssl-certificates.htm");
+		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvsyp=6574-en_us/stories/product/2/storiesgrid/ssl-certificates.htm");
+		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
+
+		String expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
+		String expectedQueryString = "null&bvsyp=6574-en_us/stories/product/2/storiesgrid/ssl-certificates.htm";
+		String expectedSeoContentUri = new File(
+				"/filePath/6574-en_us/stories/product/2/storiesgrid/ssl-certificates.htm")
+				.toURI().toString();
+
+		String actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
+		String actualQueryString = bvSeoSdkUrl.queryString();
+		String actualSeoContentUri = bvSeoSdkUrl.seoContentUri().toString();
+
+		assertEquals(actualBaseUri, expectedBaseUri,
+				"actual and expected base uri should be same");
+		assertEquals(actualQueryString, expectedQueryString,
+				"actual and expected query string should be same");
+		assertEquals(actualSeoContentUri, expectedSeoContentUri,
+				"actual and expected seo content uri should be same");
+		
+		/*
+		 * Test case - 2
+		 */
+		bvParam.setContentSubType(ContentSubType.STORIES_LIST);
+		bvParam.setBaseURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvsyp=6574-en_us/stories/product/2/stories/ssl-certificates.htm");
+		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvsyp=6574-en_us/stories/product/2/stories/ssl-certificates.htm");
+		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
+		
+		expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
+		expectedQueryString = "null&bvsyp=6574-en_us/stories/product/2/stories/ssl-certificates.htm";
+		expectedSeoContentUri = new File(
+				"/filePath/6574-en_us/stories/product/2/stories/ssl-certificates.htm")
+				.toURI().toString();
+
+		actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
+		actualQueryString = bvSeoSdkUrl.queryString();
+		actualSeoContentUri = bvSeoSdkUrl.seoContentUri().toString();
+
+		assertEquals(actualBaseUri, expectedBaseUri,
+				"actual and expected base uri should be same");
+		assertEquals(actualQueryString, expectedQueryString,
+				"actual and expected query string should be same");
+		assertEquals(actualSeoContentUri, expectedSeoContentUri,
+				"actual and expected seo content uri should be same");
+		
+		/*
+		 * Test case - 3
+		 */
+		bvParam.setContentSubType(null);
+		bvParam.setBaseURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvsyp=6574-en_us/stories/product/2/ssl-certificates.htm");
+		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvsyp=6574-en_us/stories/product/2/ssl-certificates.htm");
+		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
+		
+		expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
+		expectedQueryString = "null&bvsyp=6574-en_us/stories/product/2/ssl-certificates.htm";
+		expectedSeoContentUri = new File(
+				"/filePath/6574-en_us/stories/product/2/ssl-certificates.htm")
+				.toURI().toString();
+
+		actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
+		actualQueryString = bvSeoSdkUrl.queryString();
+		actualSeoContentUri = bvSeoSdkUrl.seoContentUri().toString();
+
+		assertEquals(actualBaseUri, expectedBaseUri,
+				"actual and expected base uri should be same");
+		assertEquals(actualQueryString, expectedQueryString,
+				"actual and expected query string should be same");
+		assertEquals(actualSeoContentUri, expectedSeoContentUri,
+				"actual and expected seo content uri should be same");
+	}
 }

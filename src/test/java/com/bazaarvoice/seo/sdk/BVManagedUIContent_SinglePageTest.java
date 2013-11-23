@@ -48,6 +48,34 @@ public class BVManagedUIContent_SinglePageTest {
 		
 	}
 	
+	/**
+	 * Nullpointer issue fix while forming query string.
+	 */
+	@Test
+	public void testSEOContentFromFile_SinglePagePRR_pageUri() {
+		URL url = getClass().getResource("/seo_local_files/myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		
+		BVConfiguration bvConfig = new BVSdkConfiguration();
+		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "True");
+		bvConfig.addProperty(BVClientConfig.LOCAL_SEO_FILE_ROOT, url.toString().replace("file:/", ""));
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		
+		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setUserAgent("google");
+		bvParameters.setContentType(ContentType.REVIEWS);
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setSubjectId("3000001");
+		bvParameters.setPageURI("http://localhost:8080/sample/xyz.jsp");
+		
+		String theUIContent = uiContent.getContent(bvParameters);
+		System.out.println(theUIContent);
+		assertEquals(theUIContent.contains("BVRRSourceID"), true, "there should be BvRRSourceID in the content");
+		
+	}
+	
 	@Test
 	public void testSEOContentFromHTTP_SinglePagePRR() {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
