@@ -118,7 +118,7 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
                 httpRequest.viaProxy(proxy);
             } 
            
-        	content = httpRequest.execute().returnContent().asString();
+        	content = new String(httpRequest.execute().returnContent().asBytes());
         	
         } catch (ClientProtocolException e) {
             throw new BVSdkException("ERR0012");
