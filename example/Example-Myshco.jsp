@@ -17,9 +17,9 @@ BVConfiguration _bvConfig = new BVSdkConfiguration();
 		//_bvConfig.addProperty(BVClientConfig.CRAWLER_AGENT_PATTERN, "msnbot|google|teoma|bingbot|yandexbot|yahoo"); //Use this to override the default list of search engine bot user agents
 		
 		//the following 3 lines must be updated to not use sample configurations.
-		_bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco-3e3001e88d9c32d19a17cafacb81bec7"); //Get this value from BV.
+		_bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco-69cb945801532dcfb57ad2b0d2471b68"); // Grab value from the config hub. On the left panel, click "Technical Setup" > "SEO Configuration." The value will be in the "Cloud Key" field.
 		_bvConfig.addProperty(BVClientConfig.STAGING, "true"); //Set to true for staging environment data.
-		_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344"); //Get this value from BV. This is also known as Display Code.
+		_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US"); 
 		
 //Create BVParameters for each injection.  If the page contains multiple injections, for example, 
 //reviews and questions, set unique parameters for each injection. 
@@ -31,7 +31,7 @@ BVParameters _bvParam = new BVParameters();
 		
 		//the following 2 lines must be configured for each page.
 		_bvParam.setBaseURI("Example-Myshco.jsp"); //Insert the URI/URL of the page. This is typically the canonical URL.  The SDK will append pagination parameters to this URI/URL to create search-friendly pagination links.
-		_bvParam.setSubjectId("5000001"); //Insert the product ID
+		_bvParam.setSubjectId("5000001"); //Insert the product ID. This will match the value of the product External ID in the XML product feed. 
 
 BVUIContent _bvOutput = new BVManagedUIContent(_bvConfig);
 		//String sBvOutputReviews = _bvOutput.getContent(_bvParam);  //This method returns both the reviews markup and aggregate rating into a single string.  Use this method if there is no summary div.
