@@ -15,7 +15,9 @@ public enum BVClientConfig {
     STAGING("staging"),
     EXECUTION_TIMEOUT("seo.sdk.execution.timeout"),
     PROXY_HOST("seo.sdk.execution.proxy.host"),
-    PROXY_PORT("seo.sdk.execution.proxy.port");
+    PROXY_PORT("seo.sdk.execution.proxy.port"),
+    CHARSET("seo.sdk.charset"),
+    SSL_ENABLED("seo.sdk.ssl.enabled");
     
     private String propertyName;
 

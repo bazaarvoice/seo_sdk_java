@@ -1,5 +1,7 @@
 package com.bazaarvoice.seo.sdk.footer;
 
+import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
+
 /**
  * Interface for adding bazaarvoice footer in the bazaarvoice seo content.
  * @author Anandan Narayanaswamy
@@ -20,5 +22,7 @@ public interface BVFooter {
 	void addMessage(String message);
 	
 	void setExecutionTime(long executionTime);
+
+	void setBvSeoSdkUrl(BVSeoSdkUrl _bvSeoSdkUrl);
 	
 }

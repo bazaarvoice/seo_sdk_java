@@ -29,15 +29,16 @@ public class ProxyTest {
 	public void testWithoutProxy() {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3");
 		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
 		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
 		
 		BVParameters bvParameters = new BVParameters();
 		bvParameters.setUserAgent("google");
-		bvParameters.setPageURI("/someproduct.jsp?bvpage=ctre/id3000001/stp");
+		bvParameters.setPageURI("/someproduct.jsp?bvpage=ctre/id5000002/stp");
 		
 		String theUIContent = uiContent.getContent(bvParameters);
+		//System.out.println(theUIContent);
 		assertEquals(theUIContent.contains("BVRRSourceID"), true, "there should be BvRRSourceID in the content");
 		assertEquals(theUIContent.contains("bvseo-msg: Connect to localhost:9999 timed out"), false, 
 				"there should not be connection timed out message.");
@@ -63,7 +64,7 @@ public class ProxyTest {
 		String theUIContent = uiContent.getContent(bvParameters);
 		System.out.println(theUIContent);
 		assertEquals(theUIContent.contains("BVRRSourceID"), false, "there should not be BvRRSourceID in the content");
-		assertEquals(theUIContent.contains("bvseo-msg: Connect to localhost:9999 timed out"), true, 
+		assertEquals(theUIContent.contains("connect timed out"), true, 
 				"there should be connection timed out message.");
 	}
 	

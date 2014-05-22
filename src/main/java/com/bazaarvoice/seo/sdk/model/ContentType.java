@@ -1,5 +1,10 @@
 package com.bazaarvoice.seo.sdk.model;
 
+/**
+ * ContentType enum : Allows to speciy the type of contents to get from the cloud.
+ * @author Anandan Narayanaswamy
+ *
+ */
 public enum ContentType {
     REVIEWS("re"),
     REVIEWSPAGE("rp"),

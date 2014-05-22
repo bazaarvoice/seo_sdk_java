@@ -1,5 +1,10 @@
 package com.bazaarvoice.seo.sdk.model;
 
+/**
+ * SubjectType enum selections for Product, Category, Entry and Detail types.
+ * @author Anandan Narayanaswamy
+ *
+ */
 public enum SubjectType {
     PRODUCT ("p"),
     CATEGORY ("c"),

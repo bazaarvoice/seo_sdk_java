@@ -120,14 +120,20 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
 	
 	private URI httpUri(String path) {
 		boolean isStaging = Boolean.parseBoolean(bvConfiguration.getProperty(BVClientConfig.STAGING.getPropertyName()));
+		boolean isHttpsEnabled = Boolean.parseBoolean(bvConfiguration.getProperty(BVClientConfig.SSL_ENABLED.getPropertyName()));
+		
 		String s3Hostname = isStaging ? bvConfiguration.getProperty(BVCoreConfig.STAGING_S3_HOSTNAME.getPropertyName()) : 
 			bvConfiguration.getProperty(BVCoreConfig.PRODUCTION_S3_HOSTNAME.getPropertyName());
 		
         String cloudKey = bvConfiguration.getProperty(BVClientConfig.CLOUD_KEY.getPropertyName());
         String urlPath = "/" + cloudKey + "/" + path;
         URIBuilder builder = new URIBuilder();
-        builder.setScheme("http").setHost(s3Hostname).setPath(urlPath);
-		try {
+        
+        String httpScheme = isHttpsEnabled ? "https" : "http";
+        
+        builder.setScheme(httpScheme).setHost(s3Hostname).setPath(urlPath);
+		
+        try {
 			return builder.build();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block

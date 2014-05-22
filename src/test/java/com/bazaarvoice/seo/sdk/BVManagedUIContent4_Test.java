@@ -1,8 +1,18 @@
 package com.bazaarvoice.seo.sdk;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -43,6 +53,7 @@ public class BVManagedUIContent4_Test {
 		_bvConfiguration.addProperty(BVClientConfig.STAGING, "true");
 		
 		_bvUIContent = new BVManagedUIContent(_bvConfiguration);
+		
 	}
 	
 	/**
@@ -115,10 +126,36 @@ public class BVManagedUIContent4_Test {
 	}
 	
 	/**
-	 * TODO: Need to code this implementation
+	 * HTTPS test case.
+	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyManagementException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 * @throws CertificateException 
+	 * @throws KeyStoreException 
+	 * @throws UnrecoverableKeyException 
+	 * @throws NoSuchProviderException 
 	 */
 	@Test
-	public void test_InlinePage_AllContents() {
+	public void testSEOContentFrom_Using_HTTPS() throws NoSuchAlgorithmException, KeyManagementException, CertificateException, FileNotFoundException, IOException, KeyStoreException, UnrecoverableKeyException, NoSuchProviderException {
+		BVConfiguration bvConfig = new BVSdkConfiguration();
+		bvConfig.addProperty(BVClientConfig.SSL_ENABLED, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "austin-reed-55918a9149f80897ca6b67f56c812c61");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_GB");
+		bvConfig.addProperty(BVClientConfig.EXECUTION_TIMEOUT, "60000");
 		
+		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setUserAgent("google");
+		bvParameters.setContentType(ContentType.REVIEWS);
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setSubjectId("0101708515");
+		bvParameters.setPageURI("http://localhost:8080/sample/xyz.jsp");
+		
+		String theUIContent = uiContent.getContent(bvParameters);
+		System.out.println(theUIContent);
+		assertEquals(theUIContent.contains("<!--begin-bvseo-reviews-->"), true, "there should be BvRRSourceID in the content");
 	}
+	
 }

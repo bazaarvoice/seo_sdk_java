@@ -2,23 +2,29 @@ package com.bazaarvoice.seo.sdk;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.Proxy.Type;
+import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
 import java.net.URI;
-import java.net.UnknownHostException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.fluent.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +35,7 @@ import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
 import com.bazaarvoice.seo.sdk.util.BVConstant;
 import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
+import com.bazaarvoice.seo.sdk.util.BVThreadPool;
 import com.bazaarvoice.seo.sdk.util.BVUtilty;
 
 /**
@@ -102,43 +109,75 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
     }
 
     private String loadContentFromHttp(URI path) {
-        int connectionTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.CONNECT_TIMEOUT.getPropertyName()));
+    	int connectionTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.CONNECT_TIMEOUT.getPropertyName()));
         int socketTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.SOCKET_TIMEOUT.getPropertyName()));
-        int proxyPort = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.PROXY_PORT.getPropertyName()));
         String proxyHost = _bvConfiguration.getProperty(BVClientConfig.PROXY_HOST.getPropertyName());
-        String content = null;
+//        boolean isSSLEnabled = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.SSL_ENABLED.getPropertyName()));
         
+        String charsetConfig = _bvConfiguration.getProperty(BVClientConfig.CHARSET.getPropertyName());
+        Charset charset = null;
         try {
-        	
-        	Request httpRequest = Request.Get(path).connectTimeout(connectionTimeout).
-                    socketTimeout(socketTimeout); 
-        	
-        	if (!StringUtils.isBlank(proxyHost) && !"none".equalsIgnoreCase(proxyHost)) {
-                HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-                httpRequest.viaProxy(proxy);
-            } 
-           
-        	content = httpRequest.execute().returnContent().asString();
-        	
-        } catch (ClientProtocolException e) {
-            throw new BVSdkException("ERR0012");
-        } catch (IOException e) {
-            if (e instanceof UnknownHostException) {
-                throw new BVSdkException("ERR0019");
-            } else {
-                throw new BVSdkException(e.getMessage());
-            }
+        	charset = charsetConfig == null ? Charset.defaultCharset() : Charset.forName(charsetConfig);
+        } catch (Exception e) {
+        	_logger.error(BVMessageUtil.getMessage("ERR0024"));
+        	charset = Charset.defaultCharset();
         }
 
+        String content = null;
+        try {
+        	HttpURLConnection httpUrlConnection = null;
+            URL url = path.toURL();
+            
+            if (!StringUtils.isBlank(proxyHost) && !"none".equalsIgnoreCase(proxyHost)) {
+            	int proxyPort = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.PROXY_PORT.getPropertyName()));
+            	SocketAddress socketAddress = new InetSocketAddress(proxyHost, proxyPort);
+            	Proxy proxy = new Proxy(Type.HTTP, socketAddress);
+            	httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
+            } else {
+            	httpUrlConnection = (HttpURLConnection) url.openConnection();
+            }
+            
+            httpUrlConnection.setConnectTimeout(connectionTimeout);
+            httpUrlConnection.setReadTimeout(socketTimeout);
+            
+            InputStream is = httpUrlConnection.getInputStream();
+            
+	        byte[] byteArray = IOUtils.toByteArray(is);
+	        is.close();
+	        
+	        if (byteArray == null) {
+	        	throw new BVSdkException("ERR0025");
+	        }
+	        
+	        content = new String(byteArray, charset);
+//	        _logger.info("Debug info from bazaarvoice sdk : the contents are " + content);
+        } catch (MalformedURLException e) {
+//        	e.printStackTrace();
+        } catch (IOException e) {
+//        	e.printStackTrace();
+			if (e instanceof SocketTimeoutException) {
+				throw new BVSdkException(e.getMessage());
+			} else {
+				throw new BVSdkException("ERR0012");
+			}
+		} catch (BVSdkException bve) {
+			throw bve;
+		}
+        
+        boolean isValidContent = BVUtilty.validateBVContent(content);
+        if (!isValidContent) {
+        	throw new BVSdkException("ERR0025");
+        }
+        
         return content;
     }
-
+    
     private String loadContentFromFile(URI path) {
 
         String content = null;
         try {
         	File file = new File(path);
-            content = FileUtils.readFileToString(file, "UTF-8");
+            content = FileUtils.readFileToString(file, _bvConfiguration.getProperty(BVClientConfig.CHARSET.getPropertyName()));
         } catch (IOException e) {
             throw new BVSdkException("ERR0012");
         }
@@ -205,16 +244,16 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
         }
 
         long executionTimeout = Long.parseLong(_bvConfiguration.getProperty(BVClientConfig.EXECUTION_TIMEOUT.getPropertyName()));
-        ExecutorService executorService = Executors.newCachedThreadPool();
+//        ExecutorService executorService = Executors.newCachedThreadPool();
+        ExecutorService executorService = BVThreadPool.getExecutorService();
         Future<StringBuilder> future = executorService.submit(this);
 
         try {
             _uiContent = future.get(executionTimeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+//            e.printStackTrace();
         } catch (ExecutionException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             if (e.getCause() instanceof BVSdkException) {
                 throw new BVSdkException(e.getCause().getMessage());
             }

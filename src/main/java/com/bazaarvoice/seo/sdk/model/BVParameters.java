@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * Wrapper for holding the Bazaarvoice content specific query parameters.
+ * Model for holding the Bazaarvoice content specific query parameters.
  * @author Anandan Narayanaswamy
  *
  */

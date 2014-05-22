@@ -1,6 +1,6 @@
 
 <ul id="BVSEOSDK" style="display:none;">
-	<li id="vn">bvseo-${version}</li>
+	<li id="vn">bvseo-${project.version}</li>
 	<li id="en">bvseo-${sdk_enabled}</li>
 	<li id="sl">bvseo-j</li>
 	<li id="mt">bvseo-${methodType}</li>
@@ -8,6 +8,7 @@
 	<li id="ct">bvseo-${_bvParameters.contentType}</li>
 	<li id="st">bvseo-${_bvParameters.subjectType}</li>
 	<li id="am">bvseo-${accessMethod}</li>
+	<li id="bd">bvseo-bd${isBd}</li>
 #if (${message}) 
 	<li id="ms">bvseo-msg: ${message}</li>
 #end
@@ -24,5 +25,8 @@
 	<li id="subjectId">${_bvParameters.subjectId}</li>
 	<li id="contentType">${_bvParameters.contentType}</li>
 	<li id="subjectType">${_bvParameters.subjectType}</li>
+	#if (${url})
+<li id="contentURL">${url}</li>
+	#end
 </ul>
 #end

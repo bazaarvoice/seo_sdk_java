@@ -19,10 +19,12 @@ public final class BVConstant {
 	public static final String PRODUCTION_S3_HOSTNAME = "seo.bazaarvoice.com";
 	public static final String EXECUTION_TIMEOUT = "3000";
 	public static final String CRAWLER_AGENT_PATTERN = "msnbot|google|teoma|bingbot|yandexbot|yahoo";
+	public static final String BV_STRING_PATTERN = "BV";
 	public static final String CONNECT_TIMEOUT = "1000";
 	public static final String SOCKET_TIMEOUT = "1000";
 	public static final String STAGING = "false";
 	public static final String SEO_SDK_ENABLED = "true";
-        public static final String PROXY_HOST = "none";
-        public static final String PROXY_PORT = "0";
+    public static final String PROXY_HOST = "none";
+    public static final String PROXY_PORT = "0";
+    
 }

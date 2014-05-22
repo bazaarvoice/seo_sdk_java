@@ -1,5 +1,10 @@
 package com.bazaarvoice.seo.sdk.model;
 
+/**
+ * Content sub types enum support added for the purpose of stories and storiesgrid.
+ * @author Anandan Narayanaswamy
+ *
+ */
 public enum ContentSubType {
 	
     NONE (""),

@@ -115,13 +115,7 @@ public class BVManagedUIContent implements BVUIContent {
 			}
 			
 			int startIndex = uiContent.indexOf("<!--begin-reviews-->");
-			if (startIndex == -1) {
-				if ((!isBotDetection || bvUiContentService.showUserAgentSEOContent()) && 
-						bvUiContentService.getMessage().length() == 0 && bvUiContentService.isSdkEnabled()) {
-					String messageString = BVMessageUtil.getMessage("ERR0003");
-					message.append(messageString);
-				}
-			} else {
+			if (startIndex != -1) {
 				String endReviews = "<!--end-reviews-->";
 				int endIndex = uiContent.indexOf(endReviews) + endReviews.length();
 				uiContent.delete(startIndex, endIndex);
@@ -133,6 +127,12 @@ public class BVManagedUIContent implements BVUIContent {
 					uiContent.delete(startIndex, endIndex);	
 				}			
 			}
+			
+			startIndex = uiContent.indexOf("<!--begin-aggregate-rating-->");
+			if (startIndex == -1 && bvUiContentService.getMessage().length() == 0) {
+				message.append(BVMessageUtil.getMessage("ERR0003"));
+			}
+			
 			bvFooter.addMessage(bvUiContentService.getMessage().toString());
 		} else {
 			uiContent = new StringBuilder();
@@ -163,18 +163,18 @@ public class BVManagedUIContent implements BVUIContent {
 
 			int startIndex = uiContent.indexOf("<!--begin-aggregate-rating-->");
 
-			if (startIndex == -1) {
-				if ((!isBotDetection || bvUiContentService.showUserAgentSEOContent()) && 
-						bvUiContentService.getMessage().length() == 0 && bvUiContentService.isSdkEnabled()) {
-					String messageString = BVMessageUtil.getMessage("ERR0013");
-					message.append(messageString);
-				}
-			} else {
+			if (startIndex != -1) {
 				String endReviews = "<!--end-aggregate-rating-->";
 				int endIndex = uiContent.indexOf(endReviews)
 						+ endReviews.length();
 				uiContent.delete(startIndex, endIndex);
 			}
+			
+			startIndex = uiContent.indexOf("<!--begin-reviews-->");
+			if (startIndex == -1 && bvUiContentService.getMessage().length() == 0) {
+				message.append(BVMessageUtil.getMessage("ERR0013"));
+			}
+			
 			bvFooter.addMessage(bvUiContentService.getMessage().toString());
 			bvFooter.addMessage(message.toString());
 		} else {
@@ -225,6 +225,7 @@ public class BVManagedUIContent implements BVUIContent {
 			bvUiContentService = new BVUIContentServiceProvider(_bvConfiguration);
 			bvUiContentService.setBVParameters(this.bvParameters);
 			bvUiContentService.setBVSeoSdkUrl(bvSeoSdkUrl);
+			bvFooter.setBvSeoSdkUrl(bvSeoSdkUrl);
 		}
 		
 	}

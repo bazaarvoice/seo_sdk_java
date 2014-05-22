@@ -8,7 +8,10 @@ import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
+import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
+import com.bazaarvoice.seo.sdk.url.BVSeoSdkURLBuilder;
+import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
 
 /**
  * Test class for BVHTMLFooter.
@@ -46,7 +49,12 @@ public class BVHTMLFooterTest {
 		bvParameters.setPageURI("?bvreveal=debug");
 		bvParameters.setSubjectType(SubjectType.PRODUCT);
 		
+		BVSeoSdkUrl _bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParameters);
+		
 		BVFooter bvFooter = new BVHTMLFooter(bvConfiguration, bvParameters);
+		bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
+		
+		
 		String displayFooter = bvFooter.displayFooter("getContent");
 		System.out.println(displayFooter);
 		assertEquals(displayFooter.contains("<li id=\"mt\">bvseo-LOCAL</li>"), true, "the content string should match.");
@@ -55,4 +63,54 @@ public class BVHTMLFooterTest {
 		assertEquals(displayFooter.contains("<li id=loadSEOFilesLocally>true</li>"), true, "the content string should match.");
 	}
 	
+	/**
+	 * Test case to test display footer method for reveal=debug along with URL which was a request.
+	 * Rules : 
+	 * display urls only when HTTP method is invoked and not for files.
+	 */
+	@Test
+	public void testDisplayFooter_URL_debug() {
+		BVConfiguration bvConfiguration = new BVSdkConfiguration();
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setPageURI("?bvreveal=debug");
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setContentType(ContentType.REVIEWS);
+		
+		BVSeoSdkUrl _bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParameters);
+		
+		BVFooter bvFooter = new BVHTMLFooter(bvConfiguration, bvParameters);
+		bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
+		
+		
+		String displayFooter = bvFooter.displayFooter("getContent");
+		System.out.println(displayFooter);
+		assertEquals(displayFooter.contains("<li id=\"mt\">bvseo-CLOUD</li>"), true, "the content string should match.");
+		assertEquals(displayFooter.contains("<li id=\"st\">bvseo-PRODUCT</li>"), true, "the content string should match.");
+		assertEquals(displayFooter.contains("<li id=\"contentURL\">http://seo.bazaarvoice.com"), true, "the content string should match.");
+		
+		/*
+		 * When loading from files it should not display URL.
+		 */
+		bvConfiguration = new BVSdkConfiguration();
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "true");
+		
+		bvParameters = new BVParameters();
+		bvParameters.setPageURI("?bvreveal=debug");
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setContentType(ContentType.REVIEWS);
+		
+		_bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParameters);
+		
+		bvFooter = new BVHTMLFooter(bvConfiguration, bvParameters);
+		bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
+		
+		
+		displayFooter = bvFooter.displayFooter("getContent");
+		System.out.println(displayFooter);
+		assertEquals(displayFooter.contains("<li id=\"mt\">bvseo-LOCAL</li>"), true, "the content string should match.");
+		assertEquals(displayFooter.contains("<li id=\"st\">bvseo-PRODUCT</li>"), true, "the content string should match.");
+		assertEquals(displayFooter.contains("<li id=\"contentURL\">http://seo.bazaarvoice.com"), false, "there should not be any url pattern.");
+	}
 }

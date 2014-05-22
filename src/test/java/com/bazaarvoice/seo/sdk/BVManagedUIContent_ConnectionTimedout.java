@@ -41,7 +41,7 @@ public class BVManagedUIContent_ConnectionTimedout {
 		BVUIContent bvUIContent = new BVManagedUIContent(bvConfiguration);
 		String theContent = bvUIContent.getContent(_bvParam);
 		System.out.println(theContent);
-		Assert.assertEquals(theContent.contains("Connect to google.com:81 timed out"), true, "There should timed out message.");
+		Assert.assertEquals(theContent.contains("bvseo-msg: connect timed out"), true, "There should timed out message.");
 		
 	}
 	
@@ -70,7 +70,7 @@ public class BVManagedUIContent_ConnectionTimedout {
 			propertyMap.put(BVClientConfig.SEO_SDK_ENABLED.getPropertyName(), "true");
 			propertyMap.put(BVClientConfig.SOCKET_TIMEOUT.getPropertyName(), "1000");
 			propertyMap.put(BVClientConfig.STAGING.getPropertyName(), "true");
-			propertyMap.put(BVClientConfig.EXECUTION_TIMEOUT.getPropertyName(), "3000");
+			propertyMap.put(BVClientConfig.EXECUTION_TIMEOUT.getPropertyName(), "1000");
 		}
 		
 		public BVConfiguration addProperty(BVClientConfig bvConfig,

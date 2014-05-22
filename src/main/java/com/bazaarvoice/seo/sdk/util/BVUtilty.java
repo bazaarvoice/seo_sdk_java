@@ -26,6 +26,8 @@ import org.apache.http.client.utils.URLEncodedUtils;
  */
 public final class BVUtilty {
 	
+	private static Pattern BV_PATTERN = null;
+	
 	private BVUtilty() {
 		
 	}
@@ -128,4 +130,20 @@ public final class BVUtilty {
             return queryUrl;
         }
     }
+	
+	/**
+	 * Validates if the content has a valid bv content.
+	 * This is used to validate if the response is not corrupted.
+	 * @param content
+	 * @return
+	 */
+	public static boolean validateBVContent(String content) {
+		if (BV_PATTERN == null) {
+			BV_PATTERN = Pattern.compile(BVConstant.BV_STRING_PATTERN, Pattern.CASE_INSENSITIVE);
+		}
+		
+		Matcher m = BV_PATTERN.matcher(content);
+        return m.find();
+	}
+	
 }

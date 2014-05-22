@@ -3,6 +3,7 @@ package com.bazaarvoice.seo.sdk;
 import java.net.URL;
 
 import static org.testng.Assert.*;
+
 import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
@@ -11,6 +12,7 @@ import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
+import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
 
 /**
  * This test case tests the basic bazaarvoice managed UI content.
@@ -80,7 +82,7 @@ public class BVManagedUIContent_SinglePageTest {
 	public void testSEOContentFromHTTP_SinglePagePRR() {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3");
 		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
 		
 		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
@@ -89,7 +91,7 @@ public class BVManagedUIContent_SinglePageTest {
 		bvParameters.setUserAgent("google");
 		bvParameters.setContentType(ContentType.REVIEWS);
 		bvParameters.setSubjectType(SubjectType.PRODUCT);
-		bvParameters.setSubjectId("3000001");
+		bvParameters.setSubjectId("5000002");
 		
 		String theUIContent = uiContent.getContent(bvParameters);
 		System.out.println(theUIContent);
@@ -104,16 +106,44 @@ public class BVManagedUIContent_SinglePageTest {
 	public void testSEOContentFromHTTP_SinglePageC2013() {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3");
 		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
 		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
 		
 		BVParameters bvParameters = new BVParameters();
 		bvParameters.setUserAgent("google");
-		bvParameters.setPageURI("/someproduct.jsp?bvpage=ctre/id3000001/stp");
+		bvParameters.setPageURI("/someproduct.jsp?bvpage=ctre/id5000002/stp");
 		
 		String theUIContent = uiContent.getContent(bvParameters);
 		assertEquals(theUIContent.contains("BVRRSourceID"), true, "there should be BvRRSourceID in the content");
+	}
+	
+	/**
+	 * Test case for testing seo content retrieval from http way + returns a blank page. 
+	 */
+	@Test
+	public void testSEOContentFromHTTP_BlankPageTest() {
+		BVConfiguration bvConfig = new BVSdkConfiguration();
+		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setUserAgent("google");
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setContentType(ContentType.REVIEWS);
+		bvParameters.setSubjectId("5000002_NO_BV");
+		
+		String theUIContent = uiContent.getContent(bvParameters);
+//		System.out.println(theUIContent);
+		assertEquals(!theUIContent.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
+				true, "there should be BvRRSourceID in the content");
+		assertEquals(!theUIContent.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
+				"there should not be reviews section in the content");
+		String expectedMessage = BVMessageUtil.getMessage("ERR0025");
+		assertEquals(theUIContent.contains(expectedMessage), 
+				true, "Message does not contain expected message please test");
 	}
 	
 	/**

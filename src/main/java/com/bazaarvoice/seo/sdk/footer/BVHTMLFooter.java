@@ -19,6 +19,7 @@ import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVCoreConfig;
 import com.bazaarvoice.seo.sdk.exception.BVSdkException;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
+import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
 import com.bazaarvoice.seo.sdk.util.BVConstant;
 
 /**
@@ -39,6 +40,7 @@ public class BVHTMLFooter implements BVFooter {
 	
 	private BVConfiguration _bvConfiguration;
 	private BVParameters _bvParameters;
+	private BVSeoSdkUrl _bvSeoSdkUrl;
 	
 	private VelocityEngine _velocityEngine;
 
@@ -96,6 +98,7 @@ public class BVHTMLFooter implements BVFooter {
 		context.put("methodType", methodType);
 		context.put("executionTime", executionTime);
 		context.put("accessMethod", accessMethod);
+		context.put("isBd", _bvConfiguration.getProperty(BVClientConfig.BOT_DETECTION.getPropertyName()));
 		
 		String message = null;
 		if (messageList != null && !messageList.isEmpty()) {
@@ -105,6 +108,12 @@ public class BVHTMLFooter implements BVFooter {
 			}
 		}
 		context.put("message", message);
+		
+		String url = null;
+		if (!Boolean.valueOf(_bvConfiguration.getProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY.getPropertyName())) && _bvSeoSdkUrl != null) {
+			url = _bvSeoSdkUrl.seoContentUri().toString();
+		}
+		context.put("url", url);
 		
 		StringWriter writer = new StringWriter();
 		template.merge(context, writer);
@@ -121,4 +130,9 @@ public class BVHTMLFooter implements BVFooter {
 	public void setExecutionTime(long executionTime) {
 		this.executionTime = executionTime;
 	}
+
+	public void setBvSeoSdkUrl(BVSeoSdkUrl _bvSeoSdkUrl) {
+		this._bvSeoSdkUrl = _bvSeoSdkUrl;
+	}
+	
 }
