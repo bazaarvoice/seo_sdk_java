@@ -7,8 +7,8 @@
 	<li id="et">bvseo-${executionTime}ms</li>
 	<li id="ct">bvseo-${_bvParameters.contentType}</li>
 	<li id="st">bvseo-${_bvParameters.subjectType}</li>
+	<li id="pn">bvseo-${_bvParameters.pageNumber}</li>
 	<li id="am">bvseo-${accessMethod}</li>
-	<li id="bd">bvseo-bd${isBd}</li>
 #if (${message}) 
 	<li id="ms">bvseo-msg: ${message}</li>
 #end

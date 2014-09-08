@@ -65,7 +65,6 @@ public class BVManagedUIContent4_Test {
 	public void init() {
 		BVConfiguration _bvConfiguration = new BVSdkConfiguration();
 		_bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, DISPLAY_CODE);
-		_bvConfiguration.addProperty(BVClientConfig.BOT_DETECTION, "true");
 		_bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, CLOUD_KEY);
 		_bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
 		_bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
@@ -159,8 +158,9 @@ public class BVManagedUIContent4_Test {
 	public void testSEOContentFrom_Using_HTTPS() throws NoSuchAlgorithmException, KeyManagementException, CertificateException, FileNotFoundException, IOException, KeyStoreException, UnrecoverableKeyException, NoSuchProviderException {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.SSL_ENABLED, "true");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "austin-reed-55918a9149f80897ca6b67f56c812c61");
-		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_GB");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
 		bvConfig.addProperty(BVClientConfig.EXECUTION_TIMEOUT, "60000");
 		
 		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
@@ -169,7 +169,7 @@ public class BVManagedUIContent4_Test {
 		bvParameters.setUserAgent("google");
 		bvParameters.setContentType(ContentType.REVIEWS);
 		bvParameters.setSubjectType(SubjectType.PRODUCT);
-		bvParameters.setSubjectId("0101708515");
+		bvParameters.setSubjectId("data-gen-5zkafmln4wymhcfbp5u6hmv5q");
 		bvParameters.setPageURI("http://localhost:8080/sample/xyz.jsp");
 		
 		String theUIContent = uiContent.getContent(bvParameters);

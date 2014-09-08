@@ -23,6 +23,8 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 
+import org.junit.Ignore;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -55,7 +57,6 @@ public class BVManagedUIContent2_Test {
 	public void init() {
 		BVConfiguration _bvConfiguration = new BVSdkConfiguration();
 		_bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, DISPLAY_CODE);
-		_bvConfiguration.addProperty(BVClientConfig.BOT_DETECTION, "true");
 		_bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, CLOUD_KEY);
 		_bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
 		_bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
@@ -65,27 +66,139 @@ public class BVManagedUIContent2_Test {
 	}
 	
 	/**
-	 * Test case to get interactive archive page review content.
+	 * Test case to get interactive archive page.
+	 * Page number testcase.
 	 */
 	@Test
-	public void test_InteractivePage_Review() {
+	public void test_PageNumber_PRR() {
+		BVConfiguration bvConfiguration = new BVSdkConfiguration();
+		bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
+		bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
+		bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
+		bvConfiguration.addProperty(BVClientConfig.STAGING, "true");
+		
+		BVUIContent bvUIContent = new BVManagedUIContent(bvConfiguration);
+		
 		BVParameters bvParameters = new BVParameters();
 		bvParameters.setUserAgent("google");
 		bvParameters.setSubjectType(SubjectType.PRODUCT);
-		bvParameters.setSubjectId("review1");
+		bvParameters.setSubjectId("data-gen-5zkafmln4wymhcfbp5u6hmv5q");
+		bvParameters.setPageNumber("2");
 		bvParameters.setContentType(ContentType.REVIEWS);
 		bvParameters.setBaseURI("http://www.example.com/store/products/reviews");
-		bvParameters.setPageURI("http://www.example.com/store/products/data-gen-696yl2lg1kurmqxn88fqif5y2/?utm_campaign=bazaarvoice&utm_medium=SearchVoice&utm_source=RatingsAndReviews&utm_content=Default&bvrrp=12325/reviews/product/2/product1.htm");
-		String erroMessage = null;
-		String content = null;
-		try {
-			content = _bvUIContent.getContent(bvParameters);
-		} catch (BVSdkException e) {
-			erroMessage = e.getMessage();
-		}
-		assertNull(erroMessage, "There should not be any errorMessage");
-		assertNotNull(content, "There should be content to proceed further assertion!!");
-		assertFalse(content.contains("HTTP 403 Forbidden"), "There should be valid content");
+		bvParameters.setPageURI("http://www.example.com/store/products/data-gen-696yl2lg1kurmqxn88fqif5y2/?utm_campaign=bazaarvoice&utm_medium=SearchVoice&utm_source=RatingsAndReviews&utm_content=Default&bvrrp=12325/reviews/product/3/product1.htm&bvreveal=debug");
+		
+		String content = bvUIContent.getContent(bvParameters);
+		
+		Assert.assertTrue(content.contains("http://seo-stg.bazaarvoice.com/agileville-78B2EF7DE83644CAB5F8C72F2D8C8491/"
+				+ "Main_Site-en_US/reviews/product/2/data-gen-5zkafmln4wymhcfbp5u6hmv5q.htm"), "URL should be valid url");
+		Assert.assertTrue(!content.contains("The resource to the URL or file is currently unavailable"), 
+				"resource not found or unavailable message should not be there");
+		
+		System.out.println(content);
+	}
+	
+	/**
+	 * Test case to get interactive archive page.
+	 * Page number testcase. This is developer friendly test case.
+	 * Use it when testing and finding impact of the changes.
+	 */
+	@Ignore
+	public void test_PageNumber_PRR_LocalFiles() {
+		BVConfiguration bvConfiguration = new BVSdkConfiguration();
+		bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, "myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "true");
+		bvConfiguration.addProperty(BVClientConfig.LOCAL_SEO_FILE_ROOT, "/Users/anandan.narayanaswam/projects/"
+				+ "git_projects/SEO-SDK_Dev/seo_sdk_java/src/test/resources/seo_local_files/myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
+		bvConfiguration.addProperty(BVClientConfig.STAGING, "true");
+		
+		BVUIContent bvUIContent = new BVManagedUIContent(bvConfiguration);
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setUserAgent("google");
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setSubjectId("3000002");
+		bvParameters.setPageNumber("1");
+		bvParameters.setContentType(ContentType.REVIEWS);
+		bvParameters.setBaseURI("http://www.example.com/store/products/reviews");
+		bvParameters.setPageURI("http://www.example.com/store/products/data-gen-696yl2lg1kurmqxn88fqif5y2/?utm_campaign=bazaarvoice&utm_medium=SearchVoice&utm_source=RatingsAndReviews&utm_content=Default&bvrrp=12325/reviews/product/3/3000002.htm&bvreveal=debug");
+		
+		String content = bvUIContent.getContent(bvParameters);
+		
+		Assert.assertTrue(content.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\""), "There should be atleat one review populated.");
+		Assert.assertTrue(!content.contains("The resource to the URL or file is currently unavailable"), 
+				"resource not found or unavailable message should not be there");
+		
+		System.out.println(content);
+	}
+	
+	/**
+	 * Test case to get interactive archive page.
+	 * Page number testcase. This is developer friendly test case.
+	 * Use it when testing and finding impact of the changes.
+	 */
+	@Ignore
+	public void test_PageNumber_CONV_LocalFiles() {
+		BVConfiguration bvConfiguration = new BVSdkConfiguration();
+		bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, "myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "true");
+		bvConfiguration.addProperty(BVClientConfig.LOCAL_SEO_FILE_ROOT, "/Users/anandan.narayanaswam/projects/"
+				+ "git_projects/SEO-SDK_Dev/seo_sdk_java/src/test/resources/seo_local_files/myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
+		bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
+		bvConfiguration.addProperty(BVClientConfig.STAGING, "true");
+		
+		BVUIContent bvUIContent = new BVManagedUIContent(bvConfiguration);
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setUserAgent("google");
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setSubjectId("3000002");
+		bvParameters.setPageNumber("1");
+		bvParameters.setContentType(ContentType.REVIEWS);
+		bvParameters.setBaseURI("http://www.example.com/store/products/reviews");
+		bvParameters.setPageURI("http://www.example.com/store/products/data-gen-696yl2lg1kurmqxn88fqif5y2/?utm_campaign=bazaarvoice&utm_medium=SearchVoice&utm_source=RatingsAndReviews&utm_content=Default&bvpage=pg3/ctre/stp/id3000002&bvreveal=debug");
+		
+		String content = bvUIContent.getContent(bvParameters);
+		
+		Assert.assertTrue(content.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\""), "There should be atleat one review populated.");
+		Assert.assertTrue(!content.contains("The resource to the URL or file is currently unavailable"), 
+				"resource not found or unavailable message should not be there");
+		
+	}
+	
+	/**
+	 * Test case to get interactive archive page.
+	 * Page number testcase.
+	 */
+	@Test
+	public void test_PageNumber_C2013() {
+		BVConfiguration bvConfiguration = new BVSdkConfiguration();
+		bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
+		bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
+		bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
+		bvConfiguration.addProperty(BVClientConfig.STAGING, "true");
+		
+		BVUIContent bvUIContent = new BVManagedUIContent(bvConfiguration);
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setUserAgent("google");
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setPageNumber("2");
+		bvParameters.setBaseURI("http://www.example.com/store/products/reviews");
+		bvParameters.setPageURI("http://www.example.com/store/products/data-gen-696yl2lg1kurmqxn88fqif5y2/?utm_campaign=bazaarvoice&utm_medium=SearchVoice&utm_source=RatingsAndReviews&utm_content=Default&bvpage=pg3/ctre/stp/iddata-gen-5zkafmln4wymhcfbp5u6hmv5q&bvreveal=debug");
+		
+		String content = bvUIContent.getContent(bvParameters);
+		
+		Assert.assertTrue(content.contains("http://seo-stg.bazaarvoice.com/agileville-78B2EF7DE83644CAB5F8C72F2D8C8491/"
+				+ "Main_Site-en_US/reviews/product/2/data-gen-5zkafmln4wymhcfbp5u6hmv5q.htm"), "URL should be valid url");
+		Assert.assertTrue(!content.contains("The resource to the URL or file is currently unavailable"), 
+				"resource not found or unavailable message should not be there");
+		
 		System.out.println(content);
 	}
 	

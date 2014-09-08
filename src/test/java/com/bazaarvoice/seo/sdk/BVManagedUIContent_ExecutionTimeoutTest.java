@@ -38,13 +38,89 @@ import com.bazaarvoice.seo.sdk.model.SubjectType;
  */
 public class BVManagedUIContent_ExecutionTimeoutTest {
 
+	/**
+	 * Test case for user execution timeout implementation.
+	 */
 	@Test
 	public void testExecutionTimeout() {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
-		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
 		bvConfig.addProperty(BVClientConfig.EXECUTION_TIMEOUT, "2");
+		
+		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setUserAgent("NORMAL_USER OR Browser userAgent");
+		bvParameters.setContentType(ContentType.REVIEWS);
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setSubjectId("data-gen-7k694zcnd6gbnpv2v4e6mmd22");
+		
+		String theUIContent = uiContent.getContent(bvParameters);
+		assertEquals(theUIContent.contains("getContent"), true, "there should be getContent word/message");
+		assertEquals(theUIContent.contains("bvseo-msg: Execution timed out, exceeded"), true, "there should be execution timeout message");
+		
+		uiContent = new BVManagedUIContent(bvConfig);
+		theUIContent = uiContent.getReviews(bvParameters);
+		assertEquals(theUIContent.contains("getReviews"), true, "there should be getReviews word/message");
+		assertEquals(theUIContent.contains("bvseo-msg: Execution timed out, exceeded"), true, "there should be execution timeout message");
+		
+		uiContent = new BVManagedUIContent(bvConfig);
+		theUIContent = uiContent.getAggregateRating(bvParameters);
+		System.out.println(theUIContent);
+		assertEquals(theUIContent.contains("getAggregateRating"), true, "there should be getAggregateRating word/message");
+		assertEquals(theUIContent.contains("bvseo-msg: Execution timed out, exceeded"), true, "there should be execution timeout message");
+	}
+	
+	/**
+	 * Test case for user execution timeout when set to 0
+	 */
+	@Test
+	public void testExecutionTimeout_ZeroTest() {
+		BVConfiguration bvConfig = new BVSdkConfiguration();
+		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
+		bvConfig.addProperty(BVClientConfig.EXECUTION_TIMEOUT, "0");
+		
+		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
+		
+		BVParameters bvParameters = new BVParameters();
+		bvParameters.setUserAgent("NORMAL_USER OR Browser userAgent");
+		bvParameters.setContentType(ContentType.REVIEWS);
+		bvParameters.setSubjectType(SubjectType.PRODUCT);
+		bvParameters.setSubjectId("data-gen-7k694zcnd6gbnpv2v4e6mmd22");
+		
+		String theUIContent = uiContent.getContent(bvParameters);
+		assertEquals(theUIContent.contains("getContent"), true, "there should be getContent word/message");
+		assertEquals(theUIContent.contains("bvseo-msg: EXECUTION_TIMEOUT is set to 0 ms; JavaScript-only Display."), true, "there should be execution timeout message");
+		
+		uiContent = new BVManagedUIContent(bvConfig);
+		theUIContent = uiContent.getReviews(bvParameters);
+		assertEquals(theUIContent.contains("getReviews"), true, "there should be getReviews word/message");
+		assertEquals(theUIContent.contains("bvseo-msg: EXECUTION_TIMEOUT is set to 0 ms; JavaScript-only Display."), true, "there should be execution timeout message");
+		
+		uiContent = new BVManagedUIContent(bvConfig);
+		theUIContent = uiContent.getAggregateRating(bvParameters);
+		System.out.println(theUIContent);
+		assertEquals(theUIContent.contains("getAggregateRating"), true, "there should be getAggregateRating word/message");
+		assertEquals(theUIContent.contains("bvseo-msg: EXECUTION_TIMEOUT is set to 0 ms; JavaScript-only Display."), true, "there should be execution timeout message");
+	}
+	
+	/**
+	 * Test case for bot execution timeout implementation.
+	 */
+	@Test
+	public void testExecutionTimeoutBot() {
+		BVConfiguration bvConfig = new BVSdkConfiguration();
+		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
+		bvConfig.addProperty(BVClientConfig.EXECUTION_TIMEOUT_BOT, "2");
 		
 		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
 		
@@ -52,11 +128,22 @@ public class BVManagedUIContent_ExecutionTimeoutTest {
 		bvParameters.setUserAgent("google");
 		bvParameters.setContentType(ContentType.REVIEWS);
 		bvParameters.setSubjectType(SubjectType.PRODUCT);
-		bvParameters.setSubjectId("3000001");
+		bvParameters.setSubjectId("data-gen-7k694zcnd6gbnpv2v4e6mmd22");
 		
 		String theUIContent = uiContent.getContent(bvParameters);
+		assertEquals(theUIContent.contains("getContent"), true, "there should be getContent word/message");
+		
+		uiContent = new BVManagedUIContent(bvConfig);
+		theUIContent = uiContent.getReviews(bvParameters);
 		System.out.println(theUIContent);
-		assertEquals(theUIContent.contains("bvseo-msg: Execution timed out, exceeded"), true, "there should be execution timeout message");
+//		assertEquals(theUIContent.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\""), true, "there should be Reviews");
+		assertEquals(theUIContent.contains("bvseo-msg: EXECUTION_TIMEOUT_BOT is less than the minimum value allowed. Minimum value of 100ms used.;"), true, "there should be execution timeout message");
+		
+		uiContent = new BVManagedUIContent(bvConfig);
+		
+		theUIContent = uiContent.getAggregateRating(bvParameters);
+//		assertEquals(theUIContent.contains("itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\""), true, "there should be AggregateRating");
+		assertEquals(theUIContent.contains("bvseo-msg: EXECUTION_TIMEOUT_BOT is less than the minimum value allowed. Minimum value of 100ms used.;"), true, "there should be execution timeout message");
 	}
 	
 	/**

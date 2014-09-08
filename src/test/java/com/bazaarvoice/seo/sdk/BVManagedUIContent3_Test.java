@@ -55,7 +55,6 @@ public class BVManagedUIContent3_Test {
 	public void init() {
 		BVConfiguration _bvConfiguration = new BVSdkConfiguration();
 		_bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, DISPLAY_CODE);
-		_bvConfiguration.addProperty(BVClientConfig.BOT_DETECTION, "true");
 		_bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, CLOUD_KEY);
 		_bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
 		_bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");

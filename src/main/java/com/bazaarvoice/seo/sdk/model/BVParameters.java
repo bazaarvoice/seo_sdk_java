@@ -33,6 +33,7 @@ public class BVParameters {
 	private String baseURI;
 	private String pageURI;
 	private String subjectId;
+	private String pageNumber;
 	private ContentType contentType;
 	private SubjectType subjectType;
 	private ContentSubType contentSubType;
@@ -63,6 +64,13 @@ public class BVParameters {
 	}
 	public void setSubjectId(String subjectId) {
 		this.subjectId = subjectId;
+	}
+	
+	public String getPageNumber() {
+		return pageNumber;
+	}
+	public void setPageNumber(String pageNumber) {
+		this.pageNumber = pageNumber;
 	}
 	
 	public ContentType getContentType() {

@@ -13,7 +13,7 @@
 BVConfiguration _bvConfig = new BVSdkConfiguration();
 		_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true"); //Use this as a kill switch.  The true/false string for this is often passed in from a common utility class.
 		_bvConfig.addProperty(BVClientConfig.EXECUTION_TIMEOUT, "1500"); //Adjust as desired.  Values below 1000 are not recommended.
-		_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "false"); //Set to true if user agent/bot detection is desired.
+		_bvConfig.addProperty(BVClientConfig.EXECUTION_TIMEOUT_BOT, "2000"); //Adjust this as required for bot functionality.
 		//_bvConfig.addProperty(BVClientConfig.CRAWLER_AGENT_PATTERN, "msnbot|google|teoma|bingbot|yandexbot|yahoo"); //Use this to override the default list of search engine bot user agents
 		
 		//the following 3 lines must be updated to not use sample configurations.

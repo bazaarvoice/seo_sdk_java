@@ -20,8 +20,8 @@
 package com.bazaarvoice.seo.sdk;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
+import org.junit.Ignore;
 import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
@@ -46,8 +46,9 @@ public class BVManagedUIContentAggregateReviewTest {
 	public void testSEOContentFromHTTP_SinglePagePRR_AggregateRating() {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3");
-		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
 		
 		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
 		
@@ -55,11 +56,11 @@ public class BVManagedUIContentAggregateReviewTest {
 		bvParameters.setUserAgent("google");
 		bvParameters.setContentType(ContentType.REVIEWS);
 		bvParameters.setSubjectType(SubjectType.PRODUCT);
-		bvParameters.setSubjectId("2000001");
+		bvParameters.setSubjectId("data-gen-5zkafmln4wymhcfbp5u6hmv5q");
 		
 		String theUIContent = uiContent.getAggregateRating(bvParameters);
 		System.out.println(theUIContent);
-		assertEquals(theUIContent.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
+		assertEquals(theUIContent.contains("itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
 				true, "there should be BvRRSourceID in the content");
 		assertEquals(!theUIContent.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
 				"there should not be reviews section in the content");
@@ -72,8 +73,9 @@ public class BVManagedUIContentAggregateReviewTest {
 	public void testSEOContentFromHTTP_SinglePagePRR_Reviews() {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3");
-		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
 		
 		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
 		
@@ -81,74 +83,20 @@ public class BVManagedUIContentAggregateReviewTest {
 		bvParameters.setUserAgent("google");
 		bvParameters.setContentType(ContentType.REVIEWS);
 		bvParameters.setSubjectType(SubjectType.PRODUCT);
-		bvParameters.setSubjectId("3000002");
+		bvParameters.setSubjectId("data-gen-5zkafmln4wymhcfbp5u6hmv5q");
 		
 		String theUIContent = uiContent.getReviews(bvParameters);
 		System.out.println(theUIContent);
-		assertEquals(theUIContent.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
-				"there should not be reviews section in the content");
-		assertEquals(!theUIContent.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
-				true, "there should be BvRRSourceID in the content");
-		assertTrue(theUIContent.contains("<div id=\"BVRRSourceID\"> <div >"), 
-			"schema.org for product should not be present");
+		assertEquals(!theUIContent.contains("<div id=\"bvseo-aggregateRatingSection\" itemprop=\"aggregateRating\" "
+				+ "itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
+				true, "there should not be aggregateRating section");
+		assertEquals(theUIContent.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\""), true, 
+				"there should be reviews section in the content");
 		
 	}
 	
 	/**
-	 * Bot detection is enabled and user agent is not a search crawler pattern
-	 */
-	@Test
-	public void testSEOContent_SinglePageHTTP_aggregateRating_BotDetectionEnabled() {
-		//Establish a new BVConfiguration.  Properties within this configuration are typically set in bvconfig.properties.
-		//addProperty can be used to override configurations set in bvconfig.properties.
-		BVConfiguration _bvConfig = new BVSdkConfiguration();
-				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
-				
-				//this SDK supports retrieval of SEO contents from the cloud or local file system
-				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
-				//if LOAD_SEO_FILES_LOCALLY = false, configure CLOUD_KEY and STAGING
-				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
-		"adobe-55d020998d7b4776fb0f9df49278083c"); // get this value from BV
-				_bvConfig.addProperty(BVClientConfig.STAGING, "false");  // set to true for staging environment data
-				
-				//insert root folder with the value provided.
-				//if multiple deployment zones/display codes are used for this implementation, use conditional logic to set the appropriate BV_ROOT_FOLDER
-				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "8814"); //get this value from BV				
-
-		//Create BVParameters for each injection.  If the page contains multiple injections, for example //reviews and questions, set unique parameters for each injection.
-		BVParameters _bvParam = new BVParameters();
-				_bvParam.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/536.29.13 (KHTML, like Gecko) Version/6.0.4 Safari/536.29.13");
-				_bvParam.setBaseURI("/thispage.htm"); // this value is used to build pagination links
-				_bvParam.setPageURI("http://localhost:8080/abcd" + "?" + "notSure=1&letSee=2"); //this value is used to needed BV URL parameters
-				_bvParam.setContentType(ContentType.REVIEWS);
-				_bvParam.setSubjectType(SubjectType.PRODUCT);
-				_bvParam.setSubjectId("PR6");
-
-		BVUIContent _bvOutput = new BVManagedUIContent(_bvConfig);
-				
-
-		String sBvOutputSummary = _bvOutput.getAggregateRating(_bvParam);
-		System.out.println(sBvOutputSummary);
-		assertEquals(!sBvOutputSummary.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
-				true, "there should be BvRRSourceID in the content");
-		assertEquals(!sBvOutputSummary.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
-				"there should not be reviews section in the content");
-		assertEquals(sBvOutputSummary.contains("JavaScript-only Display"), 
-				true, "There should be JavaScript display element");
-		
-		String sBvOutputReviews = _bvOutput.getReviews(_bvParam);
-		assertEquals(!sBvOutputReviews.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
-				"there should not be reviews section in the content");
-		assertEquals(!sBvOutputReviews.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
-				true, "there should be BvRRSourceID in the content");
-		assertEquals(sBvOutputReviews.contains("JavaScript-only Display"), 
-				true, "There should be JavaScript display element");
-
-	}
-	
-	/**
-	 * Bot detection is enabled and user agent is google with call to aggregateRating and Review
+	 * User agent is google with call to aggregateRating and Review
 	 * with same bvparam.
 	 */
 	@Test
@@ -157,7 +105,6 @@ public class BVManagedUIContentAggregateReviewTest {
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
@@ -199,25 +146,21 @@ public class BVManagedUIContentAggregateReviewTest {
 	
 	/**
 	 * Simulating getReviews ERR0013.
+	 * Developer friendly test case. Agileville needs a page without reviews.
+	 * Punch in a content page without reviews that can be tested with this test case.
 	 */
-	@Test
+	@Ignore
 	public void testSEOContent_SinglePageHTTP_getReviews_ERR0013() {
 		//Establish a new BVConfiguration.  Properties within this configuration are typically set in bvconfig.properties.
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
-				//if LOAD_SEO_FILES_LOCALLY = false, configure CLOUD_KEY and STAGING
-				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
-		"seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3"); // get this value from BV
-				_bvConfig.addProperty(BVClientConfig.STAGING, "false");  // set to true for staging environment data
-				
-				//insert root folder with the value provided.
-				//if multiple deployment zones/display codes are used for this implementation, use conditional logic to set the appropriate BV_ROOT_FOLDER
-				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob"); //get this value from BV				
+				_bvConfig.addProperty(BVClientConfig.STAGING, "true");
+				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");			
 
 		//Create BVParameters for each injection.  If the page contains multiple injections, for example //reviews and questions, set unique parameters for each injection.
 		BVParameters _bvParam = new BVParameters();
@@ -246,25 +189,21 @@ public class BVManagedUIContentAggregateReviewTest {
 	
 	/**
 	 * Simulating getReviews blank page test.
+	 * Developer friendly test case
 	 */
-	@Test
+	@Ignore
 	public void testSEOContent_SinglePageHTTP_getReviews_Blank_page_test() {
 		//Establish a new BVConfiguration.  Properties within this configuration are typically set in bvconfig.properties.
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
 				//if LOAD_SEO_FILES_LOCALLY = false, configure CLOUD_KEY and STAGING
-				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
-		"seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3"); // get this value from BV
-				_bvConfig.addProperty(BVClientConfig.STAGING, "false");  // set to true for staging environment data
-				
-				//insert root folder with the value provided.
-				//if multiple deployment zones/display codes are used for this implementation, use conditional logic to set the appropriate BV_ROOT_FOLDER
-				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob"); //get this value from BV				
+				_bvConfig.addProperty(BVClientConfig.STAGING, "true");
+				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");			
 
 		//Create BVParameters for each injection.  If the page contains multiple injections, for example //reviews and questions, set unique parameters for each injection.
 		BVParameters _bvParam = new BVParameters();
@@ -293,25 +232,22 @@ public class BVManagedUIContentAggregateReviewTest {
 	
 	/**
 	 * Bot detection is disabled and user agent is google but aggretate rating is not present for this client.
+	 * aggregate rating is populated for AgileVille hence punch in a content page without aggregate rating and test
+	 * Developer friendly test case.
 	 */
-	@Test
+	@Ignore
 	public void testSEOContent_SinglePageHTTP_aggregateRating_IfNotPresent() {
 		//Establish a new BVConfiguration.  Properties within this configuration are typically set in bvconfig.properties.
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "false"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
 				//if LOAD_SEO_FILES_LOCALLY = false, configure CLOUD_KEY and STAGING
-				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
-		"seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3"); // get this value from BV
-				_bvConfig.addProperty(BVClientConfig.STAGING, "false");  // set to true for staging environment data
-				
-				//insert root folder with the value provided.
-				//if multiple deployment zones/display codes are used for this implementation, use conditional logic to set the appropriate BV_ROOT_FOLDER
-				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob"); //get this value from BV				
+				_bvConfig.addProperty(BVClientConfig.STAGING, "true");
+				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");		
 
 		//Create BVParameters for each injection.  If the page contains multiple injections, for example //reviews and questions, set unique parameters for each injection.
 		BVParameters _bvParam = new BVParameters();
@@ -346,18 +282,17 @@ public class BVManagedUIContentAggregateReviewTest {
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
-				
+				_bvConfig.addProperty(BVClientConfig.STAGING, "true");
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
 				//if LOAD_SEO_FILES_LOCALLY = false, configure CLOUD_KEY and STAGING
 				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
-		"seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3"); // get this value from BV
+		"agileville-78B2EF7DE83644CAB5F8C72F2D8C8491"); // get this value from BV
 				_bvConfig.addProperty(BVClientConfig.STAGING, "true");  // set to true for staging environment data
 				
 				//insert root folder with the value provided.
 				//if multiple deployment zones/display codes are used for this implementation, use conditional logic to set the appropriate BV_ROOT_FOLDER
-				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob"); //get this value from BV				
+				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US"); //get this value from BV				
 
 				//Create BVParameters for each injection.  If the page contains multiple injections, for example //reviews and questions, set unique parameters for each injection.
 				BVParameters _bvParam = new BVParameters();
@@ -366,7 +301,7 @@ public class BVManagedUIContentAggregateReviewTest {
 						_bvParam.setPageURI("http://localhost:8080/abcd" + "?" + "notSure=1&letSee=2"); //this value is used to needed BV URL parameters
 						_bvParam.setContentType(ContentType.REVIEWS);
 						_bvParam.setSubjectType(SubjectType.PRODUCT);
-						_bvParam.setSubjectId("2000001");
+						_bvParam.setSubjectId("data-gen-5zkafmln4wymhcfbp5u6hmv5q");
 
 				BVUIContent _bvOutput = new BVManagedUIContent(_bvConfig);
 						
@@ -388,7 +323,6 @@ public class BVManagedUIContentAggregateReviewTest {
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "false");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
@@ -429,7 +363,6 @@ public class BVManagedUIContentAggregateReviewTest {
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "false");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
@@ -469,7 +402,6 @@ public class BVManagedUIContentAggregateReviewTest {
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "false");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
@@ -507,8 +439,9 @@ public class BVManagedUIContentAggregateReviewTest {
 	public void testSEOContentFromHTTP_SinglePagePRR_CrawlerOverride() {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3");
-		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
 		bvConfig.addProperty(BVClientConfig.CRAWLER_AGENT_PATTERN, "mysearchbot");
 		
 		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
@@ -517,23 +450,25 @@ public class BVManagedUIContentAggregateReviewTest {
 		bvParameters.setUserAgent("111mysearchbot122");
 		bvParameters.setContentType(ContentType.REVIEWS);
 		bvParameters.setSubjectType(SubjectType.PRODUCT);
-		bvParameters.setSubjectId("3000002");
+		bvParameters.setSubjectId("data-gen-5zkafmln4wymhcfbp5u6hmv5q");
 		
 		String theUIContent = uiContent.getAggregateRating(bvParameters);
 		System.out.println(theUIContent);
-		assertEquals(theUIContent.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
-				true, "there should be BvRRSourceID in the content");
+		assertEquals(theUIContent.contains("<div id=\"bvseo-aggregateRatingSection\" itemprop=\"aggregateRating\" "
+				+ "itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
+				true, "there should be aggregateRating section");
 		assertEquals(!theUIContent.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
 				"there should not be reviews section in the content");
 		
 		/*
-		 * Scenario for multiple crawler patterh
+		 * Scenario for multiple crawler pattern
 		 */
 		bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.SSL_ENABLED, "true");
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3");
-		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
 		bvConfig.addProperty(BVClientConfig.CRAWLER_AGENT_PATTERN, "mysearchbot|anotherbot");
 		
 		uiContent = new BVManagedUIContent(bvConfig);
@@ -542,12 +477,13 @@ public class BVManagedUIContentAggregateReviewTest {
 		bvParameters.setUserAgent("111mysearchbot122");
 		bvParameters.setContentType(ContentType.REVIEWS);
 		bvParameters.setSubjectType(SubjectType.PRODUCT);
-		bvParameters.setSubjectId("3000002");
+		bvParameters.setSubjectId("data-gen-5zkafmln4wymhcfbp5u6hmv5q");
 		
 		theUIContent = uiContent.getAggregateRating(bvParameters);
 		System.out.println(theUIContent);
-		assertEquals(theUIContent.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
-				true, "there should be BvRRSourceID in the content");
+		assertEquals(theUIContent.contains("<div id=\"bvseo-aggregateRatingSection\" itemprop=\"aggregateRating\" "
+				+ "itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
+				true, "there should be aggregateRating section");
 		assertEquals(!theUIContent.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
 				"there should not be reviews section in the content");
 		
@@ -555,12 +491,13 @@ public class BVManagedUIContentAggregateReviewTest {
 		bvParameters.setUserAgent("111anotherbot122");
 		bvParameters.setContentType(ContentType.REVIEWS);
 		bvParameters.setSubjectType(SubjectType.PRODUCT);
-		bvParameters.setSubjectId("3000002");
+		bvParameters.setSubjectId("data-gen-5zkafmln4wymhcfbp5u6hmv5q");
 		
 		theUIContent = uiContent.getAggregateRating(bvParameters);
 		System.out.println(theUIContent);
-		assertEquals(theUIContent.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
-				true, "there should be BvRRSourceID in the content");
+		assertEquals(theUIContent.contains("<div id=\"bvseo-aggregateRatingSection\" itemprop=\"aggregateRating\" "
+				+ "itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
+				true, "there should be aggregateRating section");
 		assertEquals(!theUIContent.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
 				"there should not be reviews section in the content");
 	}
@@ -574,7 +511,6 @@ public class BVManagedUIContentAggregateReviewTest {
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
@@ -622,7 +558,6 @@ public class BVManagedUIContentAggregateReviewTest {
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
@@ -663,8 +598,11 @@ public class BVManagedUIContentAggregateReviewTest {
 	
 	/**
 	 * If the page is completely blank we will check which error message is thrown.
+	 * This test case requires to create a blank page in the S3 folder to test.
+	 * Deverloper friendly test case.
+	 * Use agileville and punch in a blank page with the product_id
 	 */
-	@Test
+	@Ignore
 	public void testSEOContent_BVContents_blank_page_AggregateRating() {
 		/*
 		 * Test scenario when invoking getAggregateRating but recieve blank page 
@@ -674,18 +612,15 @@ public class BVManagedUIContentAggregateReviewTest {
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "false"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content
 				//if LOAD_SEO_FILES_LOCALLY = false, configure CLOUD_KEY and STAGING
-				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
-		"seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3"); // get this value from BV
-				_bvConfig.addProperty(BVClientConfig.STAGING, "false");  // set to true for staging environment data
 				
-				//insert root folder with the value provided.
-				//if multiple deployment zones/display codes are used for this implementation, use conditional logic to set the appropriate BV_ROOT_FOLDER
-				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob"); //get this value from BV				
+				_bvConfig.addProperty(BVClientConfig.STAGING, "true");
+				_bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+				_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
+				
 
 		//Create BVParameters for each injection.  If the page contains multiple injections, for example //reviews and questions, set unique parameters for each injection.
 		BVParameters _bvParam = new BVParameters();
@@ -701,8 +636,8 @@ public class BVManagedUIContentAggregateReviewTest {
 
 		String sBvOutputSummary = _bvOutput.getAggregateRating(_bvParam);
 		System.out.println(sBvOutputSummary);
-		assertEquals(!sBvOutputSummary.contains("<span itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
-				true, "there should be BvRRSourceID in the content");
+		assertEquals(!sBvOutputSummary.contains("itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">"), 
+				true, "there should not be aggregate section content");
 		assertEquals(!sBvOutputSummary.contains("itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\">"), true, 
 				"there should not be reviews section in the content");
 		String expectedMessage = BVMessageUtil.getMessage("ERR0025");

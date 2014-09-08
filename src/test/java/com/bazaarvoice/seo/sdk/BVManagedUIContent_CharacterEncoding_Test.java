@@ -110,7 +110,6 @@ public class BVManagedUIContent_CharacterEncoding_Test {
 	public BVUIContent getUTF8Configuration() {
 		BVConfiguration _bvConfiguration = new BVSdkConfiguration();
 		_bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, DISPLAY_CODE);
-		_bvConfiguration.addProperty(BVClientConfig.BOT_DETECTION, "true");
 		_bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, CLOUD_KEY);
 		_bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
 		_bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
@@ -122,7 +121,6 @@ public class BVManagedUIContent_CharacterEncoding_Test {
 	public BVUIContent getJIS_EcodingConfiguration() {
 		BVConfiguration _bvConfiguration = new BVSdkConfiguration();
 		_bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, DISPLAY_CODE_JAPANESE);
-		_bvConfiguration.addProperty(BVClientConfig.BOT_DETECTION, "true");
 		_bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, CLOUD_KEY_JAPANESE);
 		_bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
 		_bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");

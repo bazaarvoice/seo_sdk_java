@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
 import com.bazaarvoice.seo.sdk.footer.BVFooter;
@@ -63,7 +62,6 @@ public class BVManagedUIContent implements BVUIContent {
 	private BVSeoSdkUrl bvSeoSdkUrl;
 	private BVFooter bvFooter;
 	private StringBuilder message;
-	private boolean isBotDetection;
 	private BVParameters bvParameters;
 	private boolean reloadContent;
 	private BVUIContentService bvUiContentService;
@@ -115,6 +113,11 @@ public class BVManagedUIContent implements BVUIContent {
 		}
 		
 		bvFooter.setExecutionTime(System.currentTimeMillis() - startTime);
+		
+		if (uiContent == null) {
+			uiContent = new StringBuilder();
+		}
+		
 		uiContent.append(bvFooter.displayFooter("getContent"));
 		
 		return uiContent.toString();
@@ -133,23 +136,27 @@ public class BVManagedUIContent implements BVUIContent {
 				uiContent = new StringBuilder();
 			}
 			
-			int startIndex = uiContent.indexOf("<!--begin-reviews-->");
-			if (startIndex != -1) {
-				String endReviews = "<!--end-reviews-->";
-				int endIndex = uiContent.indexOf(endReviews) + endReviews.length();
-				uiContent.delete(startIndex, endIndex);
-				
-				startIndex = uiContent.indexOf("<!--begin-pagination-->");
+			if (uiContent != null) {
+				int startIndex = uiContent.indexOf("<!--begin-reviews-->");
 				if (startIndex != -1) {
-					String endPagination = "<!--end-pagination-->";
-					endIndex = uiContent.indexOf(endPagination) + endPagination.length();
-					uiContent.delete(startIndex, endIndex);	
-				}			
-			}
-			
-			startIndex = uiContent.indexOf("<!--begin-aggregate-rating-->");
-			if (startIndex == -1 && bvUiContentService.getMessage().length() == 0) {
-				message.append(BVMessageUtil.getMessage("ERR0003"));
+					String endReviews = "<!--end-reviews-->";
+					int endIndex = uiContent.indexOf(endReviews) + endReviews.length();
+					uiContent.delete(startIndex, endIndex);
+					
+					startIndex = uiContent.indexOf("<!--begin-pagination-->");
+					if (startIndex != -1) {
+						String endPagination = "<!--end-pagination-->";
+						endIndex = uiContent.indexOf(endPagination) + endPagination.length();
+						uiContent.delete(startIndex, endIndex);	
+					}			
+				}
+				
+				startIndex = uiContent.indexOf("<!--begin-aggregate-rating-->");
+				if (startIndex == -1 && bvUiContentService.getMessage().length() == 0) {
+					message.append(BVMessageUtil.getMessage("ERR0003"));
+				}
+			} else {
+				uiContent = new StringBuilder();
 			}
 			
 			bvFooter.addMessage(bvUiContentService.getMessage().toString());
@@ -161,7 +168,7 @@ public class BVManagedUIContent implements BVUIContent {
 		
 		bvFooter.addMessage(message.toString());		
 		bvFooter.setExecutionTime(System.currentTimeMillis() - startTime);
-		uiContent.append(bvFooter.displayFooter("getAggretateRating"));
+		uiContent.append(bvFooter.displayFooter("getAggregateRating"));
 		
 		return uiContent.toString();
 	}
@@ -180,18 +187,22 @@ public class BVManagedUIContent implements BVUIContent {
 				uiContent = new StringBuilder();
 			}
 
-			int startIndex = uiContent.indexOf("<!--begin-aggregate-rating-->");
+			if (uiContent != null) {
+				int startIndex = uiContent.indexOf("<!--begin-aggregate-rating-->");
 
-			if (startIndex != -1) {
-				String endReviews = "<!--end-aggregate-rating-->";
-				int endIndex = uiContent.indexOf(endReviews)
-						+ endReviews.length();
-				uiContent.delete(startIndex, endIndex);
-			}
-			
-			startIndex = uiContent.indexOf("<!--begin-reviews-->");
-			if (startIndex == -1 && bvUiContentService.getMessage().length() == 0) {
-				message.append(BVMessageUtil.getMessage("ERR0013"));
+				if (startIndex != -1) {
+					String endReviews = "<!--end-aggregate-rating-->";
+					int endIndex = uiContent.indexOf(endReviews)
+							+ endReviews.length();
+					uiContent.delete(startIndex, endIndex);
+				}
+				
+				startIndex = uiContent.indexOf("<!--begin-reviews-->");
+				if (startIndex == -1 && bvUiContentService.getMessage().length() == 0) {
+					message.append(BVMessageUtil.getMessage("ERR0013"));
+				}	
+			} else {
+				uiContent = new StringBuilder();
 			}
 			
 			bvFooter.addMessage(bvUiContentService.getMessage().toString());
@@ -239,7 +250,6 @@ public class BVManagedUIContent implements BVUIContent {
 			this.bvParameters = bvParameters;
 			
 			bvSeoSdkUrl = new BVSeoSdkURLBuilder(_bvConfiguration, bvParameters);
-			isBotDetection = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.BOT_DETECTION.getPropertyName()));
 			
 			bvUiContentService = new BVUIContentServiceProvider(_bvConfiguration);
 			bvUiContentService.setBVParameters(this.bvParameters);

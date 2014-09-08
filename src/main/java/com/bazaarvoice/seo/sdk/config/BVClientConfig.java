@@ -28,13 +28,13 @@ public enum BVClientConfig {
     CONNECT_TIMEOUT("connectTimeout"),
     SOCKET_TIMEOUT("socketTimeout"),
     INCLUDE_DISPLAY_INTEGRATION_CODE("includeDisplayIntegrationCode"),
-    BOT_DETECTION("botDetection"),
     CRAWLER_AGENT_PATTERN("crawlerAgentPattern"),
     SEO_SDK_ENABLED("seo.sdk.enabled"),
     STAGING("staging"),
     EXECUTION_TIMEOUT("seo.sdk.execution.timeout"),
-    PROXY_HOST("seo.sdk.execution.proxy.host"),
-    PROXY_PORT("seo.sdk.execution.proxy.port"),
+    EXECUTION_TIMEOUT_BOT("seo.sdk.execution.timeout.bot"),
+    PROXY_HOST("seo.sdk.http.proxy.host"),
+    PROXY_PORT("seo.sdk.http.proxy.port"),
     CHARSET("seo.sdk.charset"),
     SSL_ENABLED("seo.sdk.ssl.enabled");
     

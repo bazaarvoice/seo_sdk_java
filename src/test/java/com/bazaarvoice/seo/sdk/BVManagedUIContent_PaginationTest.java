@@ -41,7 +41,6 @@ public class BVManagedUIContent_PaginationTest {
 		//addProperty can be used to override configurations set in bvconfig.properties.
 		BVConfiguration _bvConfig = new BVSdkConfiguration();
 				_bvConfig.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");  // use this as a kill switch
-				_bvConfig.addProperty(BVClientConfig.BOT_DETECTION, "true"); // set to true if user agent/bot detection is desired
 				
 				//this SDK supports retrieval of SEO contents from the cloud or local file system
 				_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); // set to false if using cloud-based content

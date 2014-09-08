@@ -117,7 +117,6 @@ public class BVHTMLFooter implements BVFooter {
 		context.put("methodType", methodType);
 		context.put("executionTime", executionTime);
 		context.put("accessMethod", accessMethod);
-		context.put("isBd", Boolean.valueOf(_bvConfiguration.getProperty(BVClientConfig.BOT_DETECTION.getPropertyName())));
 		
 		String message = null;
 		if (messageList != null && !messageList.isEmpty()) {

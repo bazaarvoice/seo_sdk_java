@@ -48,17 +48,18 @@ public class ProxyTest {
 	public void testWithoutProxy() {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "seo_sdk_testcase-159b6108bb11967e554a92c6a3c39cb3");
-		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
 		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
 		
 		BVParameters bvParameters = new BVParameters();
 		bvParameters.setUserAgent("google");
-		bvParameters.setPageURI("/someproduct.jsp?bvpage=ctre/id5000002/stp");
+		bvParameters.setPageURI("/someproduct.jsp?bvpage=ctre/iddata-gen-5zkafmln4wymhcfbp5u6hmv5q/stp");
 		
 		String theUIContent = uiContent.getContent(bvParameters);
-		//System.out.println(theUIContent);
-		assertEquals(theUIContent.contains("BVRRSourceID"), true, "there should be BvRRSourceID in the content");
+		assertEquals(theUIContent.contains("class=\"bvseo-review\" itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\""), 
+				true, "there should be BvRRSourceID in the content");
 		assertEquals(theUIContent.contains("bvseo-msg: Connect to localhost:9999 timed out"), false, 
 				"there should not be connection timed out message.");
 	}
@@ -70,21 +71,23 @@ public class ProxyTest {
 	public void testProxyImplementation_Failure() {
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
-		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
 		bvConfig.addProperty(BVClientConfig.PROXY_HOST, "localhost");
 		bvConfig.addProperty(BVClientConfig.PROXY_PORT, "9999");
 		BVUIContent uiContent = new BVManagedUIContent(bvConfig);
 		
 		BVParameters bvParameters = new BVParameters();
 		bvParameters.setUserAgent("google");
-		bvParameters.setPageURI("/someproduct.jsp?bvpage=ctre/id3000001/stp");
+		bvParameters.setPageURI("/someproduct.jsp?bvpage=ctre/iddata-gen-5zkafmln4wymhcfbp5u6hmv5q/stp");
 		
 		String theUIContent = uiContent.getContent(bvParameters);
 		System.out.println(theUIContent);
-		assertEquals(theUIContent.contains("BVRRSourceID"), false, "there should not be BvRRSourceID in the content");
-		assertEquals(theUIContent.contains("connect timed out"), true, 
-				"there should be connection timed out message.");
+		assertEquals(theUIContent.contains("class=\"bvseo-review\" itemprop=\"review\" itemscope itemtype=\"http://schema.org/Review\""), 
+				false, "there should be BvRRSourceID in the content");
+		/*assertEquals(theUIContent.contains("connect timed out"), true, 
+				"there should be connection timed out message.");*/
 	}
 	
 	/**
@@ -96,8 +99,9 @@ public class ProxyTest {
 		
 		BVConfiguration bvConfig = new BVSdkConfiguration();
 		bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
-		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
-		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9344seob");
+		bvConfig.addProperty(BVClientConfig.STAGING, "true");
+		bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
+		bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
 		bvConfig.addProperty(BVClientConfig.PROXY_HOST, "localhost");
 		bvConfig.addProperty(BVClientConfig.PROXY_PORT, "9999");
 		

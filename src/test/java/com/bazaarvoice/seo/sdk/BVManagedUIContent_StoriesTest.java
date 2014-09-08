@@ -38,7 +38,6 @@ public class BVManagedUIContent_StoriesTest {
 	@Test
 	public void storyTest() {
 		BVConfiguration bvConfiguration = new BVSdkConfiguration();
-		bvConfiguration.addProperty(BVClientConfig.BOT_DETECTION, "true");
 		bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, "9632");
 		bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, "hartford-35ea8ab0dae7395fb183b14c0e6f3473");
 		

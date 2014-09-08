@@ -77,7 +77,6 @@ public class BVManagedUIContent_ConnectionTimedout {
 			propertyMap.put(BVCoreConfig.STAGING_S3_HOSTNAME.getPropertyName(), "google.com:81");
 			propertyMap.put(BVCoreConfig.PRODUCTION_S3_HOSTNAME.getPropertyName(), "google.com:81");
 			
-			propertyMap.put(BVClientConfig.BOT_DETECTION.getPropertyName(), "true");
 			propertyMap.put(BVClientConfig.BV_ROOT_FOLDER.getPropertyName(), "rootFolder");
 			propertyMap.put(BVClientConfig.CLOUD_KEY.getPropertyName(), "cloudKey");
 			propertyMap.put(BVClientConfig.CONNECT_TIMEOUT.getPropertyName(), "100");

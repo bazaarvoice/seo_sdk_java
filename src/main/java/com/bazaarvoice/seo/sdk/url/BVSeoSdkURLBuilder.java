@@ -101,7 +101,6 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
 	public URI seoContentUri() {
 		/*
 		 * if bvParameters.pageUri contains bvpage then we consider it as C2013 implementation.
-		 * TODO: the above in this is a todo.
 		 */
 		if (queryString != null && queryString.contains(BV_PAGE)) {
 			return c2013Uri();
@@ -170,7 +169,6 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
 		ContentType contentType = null;
 		SubjectType subjectType = null;
 		String subjectId = null;
-		String pageNumber = null;
 		
 		List<NameValuePair> parameters = URLEncodedUtils.parse (queryString, Charset.forName("UTF-8"));
         for(NameValuePair parameter : parameters) {
@@ -178,8 +176,8 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
             	StringTokenizer tokens = new StringTokenizer(parameter.getValue(), "/");
             	while (tokens.hasMoreTokens()) {
             		String token = tokens.nextToken();
-            		if (token.startsWith("pg")) {
-            			pageNumber = getValue(token);
+            		if (token.startsWith("pg") && StringUtils.isBlank(bvParameters.getPageNumber())) {
+            			bvParameters.setPageNumber(getValue(token));
             		} else if (token.startsWith("ct")) {
             			contentType = ContentType.ctFromKeyWord(getValue(token));
             		} else if (token.startsWith("st")) {
@@ -194,9 +192,12 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
         contentType = (contentType == null) ? bvParameters.getContentType() : contentType;
         subjectType = (subjectType == null) ? bvParameters.getSubjectType() : subjectType;
         subjectId = (StringUtils.isBlank(subjectId)) ? bvParameters.getSubjectId() : subjectId;
-        pageNumber = (StringUtils.isBlank(pageNumber)) ? NUM_ONE_STR : pageNumber;
         
-        String path = getPath(contentType, subjectType, pageNumber, subjectId, bvParameters.getContentSubType());
+        if (StringUtils.isBlank(bvParameters.getPageNumber())) {
+        	bvParameters.setPageNumber(NUM_ONE_STR);
+        }
+        
+        String path = getPath(contentType, subjectType, bvParameters.getPageNumber(), subjectId, bvParameters.getContentSubType());
 		if (isContentFromFile()) {
 			return fileUri(path);
 		}
@@ -231,7 +232,12 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
 	}
 
 	private String getPageNumber() {
-		return BVUtilty.getPageNumber(queryString());
+		String pageNumber = bvParameters.getPageNumber();
+		if (StringUtils.isBlank(pageNumber)) {
+			pageNumber = BVUtilty.getPageNumber(queryString());
+			bvParameters.setPageNumber(pageNumber);
+		}
+		return pageNumber;
 	}
 	
 	private String getRootFolder() {

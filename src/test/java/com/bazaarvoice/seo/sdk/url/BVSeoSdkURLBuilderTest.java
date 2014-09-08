@@ -95,7 +95,7 @@ public class BVSeoSdkURLBuilderTest {
 		 */
 		bvParam.setBaseURI("");
 		bvParam.setPageURI("");
-
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "";
@@ -115,7 +115,7 @@ public class BVSeoSdkURLBuilderTest {
 		 */
 		bvParam.setBaseURI("http://localhost:8080/Sample/Example-1.jsp");
 		bvParam.setPageURI("http://localhost:8080/Sample/Example-1.jsp?bvrrp=abcd");
-
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "http://localhost:8080/Sample/Example-1.jsp";
@@ -135,7 +135,7 @@ public class BVSeoSdkURLBuilderTest {
 		 */
 		bvParam.setBaseURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvrrp=6574-en_us/reviews/product/3/ssl-certificates.htm");
 		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvrrp=6574-en_us/reviews/product/3/ssl-certificates.htm");
-		
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
@@ -155,7 +155,7 @@ public class BVSeoSdkURLBuilderTest {
 		 */
 		bvParam.setBaseURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvrrp=6574-en_us/reviews/product/2/ssl-certificates.htm");
 		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvrrp=6574-en_us/reviews/product/2/ssl-certificates.htm");
-		
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
@@ -229,6 +229,7 @@ public class BVSeoSdkURLBuilderTest {
 		bvParam.setBaseURI("http://localhost:8080/Sample/Example-1.jsp");
 		bvParam.setPageURI("http://localhost:8080/Sample/Example-1.jsp?bvrrp=abcd");
 
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "http://localhost:8080/Sample/Example-1.jsp";
@@ -249,6 +250,7 @@ public class BVSeoSdkURLBuilderTest {
 		bvParam.setBaseURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvrrp=6574-en_us/reviews/product/3/ssl-certificates.htm");
 		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvrrp=6574-en_us/reviews/product/3/ssl-certificates.htm");
 		
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
@@ -268,7 +270,7 @@ public class BVSeoSdkURLBuilderTest {
 		 */
 		bvParam.setBaseURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvrrp=6574-en_us/reviews/product/2/ssl-certificates.htm");
 		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvrrp=6574-en_us/reviews/product/2/ssl-certificates.htm");
-		
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
@@ -326,7 +328,7 @@ public class BVSeoSdkURLBuilderTest {
 		 */
 		bvParam.setBaseURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvpage=pg2/ctrp/stp/iddogfood");
 		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvpage=pg3/ctre/stp/idcatfood");
-		
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
@@ -348,7 +350,7 @@ public class BVSeoSdkURLBuilderTest {
 		bvParam.setBaseURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvpage=pg3/ctre/stp/idcatfood");
 		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvpage=pg4/ctrp/stp");
 		bvParam.setSubjectId("p5543");
-		
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
@@ -369,7 +371,7 @@ public class BVSeoSdkURLBuilderTest {
 		bvParam.setBaseURI(null);
 		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvpage=pg2/ctre/stc");
 		bvParam.setSubjectId("c8765");
-		
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "";
@@ -390,7 +392,7 @@ public class BVSeoSdkURLBuilderTest {
 		bvParam.setBaseURI(null);
 		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvpage=ctqa/std/id45677");
 		bvParam.setSubjectId("c8765");
-		
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "";
@@ -411,7 +413,7 @@ public class BVSeoSdkURLBuilderTest {
 		bvParam.setBaseURI(null);
 		bvParam.setPageURI("/sample_seo_sdk_web/scenario-2.jsp?null&bvpage=ctun/ste/idmyshirtspage");
 		bvParam.setSubjectId(null);
-		
+		bvParam.setPageNumber(null);
 		bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
 		
 		expectedBaseUri = "";

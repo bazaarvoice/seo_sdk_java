@@ -82,33 +82,25 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
     }
 
     public StringBuilder call() throws Exception {
-        String displayJSOnly = null;
+    	
         URI seoContentUrl = null;
+        
         try {
+        	
             //includes integration script if one is enabled.
             includeIntegrationCode();
-
-            boolean isBotDetection = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.BOT_DETECTION.getPropertyName()));
-
-            /*
-             * Hit only when botDetection is disabled or if the queryString is appended with bvreveal or if it matches any 
-             * crawler pattern that is configured at the client configuration. 
-             */
-            if (!isBotDetection || _bvSeoSdkUrl.queryString().contains(BVConstant.BVREVEAL) || showUserAgentSEOContent()) {
-                seoContentUrl = _bvSeoSdkUrl.seoContentUri();
-                String correctedBaseUri = _bvSeoSdkUrl.correctedBaseUri();
-                getBvContent(_uiContent, seoContentUrl, correctedBaseUri);
-            } else {
-                displayJSOnly = BVConstant.JS_DISPLAY_MSG;
-            }
+            seoContentUrl = _bvSeoSdkUrl.seoContentUri();
+            String correctedBaseUri = _bvSeoSdkUrl.correctedBaseUri();
+            getBvContent(_uiContent, seoContentUrl, correctedBaseUri);
+            
         } catch (BVSdkException e) {
+        	
             _message.append(e.getMessage());
+            
         }
 
-        if (displayJSOnly != null) {
-            _message.append(displayJSOnly);
-        }
         return _uiContent;
+        
     }
 
     private void getBvContent(StringBuilder sb, URI seoContentUrl, String baseUri) {
@@ -131,8 +123,6 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
     	int connectionTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.CONNECT_TIMEOUT.getPropertyName()));
         int socketTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.SOCKET_TIMEOUT.getPropertyName()));
         String proxyHost = _bvConfiguration.getProperty(BVClientConfig.PROXY_HOST.getPropertyName());
-//        boolean isSSLEnabled = Boolean.parseBoolean(_bvConfiguration.getProperty(BVClientConfig.SSL_ENABLED.getPropertyName()));
-        
         String charsetConfig = _bvConfiguration.getProperty(BVClientConfig.CHARSET.getPropertyName());
         Charset charset = null;
         try {
@@ -168,8 +158,7 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
 	        	throw new BVSdkException("ERR0025");
 	        }
 	        
-	        content = new String(byteArray, charset);
-//	        _logger.info("Debug info from bazaarvoice sdk : the contents are " + content);
+	        content = new String(byteArray, charset.name());
         } catch (MalformedURLException e) {
 //        	e.printStackTrace();
         } catch (IOException e) {
@@ -262,8 +251,20 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
             return new StringBuilder(_uiContent);
         }
 
-        long executionTimeout = Long.parseLong(_bvConfiguration.getProperty(BVClientConfig.EXECUTION_TIMEOUT.getPropertyName()));
-//        ExecutorService executorService = Executors.newCachedThreadPool();
+        boolean isSearchBot = showUserAgentSEOContent();
+        long executionTimeout = isSearchBot ? Long.parseLong(_bvConfiguration.getProperty(BVClientConfig.EXECUTION_TIMEOUT_BOT.getPropertyName())) : 
+        		Long.parseLong(_bvConfiguration.getProperty(BVClientConfig.EXECUTION_TIMEOUT.getPropertyName()));
+        
+        if (!isSearchBot && executionTimeout == 0) {
+        	_message.append(BVMessageUtil.getMessage("MSG0004"));
+        	return null;
+        }
+        
+        if (isSearchBot && executionTimeout < 100) {
+        	executionTimeout = 100;
+        	_message.append(BVMessageUtil.getMessage("MSG0005"));
+        }
+        
         ExecutorService executorService = BVThreadPool.getExecutorService();
         Future<StringBuilder> future = executorService.submit(this);
 
@@ -277,7 +278,8 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
                 throw new BVSdkException(e.getCause().getMessage());
             }
         } catch (TimeoutException e) {
-            _message.append(MessageFormat.format(BVMessageUtil.getMessage("ERR0018"), new Object[]{executionTimeout}));
+        	String err = isSearchBot ? "ERR0026" : "ERR0018";
+        	_message.append(MessageFormat.format(BVMessageUtil.getMessage(err), new Object[]{executionTimeout}));	
         }
 
         return new StringBuilder(_uiContent);

@@ -56,6 +56,7 @@ public class BVSdkConfiguration implements BVConfiguration {
         _instanceConfiguration.put(BVCoreConfig.STAGING_S3_HOSTNAME.getPropertyName(), BVConstant.STAGING_S3_HOSTNAME);
 
         addProperty(BVClientConfig.EXECUTION_TIMEOUT, BVConstant.EXECUTION_TIMEOUT);
+        addProperty(BVClientConfig.EXECUTION_TIMEOUT_BOT, BVConstant.EXECUTION_TIMEOUT_BOT);
         addProperty(BVClientConfig.CRAWLER_AGENT_PATTERN, BVConstant.CRAWLER_AGENT_PATTERN);
         addProperty(BVClientConfig.CONNECT_TIMEOUT, BVConstant.CONNECT_TIMEOUT);
         addProperty(BVClientConfig.SOCKET_TIMEOUT, BVConstant.SOCKET_TIMEOUT);
