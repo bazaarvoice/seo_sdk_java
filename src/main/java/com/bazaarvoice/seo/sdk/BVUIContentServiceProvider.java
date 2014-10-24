@@ -19,6 +19,21 @@
 
 package com.bazaarvoice.seo.sdk;
 
+import com.bazaarvoice.seo.sdk.config.BVClientConfig;
+import com.bazaarvoice.seo.sdk.config.BVConfiguration;
+import com.bazaarvoice.seo.sdk.exception.BVSdkException;
+import com.bazaarvoice.seo.sdk.model.BVParameters;
+import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
+import com.bazaarvoice.seo.sdk.util.BVConstant;
+import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
+import com.bazaarvoice.seo.sdk.util.BVThreadPool;
+import com.bazaarvoice.seo.sdk.util.BVUtilty;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,22 +56,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.bazaarvoice.seo.sdk.config.BVClientConfig;
-import com.bazaarvoice.seo.sdk.config.BVConfiguration;
-import com.bazaarvoice.seo.sdk.exception.BVSdkException;
-import com.bazaarvoice.seo.sdk.model.BVParameters;
-import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
-import com.bazaarvoice.seo.sdk.util.BVConstant;
-import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
-import com.bazaarvoice.seo.sdk.util.BVThreadPool;
-import com.bazaarvoice.seo.sdk.util.BVUtilty;
-
 /**
  * Implementation class for {@link BVUIContentService}. This class is a self
  * executable of Callable and Future and returns StringBuilder upon execution.
@@ -67,9 +66,9 @@ import com.bazaarvoice.seo.sdk.util.BVUtilty;
 public class BVUIContentServiceProvider implements BVUIContentService, Callable<StringBuilder> {
 
     private final static Logger _logger = LoggerFactory.getLogger(BVUIContentServiceProvider.class);
-    private BVConfiguration _bvConfiguration;
+    private final BVConfiguration _bvConfiguration;
     private BVParameters _bvParameters;
-    private StringBuilder _message;
+    private final StringBuilder _message;
     private StringBuilder _uiContent;
     private BVSeoSdkUrl _bvSeoSdkUrl;
     private Boolean sdkEnabled;
@@ -83,7 +82,7 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
 
     public StringBuilder call() throws Exception {
     	
-        URI seoContentUrl = null;
+        URI seoContentUrl;
         
         try {
         	
@@ -124,17 +123,17 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
         int socketTimeout = Integer.parseInt(_bvConfiguration.getProperty(BVClientConfig.SOCKET_TIMEOUT.getPropertyName()));
         String proxyHost = _bvConfiguration.getProperty(BVClientConfig.PROXY_HOST.getPropertyName());
         String charsetConfig = _bvConfiguration.getProperty(BVClientConfig.CHARSET.getPropertyName());
-        Charset charset = null;
+        Charset charset;
         try {
-        	charset = charsetConfig == null ? Charset.defaultCharset() : Charset.forName(charsetConfig);
+        	charset = charsetConfig == null ? Charset.forName("UTF-8") : Charset.forName(charsetConfig);
         } catch (Exception e) {
         	_logger.error(BVMessageUtil.getMessage("ERR0024"));
-        	charset = Charset.defaultCharset();
+        	charset = Charset.forName("UTF-8");
         }
 
         String content = null;
         try {
-        	HttpURLConnection httpUrlConnection = null;
+        	HttpURLConnection httpUrlConnection;
             URL url = path.toURL();
             
             if (!StringUtils.isBlank(proxyHost) && !"none".equalsIgnoreCase(proxyHost)) {
@@ -182,7 +181,7 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
     
     private String loadContentFromFile(URI path) {
 
-        String content = null;
+        String content;
         try {
         	File file = new File(path);
             content = FileUtils.readFileToString(file, _bvConfiguration.getProperty(BVClientConfig.CHARSET.getPropertyName()));
