@@ -52,7 +52,9 @@ public class BVManagedUIContentTest {
 		
 		bvContent = bvUIContent.getContent(null);
 		System.out.println(bvContent);
-		assertEquals(bvContent.contains("<li id=\"ms\">bvseo-msg: BVParameters is null.;</li>"), true, "Message are not same please verify.");
+		assertEquals(bvContent.contains("<li data-bvseo=\"ms\">bvseo-msg: "
+				+ "BVParameters is null.;</li>"), true, "Message are not same"
+						+ " please verify.");
 	}
 	
 	/**
@@ -167,6 +169,7 @@ public class BVManagedUIContentTest {
 		System.out.println("Content - 5");
 		System.out.println(sBvOutput);
 		assertNotNull(sBvOutput, "sBvOutput should not be null");
+		
 	}
-	
+
 }
