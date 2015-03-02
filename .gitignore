@@ -4,3 +4,7 @@
 .idea
 target/
 *.log
+.settings
+.classpath
+.project
+test-output
