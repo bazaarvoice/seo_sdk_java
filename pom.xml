@@ -153,6 +153,38 @@
 					</instructions>
 				</configuration>
 			</plugin>
+	
+		<!-- bypass/skip the actual maven deploy and run custom s3 plugin upload -->
+		<plugin>
+        	<groupId>org.apache.maven.plugins</groupId>
+        	<artifactId>maven-deploy-plugin</artifactId>
+        	<version>2.7</version>
+        	<configuration>
+          	<skip>true</skip>
+        	</configuration>
+ 		</plugin>
+      		 
+		  <!-- Upload the install script into the scripts directory. -->
+		  <!-- command to execute : mvn -Ds3.repo.path=<THE_PATH> deploy -->
+ 		<plugin>
+				<groupId>com.bazaarvoice.maven.plugins</groupId>
+				<artifactId>s3-upload-maven-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<phase>deploy</phase>
+						<goals>
+						<goal>s3-upload</goal>
+						</goals>
+						<configuration>
+							<bucketName>nexus-private-artifacts</bucketName>
+							<source>target</source>
+							<destination>${s3.repo.path}</destination>
+							<recursive>false</recursive>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
