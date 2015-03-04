@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
-import com.bazaarvoice.seo.sdk.helpers.TestcaseConstants;
+import com.bazaarvoice.seo.sdk.helpers.SeoTestcaseConstants;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
@@ -421,7 +421,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
 		// get this value from BV
 		_bvConfig.addProperty(BVClientConfig.CLOUD_KEY, 
-				TestcaseConstants.getTestCloudKey());
+				SeoTestcaseConstants.getTestCloudKey());
 		// set to true for staging environment data
 		_bvConfig.addProperty(BVClientConfig.STAGING, "true");
 				
@@ -432,7 +432,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		 * Get this value from BV
 		 */
 		_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, 
-				TestcaseConstants.getTestRootFolder());				
+				SeoTestcaseConstants.getTestRootFolder());				
 
 		/*
 		 * Create BVParameters for each injection.  If the page contains 
@@ -447,7 +447,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		_bvParam.setPageURI("http://localhost:8080/abcd?notSure=1&letSee=2");
 		_bvParam.setContentType(ContentType.REVIEWS);
 		_bvParam.setSubjectType(SubjectType.PRODUCT);
-		_bvParam.setSubjectId(TestcaseConstants.getTestReviewProduct_1());
+		_bvParam.setSubjectId(SeoTestcaseConstants.getTestReviewProduct_1());
 
 		BVUIContent _bvOutput = new BVManagedUIContent(_bvConfig);
 
@@ -483,7 +483,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false"); 
 		 // get this value from BV
 		_bvConfig.addProperty(BVClientConfig.CLOUD_KEY, 
-				TestcaseConstants.getTestCloudKey());
+				SeoTestcaseConstants.getTestCloudKey());
 		// set to true for staging environment data
 		_bvConfig.addProperty(BVClientConfig.STAGING, "true");
 				
@@ -494,7 +494,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		 * Get this value from BV
 		 */
 		_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, 
-				TestcaseConstants.getTestRootFolder());				
+				SeoTestcaseConstants.getTestRootFolder());				
 
 		/*
 		 * Create BVParameters for each injection.  If the page contains multiple
@@ -509,7 +509,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		_bvParam.setPageURI("http://localhost:8080/abcd?notSure=1&letSee=2");
 		_bvParam.setContentType(ContentType.REVIEWS);
 		_bvParam.setSubjectType(SubjectType.PRODUCT);
-		_bvParam.setSubjectId(TestcaseConstants.getTestReviewProduct_1());
+		_bvParam.setSubjectId(SeoTestcaseConstants.getTestReviewProduct_1());
 
 		BVUIContent _bvOutput = new BVManagedUIContent(_bvConfig);
 		String sBvOutputSummary = _bvOutput.getAggregateRating(_bvParam); 
@@ -546,7 +546,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
 		// get this value from BV
 		_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
-				TestcaseConstants.getTestCloudKey()); 
+				SeoTestcaseConstants.getTestCloudKey()); 
 		// set to true for staging environment data
 		_bvConfig.addProperty(BVClientConfig.STAGING, "true");
 				
@@ -557,7 +557,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		 *  Get this value from BV.
 		 */
 		_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, 
-				TestcaseConstants.getTestRootFolder());				
+				SeoTestcaseConstants.getTestRootFolder());				
 
 		/*
 		 * Create BVParameters for each injection.  If the page contains 
@@ -572,7 +572,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		_bvParam.setPageURI("http://localhost:8080/abcd?notSure=1&letSee=2");
 		_bvParam.setContentType(ContentType.REVIEWS);
 		_bvParam.setSubjectType(SubjectType.PRODUCT);
-		_bvParam.setSubjectId(TestcaseConstants.getTestReviewProduct_1());
+		_bvParam.setSubjectId(SeoTestcaseConstants.getTestReviewProduct_1());
 
 		BVUIContent _bvOutput = new BVManagedUIContent(_bvConfig);
 		String sBvOutputSummary = _bvOutput.getReviews(_bvParam);
@@ -692,7 +692,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		_bvConfig.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
 		//get this value from BV
 		_bvConfig.addProperty(BVClientConfig.CLOUD_KEY,
-				TestcaseConstants.getTestCloudKey());
+				SeoTestcaseConstants.getTestCloudKey());
 		// set to true for staging environment data
 		_bvConfig.addProperty(BVClientConfig.STAGING, "true");
 				
@@ -704,7 +704,7 @@ public class BVManagedUIContentAggregateReviewTest {
 		 * Get this value from BV
 		 */
 		_bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, 
-				TestcaseConstants.getTestRootFolder()); 				
+				SeoTestcaseConstants.getTestRootFolder()); 				
 
 		/*
 		 * Create BVParameters for each injection.  If the page contains 

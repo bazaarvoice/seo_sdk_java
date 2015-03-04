@@ -24,8 +24,9 @@ import org.testng.annotations.Test;
 
 /**
  * BVParameters equality test.
- * This is to ensure there is no bug induced by the libararies that are used
- * and ensuring integrity overrides.
+ * This is to ensure there is no bug induced by the libraries that are used
+ * and ensuring integrity for equals and hashcode overrides.
+ * 
  * @author Anandan Narayanaswamy
  *
  */
@@ -44,6 +45,7 @@ public class BVParameters_Test {
 		bvParamObj1.setContentType(ContentType.REVIEWS);
 		bvParamObj1.setSubjectType(SubjectType.PRODUCT);
 		bvParamObj1.setSubjectId("1501");
+		bvParamObj1.setPageNumber("1");
 		
 		BVParameters bvParamObj2 = null;
 		
@@ -64,6 +66,7 @@ public class BVParameters_Test {
 		bvParamObj2.setContentType(ContentType.REVIEWS);
 		bvParamObj2.setSubjectType(SubjectType.PRODUCT);
 		bvParamObj2.setSubjectId("1501");
+		bvParamObj2.setPageNumber("1");
 		Assert.assertEquals(bvParamObj1.equals(bvParamObj2), true, "object1 and object2 should be equal");
 		
 		bvParamObj2 = new BVParameters();

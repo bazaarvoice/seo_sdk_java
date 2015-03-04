@@ -115,7 +115,9 @@ public class BVParameters {
 		.append(getPageURI(), rhs.getPageURI())
 		.append(getSubjectId(), rhs.getSubjectId())
 		.append(getSubjectType(), rhs.getSubjectType())
-		.append(getUserAgent(), rhs.getUserAgent());
+		.append(getUserAgent(), rhs.getUserAgent())
+		.append(getPageNumber(), rhs.getPageNumber())
+		.append(getContentSubType(), rhs.getContentSubType());
 		
 		return eqBuilder.isEquals();
 	}
@@ -123,13 +125,14 @@ public class BVParameters {
 	@Override
 	public int hashCode() {
 		HashCodeBuilder hBuilder = new HashCodeBuilder(17, 31);
-		hBuilder.append(userAgent)
-		.append(baseURI)
-		.append(pageURI)
-		.append(subjectId)
-		.append(contentType)
-		.append(subjectType)
-		.append(contentSubType);
+		hBuilder.append(getUserAgent())
+		.append(getBaseURI())
+		.append(getPageURI())
+		.append(getSubjectId())
+		.append(getContentType())
+		.append(getSubjectType())
+		.append(getContentSubType())
+		.append(getPageNumber());
 		
 		return hBuilder.hashCode();
 	}

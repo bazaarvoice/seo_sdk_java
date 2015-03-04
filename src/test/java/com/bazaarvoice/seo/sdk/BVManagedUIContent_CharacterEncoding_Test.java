@@ -29,7 +29,7 @@ import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
 import com.bazaarvoice.seo.sdk.exception.BVSdkException;
-import com.bazaarvoice.seo.sdk.helpers.TestcaseConstants;
+import com.bazaarvoice.seo.sdk.helpers.SeoTestcaseConstants;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
@@ -119,9 +119,9 @@ public class BVManagedUIContent_CharacterEncoding_Test {
 	private BVUIContent getUTF8Configuration() {
 		BVConfiguration _bvConfiguration = new BVSdkConfiguration();
 		_bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, 
-				TestcaseConstants.getTestRootFolder());
+				SeoTestcaseConstants.getTestRootFolder());
 		_bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, 
-				TestcaseConstants.getTestCloudKey());
+				SeoTestcaseConstants.getTestCloudKey());
 		_bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, 
 				"false");
 		_bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");

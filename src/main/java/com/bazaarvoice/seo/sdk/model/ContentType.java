@@ -20,18 +20,21 @@
 package com.bazaarvoice.seo.sdk.model;
 
 /**
- * ContentType enum : Allows to speciy the type of contents to get from the cloud.
+ * ContentType enum : Allows to specify the type of contents to get from the cloud.
+ * 
  * @author Anandan Narayanaswamy
  *
  */
 public enum ContentType {
+	
     REVIEWS("re"),
     REVIEWSPAGE("rp"),
     QUESTIONS("qu"),
     QUESTIONSPAGE("qp"),
     STORIES("sy"),
     STORIESPAGE("sp"),
-    UNIVERSAL("un");
+    UNIVERSAL("un"),
+    SPOTLIGHTS("sl");
 
     private final String ctxKeyword;
 
@@ -50,6 +53,10 @@ public enum ContentType {
     public static ContentType ctFromKeyWord(String ctxKeyWord) {
     	if (ctxKeyWord.equalsIgnoreCase("re")) {
     		return REVIEWS;
+    	}
+    	
+    	if (ctxKeyWord.equalsIgnoreCase("sl")) {
+    		return SPOTLIGHTS;
     	}
     	
     	if (ctxKeyWord.equalsIgnoreCase("rp")) {
