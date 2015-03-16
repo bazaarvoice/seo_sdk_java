@@ -19,34 +19,6 @@
 
 package com.bazaarvoice.seo.sdk;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.Proxy.Type;
-import java.net.SocketAddress;
-import java.net.SocketTimeoutException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.text.MessageFormat;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.exception.BVSdkException;
@@ -56,6 +28,21 @@ import com.bazaarvoice.seo.sdk.util.BVConstant;
 import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
 import com.bazaarvoice.seo.sdk.util.BVThreadPool;
 import com.bazaarvoice.seo.sdk.util.BVUtilty;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.*;
+import java.net.Proxy.Type;
+import java.nio.charset.Charset;
+import java.text.MessageFormat;
+import java.util.concurrent.*;
+import java.util.regex.Pattern;
 
 /**
  * Implementation class for {@link BVUIContentService}. This class is a self
@@ -133,8 +120,9 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
         }
 
         String content = null;
+        InputStream is = null;
+        HttpURLConnection httpUrlConnection = null;
         try {
-        	HttpURLConnection httpUrlConnection = null;
             URL url = path.toURL();
             
             if (!StringUtils.isBlank(proxyHost) && !"none".equalsIgnoreCase(proxyHost)) {
@@ -148,8 +136,8 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
             
             httpUrlConnection.setConnectTimeout(connectionTimeout);
             httpUrlConnection.setReadTimeout(socketTimeout);
-            
-            InputStream is = httpUrlConnection.getInputStream();
+
+            is = httpUrlConnection.getInputStream();
             
 	        byte[] byteArray = IOUtils.toByteArray(is);
 	        is.close();
@@ -163,6 +151,8 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
 //        	e.printStackTrace();
         } catch (IOException e) {
 //        	e.printStackTrace();
+            // Error stream needs to be read fully to keep the connection persistent on exceptions
+            handleErrorStream(httpUrlConnection);
 			if (e instanceof SocketTimeoutException) {
 				throw new BVSdkException(e.getMessage());
 			} else {
@@ -170,7 +160,9 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
 			}
 		} catch (BVSdkException bve) {
 			throw bve;
-		}
+		} finally {
+            IOUtils.closeQuietly(is);
+        }
         
         boolean isValidContent = BVUtilty.validateBVContent(content);
         if (!isValidContent) {
@@ -179,7 +171,28 @@ public class BVUIContentServiceProvider implements BVUIContentService, Callable<
         
         return content;
     }
-    
+
+    /**
+     * Handle errorStream on httpConnection to help with Keep-Alive.
+     * In order to help with Keep-Alive, we need to call getErrorStream()
+     * and get the response body. This method needs to be called when IOException occurs.
+     * http://docs.oracle.com/javase/7/docs/technotes/guides/net/http-keepalive.html
+     *
+     * @param httpUrlConnection the connection to get the error stream
+     */
+    private void handleErrorStream(final HttpURLConnection httpUrlConnection) {
+        InputStream es = null;
+        try {
+            es = httpUrlConnection.getErrorStream();
+            if (es != null) {
+                IOUtils.toByteArray(es);
+            }
+        } catch(IOException ioe) {} // swallow any errors in errorstream
+        finally {
+            IOUtils.closeQuietly(es);
+        }
+    }
+
     private String loadContentFromFile(URI path) {
 
         String content = null;
