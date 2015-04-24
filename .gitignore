@@ -8,3 +8,6 @@ target/
 .classpath
 .project
 test-output
+
+# Sublime Text
+*.sublime-*
