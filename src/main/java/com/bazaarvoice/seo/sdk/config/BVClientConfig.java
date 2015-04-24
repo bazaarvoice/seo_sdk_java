@@ -21,6 +21,13 @@ package com.bazaarvoice.seo.sdk.config;
 
 public enum BVClientConfig {
 
+    // Legacy, inactive properties.
+    //
+    // These are only retained to stop old client code from breaking when the
+    // SDK version is updated. They have no effect if set.
+    BOT_DETECTION("botDetection"),
+
+    // Active configuration properties.
     BV_ROOT_FOLDER("bv.root.folder"),
     CLOUD_KEY("cloudKey"),
     LOAD_SEO_FILES_LOCALLY("loadSEOFilesLocally"),
