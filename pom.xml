@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bazaarvoice</groupId>
 	<artifactId>bv-seo-sdk</artifactId>
-	<version>2.2.0.3</version>
+	<version>2.2.0.4</version>
 	<name>bv-seo-sdk</name>
 	<description>bazaarvoice seo-sdk project</description>
 
 	<scm>
-		<!-- example for scm.connection.url : 
-		scm:git:git@github.com:bazaarvoice/bv_seo_sdk_java.git 
+		<!-- example for scm.connection.url :
+		scm:git:git@github.com:bazaarvoice/bv_seo_sdk_java.git
 		Use -D options in the maven or a property variable setter.
 		-->
 		<connection>${scm.connection.url}</connection>
@@ -46,8 +46,8 @@
 			<version>9.1.0.M0</version>
 			<scope>test</scope>
 		</dependency>
-            
-		<!-- <dependency> <groupId>org.mockito</groupId> <artifactId>mockito-all</artifactId> 
+
+		<!-- <dependency> <groupId>org.mockito</groupId> <artifactId>mockito-all</artifactId>
 			<version>1.9.5</version> <scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -105,7 +105,7 @@
 			<version>1.2.17</version>
 			<scope>test</scope>
 		</dependency>
-            
+
 	</dependencies>
 
 	<build>
@@ -161,7 +161,7 @@
 					</instructions>
 				</configuration>
 			</plugin>
-	
+
 		<!-- bypass/skip the actual maven deploy and run custom s3 plugin upload -->
 		<plugin>
         	<groupId>org.apache.maven.plugins</groupId>
@@ -171,7 +171,7 @@
           	<skip>true</skip>
         	</configuration>
  		</plugin>
-      		 
+
 		  <!-- Upload the install script into the scripts directory. -->
 		  <!-- command to execute : mvn -Ds3.repo.path=<THE_PATH> deploy -->
  		<plugin>
@@ -193,7 +193,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- maven plugin for SCM tagging. -->
 			<!-- Usage : mvn scm:tag -->
 			<plugin>
