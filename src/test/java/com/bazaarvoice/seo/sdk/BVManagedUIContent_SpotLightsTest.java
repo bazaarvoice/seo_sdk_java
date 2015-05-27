@@ -16,228 +16,277 @@ import com.bazaarvoice.seo.sdk.model.SubjectType;
 
 /**
  * Test case for testing spotlights using BVManagedUIContent.getContent.
- * 
+ *
  * @author anandan.narayanaswamy
  */
 public class BVManagedUIContent_SpotLightsTest {
 
-	/**
-	 * Tests getContent API with spotlights in BVParameters with 
-	 * invalid product.
-	 * 
-	 * Basically the invalid URL should still give a valid output but with a 
-	 * resource not found message.
-	 */
-	@Test
-	public void testGetContent_Invalid_Product() {
-		
-		BVConfiguration bvConfiguration = new BVSdkConfiguration();
-		bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, 
-				SpotlightsTestcaseConstants.getTestRootFolder());
-		bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, 
-				SpotlightsTestcaseConstants.getTestCloudKey());
-		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, 
-				"false");
-		bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
-		bvConfiguration.addProperty(BVClientConfig.STAGING, "true");
-		
-		BVParameters bvQueryParams = new BVParameters();
-		bvQueryParams.setBaseURI("http://localhost/");
-		bvQueryParams.setPageURI("http://localhost/?bvreveal=debug");
-		bvQueryParams.setSubjectType(SubjectType.CATEGORY);
-		bvQueryParams.setContentType(ContentType.SPOTLIGHTS);
-		bvQueryParams.setSubjectId(SpotlightsTestcaseConstants
-				.getTestProduct_1() + "_invalid_category");
-		bvQueryParams.setUserAgent("googlebot");
-		
-		BVUIContent bvUiContent = new BVManagedUIContent(bvConfiguration);
-		String uiContent = bvUiContent.getContent(bvQueryParams);
-		
-//		System.out.println(uiContent);
-		Document jsoupDocument = Jsoup.parse(uiContent);
-		Elements messageElement = jsoupDocument.select("li[data-bvseo=ms]");
-		String expectedString = "bvseo-msg: The resource to the URL or file is"
-				+ " currently unavailable.;";
-//		System.out.println(messageElement.text());
-		Assert.assertEquals(messageElement.text(), expectedString, 
-				"Should contain resource unavailable specific error.");
-		
-	}	
-	
-	/**
-	 * Tests getContent API with spotlights in BVParameters with valid product.
-	 * Finally assert on  aggregateCategories, productRecommendations. 
-	 */
-	@Test
-	public void testGetContent_Valid_Product() {
-		
-		BVConfiguration bvConfiguration = new BVSdkConfiguration();
-		bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, 
-				SpotlightsTestcaseConstants.getTestRootFolder());
-		bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, 
-				SpotlightsTestcaseConstants.getTestCloudKey());
-		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, 
-				"false");
-		bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
-		bvConfiguration.addProperty(BVClientConfig.STAGING, "true");
-		
-		BVParameters bvQueryParams = new BVParameters();
-		bvQueryParams.setBaseURI("http://localhost/");
-		bvQueryParams.setPageURI("http://localhost/?bvreveal=debug");
-		bvQueryParams.setSubjectType(SubjectType.CATEGORY);
-		bvQueryParams.setContentType(ContentType.SPOTLIGHTS);
-		bvQueryParams.setSubjectId(SpotlightsTestcaseConstants
-				.getTestProduct_1());
-		bvQueryParams.setUserAgent("googlebot");
-		
-		BVUIContent bvUiContent = new BVManagedUIContent(bvConfiguration);
-		String uiContent = bvUiContent.getContent(bvQueryParams);
+  /**
+   * Tests getContent API with spotlights in BVParameters with
+   * invalid product.
+   *
+   * Basically the invalid URL should still give a valid output but with a
+   * resource not found message.
+   */
+  @Test
+  public void testGetContent_Invalid_Product() {
 
-		Assert.assertFalse("".equals(uiContent), 
-				"uiContent should not be empty");
-//		System.out.println(uiContent);
-		Document jsoupDocument = Jsoup.parse(uiContent);
-//		System.out.println("Jsoup : " + aggregateElement);
-		assertCategoryAggregateSection(jsoupDocument);
-		assertRecommendedProducts(jsoupDocument);
-		
-	}
-	
-	/**
-	 *  Tests getAggregateRating API with spotlights in BVParameters with valid
-	 *  product.
-	 *  
-	 *  Finally assert on aggregateCategories.
-	 *  
-	 *  Note: As of now the behavior for this API is not determined.
-	 *  By default we are allowing what ever it returns.
-	 */
-	@Test
-	public void testGetAggregate() {
-		
-		BVConfiguration bvConfiguration = new BVSdkConfiguration();
-		bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, 
-				SpotlightsTestcaseConstants.getTestRootFolder());
-		bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, 
-				SpotlightsTestcaseConstants.getTestCloudKey());
-		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, 
-				"false");
-		bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
-		bvConfiguration.addProperty(BVClientConfig.STAGING, "true");
-		
-		BVParameters bvQueryParams = new BVParameters();
-		bvQueryParams.setBaseURI("http://localhost/");
-		bvQueryParams.setPageURI("http://localhost/?bvreveal=debug");
-		bvQueryParams.setSubjectType(SubjectType.CATEGORY);
-		bvQueryParams.setContentType(ContentType.SPOTLIGHTS);
-		bvQueryParams.setSubjectId(SpotlightsTestcaseConstants
-				.getTestProduct_1());
-		bvQueryParams.setUserAgent("googlebot");
-		
-		BVUIContent bvUiContent = new BVManagedUIContent(bvConfiguration);
-		String uiContent = bvUiContent.getAggregateRating(bvQueryParams);
-//		System.out.println(uiContent);
-		
-		Document jsoupDocument = Jsoup.parse(uiContent);
-//		System.out.println("Jsoup : " + aggregateElement);
-		assertCategoryAggregateSection(jsoupDocument);
-//		assertRecommendedProducts(jsoupDocument);
-		
-	}
-	
-	/**
-	 *  Tests getReviews API with spotlights in BVParameters with valid
-	 *  product.
-	 *  
-	 *  Finally assert on category aggregateCategories.
-	 *  
-	 *  Note: As of now the behavior for this API is not determined.
-	 *  By default we are allowing what ever it returns.
-	 */
-	@Test
-	public void testGetReviews() {
-		
-		BVConfiguration bvConfiguration = new BVSdkConfiguration();
-		bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, 
-				SpotlightsTestcaseConstants.getTestRootFolder());
-		bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, 
-				SpotlightsTestcaseConstants.getTestCloudKey());
-		bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, 
-				"false");
-		bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "true");
-		bvConfiguration.addProperty(BVClientConfig.STAGING, "true");
-		
-		BVParameters bvQueryParams = new BVParameters();
-		bvQueryParams.setBaseURI("http://localhost/");
-		bvQueryParams.setPageURI("http://localhost/?bvreveal=debug");
-		bvQueryParams.setSubjectType(SubjectType.CATEGORY);
-		bvQueryParams.setContentType(ContentType.SPOTLIGHTS);
-		bvQueryParams.setSubjectId(SpotlightsTestcaseConstants
-				.getTestProduct_1());
-		bvQueryParams.setUserAgent("googlebot");
-		
-		BVUIContent bvUiContent = new BVManagedUIContent(bvConfiguration);
-		String uiContent = bvUiContent.getReviews(bvQueryParams);
-//		System.out.println(uiContent);
-		
-		Document jsoupDocument = Jsoup.parse(uiContent);
-//		System.out.println("Jsoup : " + aggregateElement);
-		assertCategoryAggregateSection(jsoupDocument);
-		assertRecommendedProducts(jsoupDocument);
-		
-	}
-	
-	/**
-	 * Assertions for category aggregate section.
-	 * 
-	 * Boolean assertions are made on aggregate categories
-	 * and finally equality tests are made keeping aggregateRating 
-	 * attribute.
-	 * 
-	 * @param jsoupDocument
-	 */
-	private void assertCategoryAggregateSection(final Document jsoupDocument) {
-		
-		Elements aggregateElementByCategory = jsoupDocument.select(
-				"div.bvseo-category-aggregate");
-		Assert.assertFalse("".equals(aggregateElementByCategory.toString()), 
-				"There should be aggregateSection Elements.");
-		//System.out.println(aggregateElement);
-		
-		Elements aggregateElementByRating = jsoupDocument.select(
-				"div[itemprop=aggregateRating]");
-		Assert.assertFalse("".equals(aggregateElementByRating.toString()), 
-				"There should be aggregateSection Elements.");
-		Assert.assertEquals(aggregateElementByCategory.toString(), 
-				aggregateElementByRating.toString(), "aggregatRating section "
-						+ "with varying attribute section should be same");
-		//System.out.println(aggregateElement1);
-		
-	}
-	
-	/**
-	 * Assertions for recommended product lists and product reviews.
-	 * Assertions on size and size match are made.
-	 * 
-	 * @param jsoupDocument
-	 */
-	private void assertRecommendedProducts(Document jsoupDocument) {
-		
-		Elements recommendedProducts = jsoupDocument.select(
-				"li.bv-recommended-product");
-		Assert.assertTrue(recommendedProducts.size() > 0, 
-				"Recommended products should be greater than 0");
-		
-		Elements productReviews = jsoupDocument.select(
-				"ol.bvseo-reviews-list");
-		Assert.assertTrue(productReviews.size() > 0, 
-				"Product reviews should be greater than 0");
-//		System.out.println(productReviews.size());
-		
-		Assert.assertEquals(recommendedProducts.size(), productReviews.size(),
-				"number of recommended products vs. product reviews"
-				+ " should be same");
-		
-	}
-	
+    BVConfiguration bvConfiguration = new BVSdkConfiguration();
+    bvConfiguration.addProperty(
+      BVClientConfig.BV_ROOT_FOLDER,
+      SpotlightsTestcaseConstants.getTestRootFolder()
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.CLOUD_KEY,
+      SpotlightsTestcaseConstants.getTestCloudKey()
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.LOAD_SEO_FILES_LOCALLY,
+      "false"
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.SEO_SDK_ENABLED,
+      "true"
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.STAGING,
+      "true"
+    );
+
+    BVParameters bvQueryParams = new BVParameters();
+    bvQueryParams.setBaseURI("http://localhost/");
+    bvQueryParams.setPageURI("http://localhost/?bvreveal=debug");
+    bvQueryParams.setSubjectType(SubjectType.CATEGORY);
+    bvQueryParams.setContentType(ContentType.SPOTLIGHTS);
+    bvQueryParams.setSubjectId(SpotlightsTestcaseConstants
+        .getTestProduct_1() + "_invalid_category");
+    bvQueryParams.setUserAgent("googlebot");
+
+    BVUIContent bvUiContent = new BVManagedUIContent(bvConfiguration);
+    String uiContent = bvUiContent.getContent(bvQueryParams);
+
+    Document jsoupDocument = Jsoup.parse(uiContent);
+    Elements messageElement = jsoupDocument.select("li[data-bvseo=ms]");
+    String expectedString = "bvseo-msg: The resource to the URL or file is currently unavailable.;";
+    Assert.assertEquals(
+      messageElement.text(),
+      expectedString,
+      "Should contain resource unavailable specific error."
+    );
+
+  }
+
+  /**
+   * Tests getContent API with spotlights in BVParameters with valid product.
+   * Finally assert on  aggregateCategories, productRecommendations.
+   */
+  @Test
+  public void testGetContent_Valid_Product() {
+    BVConfiguration bvConfiguration = new BVSdkConfiguration();
+    bvConfiguration.addProperty(
+      BVClientConfig.BV_ROOT_FOLDER,
+      SpotlightsTestcaseConstants.getTestRootFolder()
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.CLOUD_KEY,
+      SpotlightsTestcaseConstants.getTestCloudKey()
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.LOAD_SEO_FILES_LOCALLY,
+      "false"
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.SEO_SDK_ENABLED,
+      "true"
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.STAGING,
+      "true"
+    );
+
+    BVParameters bvQueryParams = new BVParameters();
+    bvQueryParams.setBaseURI("http://localhost/");
+    bvQueryParams.setPageURI("http://localhost/?bvreveal=debug");
+    bvQueryParams.setSubjectType(SubjectType.CATEGORY);
+    bvQueryParams.setContentType(ContentType.SPOTLIGHTS);
+    bvQueryParams.setSubjectId(SpotlightsTestcaseConstants.getTestProduct_1());
+    bvQueryParams.setUserAgent("googlebot");
+
+    BVUIContent bvUiContent = new BVManagedUIContent(bvConfiguration);
+    String uiContent = bvUiContent.getContent(bvQueryParams);
+
+    Assert.assertFalse(
+      "".equals(uiContent),
+      "uiContent should not be empty"
+    );
+
+    Document jsoupDocument = Jsoup.parse(uiContent);
+    assertCategoryAggregateSection(jsoupDocument);
+    assertRecommendedProducts(jsoupDocument);
+  }
+
+  /**
+   *  Tests getAggregateRating API with spotlights in BVParameters with valid
+   *  product.
+   *
+   *  Finally assert on aggregateCategories.
+   *
+   *  Note: As of now the behavior for this API is not determined.
+   *  By default we are allowing what ever it returns.
+   */
+  @Test
+  public void testGetAggregate() {
+
+    BVConfiguration bvConfiguration = new BVSdkConfiguration();
+    bvConfiguration.addProperty(
+      BVClientConfig.BV_ROOT_FOLDER,
+      SpotlightsTestcaseConstants.getTestRootFolder()
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.CLOUD_KEY,
+      SpotlightsTestcaseConstants.getTestCloudKey()
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.LOAD_SEO_FILES_LOCALLY,
+      "false"
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.SEO_SDK_ENABLED,
+      "true"
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.STAGING,
+      "true"
+    );
+
+    BVParameters bvQueryParams = new BVParameters();
+    bvQueryParams.setBaseURI("http://localhost/");
+    bvQueryParams.setPageURI("http://localhost/?bvreveal=debug");
+    bvQueryParams.setSubjectType(SubjectType.CATEGORY);
+    bvQueryParams.setContentType(ContentType.SPOTLIGHTS);
+    bvQueryParams.setSubjectId(SpotlightsTestcaseConstants.getTestProduct_1());
+    bvQueryParams.setUserAgent("googlebot");
+
+    BVUIContent bvUiContent = new BVManagedUIContent(bvConfiguration);
+    String uiContent = bvUiContent.getAggregateRating(bvQueryParams);
+
+    Document jsoupDocument = Jsoup.parse(uiContent);
+    assertCategoryAggregateSection(jsoupDocument);
+  }
+
+  /**
+   *  Tests getReviews API with spotlights in BVParameters with valid
+   *  product.
+   *
+   *  Finally assert on category aggregateCategories.
+   *
+   *  Note: As of now the behavior for this API is not determined.
+   *  By default we are allowing what ever it returns.
+   */
+  @Test
+  public void testGetReviews() {
+    BVConfiguration bvConfiguration = new BVSdkConfiguration();
+    bvConfiguration.addProperty(
+      BVClientConfig.BV_ROOT_FOLDER,
+      SpotlightsTestcaseConstants.getTestRootFolder()
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.CLOUD_KEY,
+      SpotlightsTestcaseConstants.getTestCloudKey()
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.LOAD_SEO_FILES_LOCALLY,
+      "false"
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.SEO_SDK_ENABLED,
+      "true"
+    );
+    bvConfiguration.addProperty(
+      BVClientConfig.STAGING,
+      "true"
+    );
+
+    BVParameters bvQueryParams = new BVParameters();
+    bvQueryParams.setBaseURI("http://localhost/");
+    bvQueryParams.setPageURI("http://localhost/?bvreveal=debug");
+    bvQueryParams.setSubjectType(SubjectType.CATEGORY);
+    bvQueryParams.setContentType(ContentType.SPOTLIGHTS);
+    bvQueryParams.setSubjectId(
+      SpotlightsTestcaseConstants.getTestProduct_1()
+    );
+    bvQueryParams.setUserAgent("googlebot");
+
+    BVUIContent bvUiContent = new BVManagedUIContent(bvConfiguration);
+    String uiContent = bvUiContent.getReviews(bvQueryParams);
+
+    Document jsoupDocument = Jsoup.parse(uiContent);
+    assertCategoryAggregateSection(jsoupDocument);
+    assertRecommendedProducts(jsoupDocument);
+  }
+
+  /**
+   * Assertions for category aggregate section.
+   *
+   * Boolean assertions are made on aggregate categories and finally equality
+   * tests are made keeping aggregateRating attribute.
+   *
+   * @param jsoupDocument
+   */
+  private void assertCategoryAggregateSection(final Document jsoupDocument) {
+    Elements aggregateElementByCategory = jsoupDocument.select(
+      "div.bvseo-category-aggregate"
+    );
+    Assert.assertFalse("".equals(
+      aggregateElementByCategory.toString()),
+      "There should be aggregateSection Elements."
+    );
+
+    Elements aggregateElementByRating = jsoupDocument.select(
+      "div[itemprop=aggregateRating]"
+    );
+    Assert.assertFalse(
+      "".equals(aggregateElementByRating.toString()),
+      "There should be aggregateSection Elements."
+    );
+    Assert.assertEquals(
+      aggregateElementByCategory.toString(),
+      aggregateElementByRating.toString(),
+      "aggregatRating section with varying attribute section should be same"
+    );
+  }
+
+  /**
+   * Assertions for recommended product lists and product reviews. Assertions on
+   * size and size match are made.
+   *
+   * @param jsoupDocument
+   */
+  private void assertRecommendedProducts(Document jsoupDocument) {
+
+    Elements recommendedProducts = jsoupDocument.select(
+      "li.bv-recommended-product"
+    );
+
+    Assert.assertTrue(
+      recommendedProducts.size() > 0,
+      "Recommended products should be greater than 0"
+    );
+
+    Elements productReviews = jsoupDocument.select(
+      "ol.bvseo-reviews-list"
+    );
+
+    Assert.assertTrue(
+      productReviews.size() > 0,
+      "Product reviews should be greater than 0"
+    );
+
+    Assert.assertEquals(
+      recommendedProducts.size(),
+      productReviews.size(),
+      "number of recommended products vs. product reviews should be same"
+    );
+  }
+
 }

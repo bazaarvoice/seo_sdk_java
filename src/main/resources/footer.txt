@@ -1,26 +1,26 @@
 
 <ul id="BVSEOSDK_meta" style="display:none !important">
-	<li data-bvseo="sdk">bvseo_sdk, java_sdk, bvseo-${project.version}</li>
-	<li data-bvseo="sp_mt">${accessMethod}, method:${methodType}, ${executionTime}ms</li>
-	<li data-bvseo="ct_st">${_bvParameters.contentType}, ${_bvParameters.subjectType}</li>
-#if (${message}) 
-	<li data-bvseo="ms">bvseo-msg: ${message}</li>
+  <li data-bvseo="sdk">bvseo_sdk, java_sdk, bvseo-${project.version}</li>
+  <li data-bvseo="sp_mt">${accessMethod}, method:${methodType}, ${executionTime}ms</li>
+  <li data-bvseo="ct_st">${_bvParameters.contentType}, ${_bvParameters.subjectType}</li>
+#if (${message})
+  <li data-bvseo="ms">bvseo-msg: ${message}</li>
 #end
 </ul>
 
 #if (${revealMap})
 <ul id="BVSEOSDK_meta_debug" style="display:none !important">
 #foreach (${config} in ${revealMap.entrySet()})
-	<li data-bvseo="${config.key}">${config.value}</li>
+  <li data-bvseo="${config.key}">${config.value}</li>
 #end
-	<li data-bvseo="userAgent">${_bvParameters.userAgent}</li>
-	<li data-bvseo="baseURI">${_bvParameters.baseURI}</li>
-	<li data-bvseo="pageURI">${_bvParameters.pageURI}</li>
-	<li data-bvseo="subjectId">${_bvParameters.subjectId}</li>
-	<li data-bvseo="contentType">${_bvParameters.contentType}</li>
-	<li data-bvseo="subjectType">${_bvParameters.subjectType}</li>
-	#if (${url})
-	<li data-bvseo="contentURL">${url}</li>
-	#end
+  <li data-bvseo="userAgent">${_bvParameters.userAgent}</li>
+  <li data-bvseo="baseURI">${_bvParameters.baseURI}</li>
+  <li data-bvseo="pageURI">${_bvParameters.pageURI}</li>
+  <li data-bvseo="subjectId">${_bvParameters.subjectId}</li>
+  <li data-bvseo="contentType">${_bvParameters.contentType}</li>
+  <li data-bvseo="subjectType">${_bvParameters.subjectType}</li>
+  #if (${url})
+  <li data-bvseo="contentURL">${url}</li>
+  #end
 </ul>
 #end

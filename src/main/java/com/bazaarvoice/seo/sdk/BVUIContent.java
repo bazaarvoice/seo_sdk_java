@@ -1,12 +1,12 @@
 /*
  * ===========================================================================
  * Copyright 2014 Bazaarvoice, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * ===========================================================================
- * 
+ *
  */
 
 package com.bazaarvoice.seo.sdk;
@@ -22,31 +22,32 @@ package com.bazaarvoice.seo.sdk;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
 
 /**
- * 
  * @author Anandan Narayanaswamy
- *
  */
 public interface BVUIContent {
 
-	/**
-	 * Gets the complete bazaarvoice seo content.
-	 * @param bvQueryParams
-	 * @return String:seo content
-	 */
-	String getContent(BVParameters bvQueryParams);
-	
-	/**
-	 * Gets only the aggregateRating.
-	 * @param bvQueryParams
-	 * @return String aggregate content.
-	 */
-	String getAggregateRating(BVParameters bvQueryParams);
-	
-	/**
-	 * Gets only the reviews.
-	 * @param bvQueryParams
-	 * @return String reviews content.
-	 */
-	String getReviews(BVParameters bvQueryParams);
-	
+  /**
+   * Gets the complete bazaarvoice seo content.
+   *
+   * @param bvQueryParams
+   * @return String:seo content
+   */
+  String getContent(BVParameters bvQueryParams);
+
+  /**
+   * Gets only the aggregateRating.
+   *
+   * @param bvQueryParams
+   * @return String aggregate content.
+   */
+  String getAggregateRating(BVParameters bvQueryParams);
+
+  /**
+   * Gets only the reviews.
+   *
+   * @param bvQueryParams
+   * @return String reviews content.
+   */
+  String getReviews(BVParameters bvQueryParams);
+
 }
