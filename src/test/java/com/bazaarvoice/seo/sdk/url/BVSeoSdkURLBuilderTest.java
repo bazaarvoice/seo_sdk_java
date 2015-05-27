@@ -19,14 +19,6 @@
 
 package com.bazaarvoice.seo.sdk.url;
 
-import static org.testng.Assert.assertEquals;
-
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
@@ -34,6 +26,13 @@ import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.model.ContentSubType;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+
+import static org.testng.Assert.assertEquals;
 
 /**
  * Test class for BVSeoSdkURLBuilder.
@@ -58,7 +57,7 @@ public class BVSeoSdkURLBuilderTest {
     );
     bvConfiguration.addProperty(
       BVClientConfig.CLOUD_KEY,
-      "godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4"
+      "myshco-126b543c32d9079f120a575ece25bad6"
     );
     bvConfiguration.addProperty(
       BVClientConfig.LOCAL_SEO_FILE_ROOT,
@@ -92,7 +91,7 @@ public class BVSeoSdkURLBuilderTest {
 
     String expectedBaseUri = "";
     String expectedQueryString = "";
-    String expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/reviews/product/1/ssl-certificates.htm";
+    String expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviews/product/1/ssl-certificates.htm";
 
     String actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     String actualQueryString = bvSeoSdkUrl.queryString();
@@ -124,7 +123,7 @@ public class BVSeoSdkURLBuilderTest {
 
     expectedBaseUri = "";
     expectedQueryString = "";
-    expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/reviews/product/1/ssl-certificates.htm";
+    expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviews/product/1/ssl-certificates.htm";
 
     actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     actualQueryString = bvSeoSdkUrl.queryString();
@@ -156,7 +155,7 @@ public class BVSeoSdkURLBuilderTest {
 
     expectedBaseUri = "http://localhost:8080/Sample/Example-1.jsp";
     expectedQueryString = "bvrrp=abcd";
-    expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/reviews/product/1/ssl-certificates.htm";
+    expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviews/product/1/ssl-certificates.htm";
 
     actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     actualQueryString = bvSeoSdkUrl.queryString();
@@ -186,7 +185,7 @@ public class BVSeoSdkURLBuilderTest {
 
     expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
     expectedQueryString = "null&bvrrp=6574-en_us/reviews/product/3/ssl-certificates.htm";
-    expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/reviews/product/3/ssl-certificates.htm";
+    expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviews/product/3/ssl-certificates.htm";
 
     actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     actualQueryString = bvSeoSdkUrl.queryString();
@@ -218,11 +217,65 @@ public class BVSeoSdkURLBuilderTest {
 
     expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
     expectedQueryString = "null&bvrrp=6574-en_us/reviews/product/2/ssl-certificates.htm";
-    expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/reviews/product/2/ssl-certificates.htm";
+    expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviews/product/2/ssl-certificates.htm";
 
     actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     actualQueryString = bvSeoSdkUrl.queryString();
     actualSeoContentUri = bvSeoSdkUrl.seoContentUri().toString();
+
+    assertEquals(actualBaseUri, expectedBaseUri, "actual and expected base uri should be same");
+    assertEquals(actualQueryString, expectedQueryString, "actual and expected query string should be same");
+    assertEquals(actualSeoContentUri, expectedSeoContentUri, "actual and expected seo content uri should be same");
+  }
+
+  @Test
+  public void testPRR_HTTP_In_QA() {
+    bvConfiguration.addProperty(BVClientConfig.STAGING, "false");
+    bvConfiguration.addProperty(BVClientConfig.TESTING, "true");
+
+    BVParameters bvParam = new BVParameters();
+    bvParam.setBaseURI(null);
+    bvParam.setPageURI(null);
+    bvParam.setContentType(ContentType.REVIEWS);
+    bvParam.setSubjectType(SubjectType.PRODUCT);
+    bvParam.setSubjectId("ssl-certificates");
+
+    bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
+
+    String expectedBaseUri = "";
+    String expectedQueryString = "";
+    String expectedSeoContentUri = "http://seo-qa.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviews/product/1/ssl-certificates.htm";
+
+    String actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
+    String actualQueryString = bvSeoSdkUrl.queryString();
+    String actualSeoContentUri = bvSeoSdkUrl.seoContentUri().toString();
+
+    assertEquals(actualBaseUri, expectedBaseUri, "actual and expected base uri should be same");
+    assertEquals(actualQueryString, expectedQueryString, "actual and expected query string should be same");
+    assertEquals(actualSeoContentUri, expectedSeoContentUri, "actual and expected seo content uri should be same");
+  }
+
+  @Test
+  public void testPRR_HTTP_In_QA_Staging() {
+    bvConfiguration.addProperty(BVClientConfig.STAGING, "true");
+    bvConfiguration.addProperty(BVClientConfig.TESTING, "true");
+
+    BVParameters bvParam = new BVParameters();
+    bvParam.setBaseURI(null);
+    bvParam.setPageURI(null);
+    bvParam.setContentType(ContentType.REVIEWS);
+    bvParam.setSubjectType(SubjectType.PRODUCT);
+    bvParam.setSubjectId("ssl-certificates");
+
+    bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParam);
+
+    String expectedBaseUri = "";
+    String expectedQueryString = "";
+    String expectedSeoContentUri = "http://seo-qa-stg.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviews/product/1/ssl-certificates.htm";
+
+    String actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
+    String actualQueryString = bvSeoSdkUrl.queryString();
+    String actualSeoContentUri = bvSeoSdkUrl.seoContentUri().toString();
 
     assertEquals(actualBaseUri, expectedBaseUri, "actual and expected base uri should be same");
     assertEquals(actualQueryString, expectedQueryString, "actual and expected query string should be same");
@@ -423,7 +476,7 @@ public class BVSeoSdkURLBuilderTest {
 
     String expectedBaseUri = "http://localhost:8080/Sample/Example-1.jsp";
     String expectedQueryString = "bvpage=pg2/ctrp/stp";
-    String expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/reviewspage/product/2/ssl-certificates.htm";
+    String expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviewspage/product/2/ssl-certificates.htm";
 
     String actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     String actualQueryString = bvSeoSdkUrl.queryString();
@@ -457,7 +510,7 @@ public class BVSeoSdkURLBuilderTest {
 
     expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
     expectedQueryString = "null&bvpage=pg3/ctre/stp/idcatfood";
-    expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/reviews/product/3/catfood.htm";
+    expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviews/product/3/catfood.htm";
 
     actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     actualQueryString = bvSeoSdkUrl.queryString();
@@ -491,7 +544,7 @@ public class BVSeoSdkURLBuilderTest {
 
     expectedBaseUri = "/sample_seo_sdk_web/scenario-2.jsp?null";
     expectedQueryString = "null&bvpage=pg4/ctrp/stp";
-    expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/reviewspage/product/4/p5543.htm";
+    expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviewspage/product/4/p5543.htm";
 
     actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     actualQueryString = bvSeoSdkUrl.queryString();
@@ -524,7 +577,7 @@ public class BVSeoSdkURLBuilderTest {
 
     expectedBaseUri = "";
     expectedQueryString = "null&bvpage=pg2/ctre/stc";
-    expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/reviews/category/2/c8765.htm";
+    expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/reviews/category/2/c8765.htm";
 
     actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     actualQueryString = bvSeoSdkUrl.queryString();
@@ -557,7 +610,7 @@ public class BVSeoSdkURLBuilderTest {
 
     expectedBaseUri = "";
     expectedQueryString = "null&bvpage=ctqa/std/id45677";
-    expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/questions/detail/1/45677.htm";
+    expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/questions/detail/1/45677.htm";
 
     actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     actualQueryString = bvSeoSdkUrl.queryString();
@@ -590,7 +643,7 @@ public class BVSeoSdkURLBuilderTest {
 
     expectedBaseUri = "";
     expectedQueryString = "null&bvpage=ctun/ste/idmyshirtspage";
-    expectedSeoContentUri = "http://seo.bazaarvoice.com/godaddy-a4501eb5be8bf8efda68f3f4ff7b3cf4/6574-en_us/universal/entry/1/myshirtspage.htm";
+    expectedSeoContentUri = "http://seo.bazaarvoice.com/myshco-126b543c32d9079f120a575ece25bad6/6574-en_us/universal/entry/1/myshirtspage.htm";
 
     actualBaseUri = bvSeoSdkUrl.correctedBaseUri();
     actualQueryString = bvSeoSdkUrl.queryString();

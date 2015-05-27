@@ -27,6 +27,8 @@ package com.bazaarvoice.seo.sdk.config;
  */
 public enum BVCoreConfig {
 
+  TESTING_STAGING_S3_HOSTNAME("testingStagingS3Hostname"),
+  TESTING_PRODUCTION_S3_HOSTNAME("testingProductionS3Hostname"),
   STAGING_S3_HOSTNAME("stagingS3Hostname"),
   PRODUCTION_S3_HOSTNAME("productionS3Hostname");
 
@@ -39,5 +41,4 @@ public enum BVCoreConfig {
   public String getPropertyName() {
     return this.propertyName;
   }
-
 }

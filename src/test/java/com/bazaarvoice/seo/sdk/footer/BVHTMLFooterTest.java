@@ -19,11 +19,6 @@
 
 package com.bazaarvoice.seo.sdk.footer;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import org.testng.annotations.Test;
-
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
@@ -32,6 +27,10 @@ import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
 import com.bazaarvoice.seo.sdk.url.BVSeoSdkURLBuilder;
 import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Test class for BVHTMLFooter.
@@ -182,13 +181,15 @@ public class BVHTMLFooterTest {
       .append("\\Q<ul id=\"BVSEOSDK_meta_debug\" style=\"display:none !important\">\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.enabled\">true</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"cloudKey\">${config.value}</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"loadSEOFilesLocally\">true</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"staging\">false</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"loadSEOFilesLocally\">true</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"includeDisplayIntegrationCode\">${config.value}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.ssl.enabled\">${config.value}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"stagingS3Hostname\">seo-stg.bazaarvoice.com</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.execution.timeout\">500</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"crawlerAgentPattern\">msnbot|google|teoma|bingbot|yandexbot|yahoo</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"testingProductionS3Hostname\">seo-qa.bazaarvoice.com</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"testingStagingS3Hostname\">seo-qa-stg.bazaarvoice.com</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.charset\">${config.value}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"bv.root.folder\">${config.value}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"localSEOFileRoot\">${config.value}</li>\\E")
@@ -198,6 +199,8 @@ public class BVHTMLFooterTest {
       .append("\\s\\s\\Q<li data-bvseo=\"socketTimeout\">2000</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.execution.timeout.bot\">2000</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"productionS3Hostname\">seo.bazaarvoice.com</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"testing\">false</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"botDetection\">${config.value}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"userAgent\">${_bvParameters.userAgent}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"baseURI\">${_bvParameters.baseURI}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"pageURI\">?bvreveal=debug</li>\\E")
@@ -208,5 +211,4 @@ public class BVHTMLFooterTest {
 
     return sBuilder.toString();
   }
-
 }

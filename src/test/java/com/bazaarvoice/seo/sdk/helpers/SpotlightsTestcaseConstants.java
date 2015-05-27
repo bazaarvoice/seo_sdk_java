@@ -15,14 +15,14 @@ package com.bazaarvoice.seo.sdk.helpers;
  */
 public class SpotlightsTestcaseConstants {
 
-  private static final String testCloudKey = "spotlight-four-746e2fc1211dc8964560350c9f28b67a";
+  private static final String testCloudKey = "spotlight-five-311f5a3337b8d5e0d817adb7af279b0a";
   private static final String testRootFolder = "Main_Site-en_US";
   private static final String testProduct_1 = "category-3";
 
   /**
    * Returns the test client's cloud key that is defined in
    * SpotlightsTestcaseConstants.testCoudKey. Currently this is set to
-   * spotlight-four-746e2fc1211dc8964560350c9f28b67a.
+   * spotlight-five-311f5a3337b8d5e0d817adb7af279b0a.
    *
    * @return testCloudKey
    */

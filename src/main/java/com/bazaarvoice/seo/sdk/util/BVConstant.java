@@ -36,6 +36,8 @@ public final class BVConstant {
    */
   public static final String STAGING_S3_HOSTNAME = "seo-stg.bazaarvoice.com";
   public static final String PRODUCTION_S3_HOSTNAME = "seo.bazaarvoice.com";
+  public static final String TESTING_PRODUCTION_S3_HOSTNAME = "seo-qa.bazaarvoice.com";
+  public static final String TESTING_STAGING_S3_HOSTNAME = "seo-qa-stg.bazaarvoice.com";
   public static final String EXECUTION_TIMEOUT = "500";
   public static final String EXECUTION_TIMEOUT_BOT = "2000";
   public static final String CRAWLER_AGENT_PATTERN = "msnbot|google|teoma|bingbot|yandexbot|yahoo";
@@ -43,6 +45,7 @@ public final class BVConstant {
   public static final String CONNECT_TIMEOUT = "2000";
   public static final String SOCKET_TIMEOUT = "2000";
   public static final String STAGING = "false";
+  public static final String TESTING = "false";
   public static final String SEO_SDK_ENABLED = "true";
   public static final String PROXY_HOST = "none";
   public static final String PROXY_PORT = "0";

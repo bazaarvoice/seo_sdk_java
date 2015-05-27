@@ -38,6 +38,7 @@ public enum BVClientConfig {
   CRAWLER_AGENT_PATTERN("crawlerAgentPattern"),
   SEO_SDK_ENABLED("seo.sdk.enabled"),
   STAGING("staging"),
+  TESTING("testing"),
   EXECUTION_TIMEOUT("seo.sdk.execution.timeout"),
   EXECUTION_TIMEOUT_BOT("seo.sdk.execution.timeout.bot"),
   PROXY_HOST("seo.sdk.http.proxy.host"),
@@ -52,6 +53,6 @@ public enum BVClientConfig {
   }
 
   public String getPropertyName() {
-      return propertyName;
+    return propertyName;
   }
 }

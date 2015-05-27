@@ -19,14 +19,11 @@
 
 package com.bazaarvoice.seo.sdk.config;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.fail;
-
-import org.testng.annotations.Test;
-
 import com.bazaarvoice.seo.sdk.exception.BVSdkException;
 import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 /**
  * Test class for BVSdkConfiguration implementation class.
@@ -57,6 +54,12 @@ public class BVSdkConfigurationTest {
       "seo-stg.bazaarvoice.com",
       "stagingS3Hostname are different."
     );
+    String testingStagingS3Hostname = bvConfiguration.getProperty("testingStagingS3Hostname");
+    assertEquals(
+      testingStagingS3Hostname,
+      "seo-qa-stg.bazaarvoice.com",
+      "testingStagingS3Hostname are different."
+    );
 
     String productionS3Hostname = bvConfiguration.getProperty(
       "productionS3Hostname"
@@ -65,6 +68,12 @@ public class BVSdkConfigurationTest {
       productionS3Hostname,
       "seo.bazaarvoice.com",
       "productionS3Hostname are different."
+    );
+    String testingProductionS3Hostname = bvConfiguration.getProperty("testingProductionS3Hostname");
+    assertEquals(
+      testingProductionS3Hostname,
+      "seo-qa.bazaarvoice.com",
+      "testingProductionS3Hostname are different."
     );
   }
 
@@ -216,6 +225,14 @@ public class BVSdkConfigurationTest {
       "seo.bazaarvoice.com",
       "production hostname has been changed please fix."
     );
+    hostName = configuration.getProperty(
+      BVCoreConfig.TESTING_PRODUCTION_S3_HOSTNAME.getPropertyName()
+    );
+    assertEquals(
+      hostName,
+      "seo-qa.bazaarvoice.com",
+      "testing production hostname has been changed please fix."
+    );
 
     hostName = configuration.getProperty(
       BVCoreConfig.STAGING_S3_HOSTNAME.getPropertyName()
@@ -224,6 +241,14 @@ public class BVSdkConfigurationTest {
       hostName,
       "seo-stg.bazaarvoice.com",
       "staging hostname has been changed please fix."
+    );
+    hostName = configuration.getProperty(
+      BVCoreConfig.TESTING_STAGING_S3_HOSTNAME.getPropertyName()
+    );
+    assertEquals(
+      hostName,
+      "seo-qa-stg.bazaarvoice.com",
+      "testing staging hostname has been changed please fix."
     );
   }
 }

@@ -19,15 +19,14 @@
 
 package com.bazaarvoice.seo.sdk.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.bazaarvoice.seo.sdk.exception.BVSdkException;
+import com.bazaarvoice.seo.sdk.util.BVConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bazaarvoice.seo.sdk.exception.BVSdkException;
-import com.bazaarvoice.seo.sdk.util.BVConstant;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Default implementation of configuration settings. This loads the Bazaarvoice
@@ -61,6 +60,14 @@ public class BVSdkConfiguration implements BVConfiguration {
       BVCoreConfig.STAGING_S3_HOSTNAME.getPropertyName(),
       BVConstant.STAGING_S3_HOSTNAME
     );
+    _instanceConfiguration.put(
+      BVCoreConfig.TESTING_PRODUCTION_S3_HOSTNAME.getPropertyName(),
+      BVConstant.TESTING_PRODUCTION_S3_HOSTNAME
+    );
+    _instanceConfiguration.put(
+      BVCoreConfig.TESTING_STAGING_S3_HOSTNAME.getPropertyName(),
+      BVConstant.TESTING_STAGING_S3_HOSTNAME
+    );
 
     addProperty(
       BVClientConfig.EXECUTION_TIMEOUT,
@@ -83,6 +90,10 @@ public class BVSdkConfiguration implements BVConfiguration {
     addProperty(
       BVClientConfig.STAGING,
       BVConstant.STAGING
+    );
+    addProperty(
+      BVClientConfig.TESTING,
+      BVConstant.TESTING
     );
     addProperty(
       BVClientConfig.SEO_SDK_ENABLED,

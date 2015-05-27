@@ -235,7 +235,7 @@ public class BVManagedUIContent_SpotLightsTest {
    */
   private void assertCategoryAggregateSection(final Document jsoupDocument) {
     Elements aggregateElementByCategory = jsoupDocument.select(
-      "div.bvseo-category-aggregate"
+      "div.bv-category-aggregate"
     );
     Assert.assertFalse("".equals(
       aggregateElementByCategory.toString()),
@@ -274,7 +274,7 @@ public class BVManagedUIContent_SpotLightsTest {
     );
 
     Elements productReviews = jsoupDocument.select(
-      "ol.bvseo-reviews-list"
+      "ol.bv-reviews-list"
     );
 
     Assert.assertTrue(
@@ -288,5 +288,4 @@ public class BVManagedUIContent_SpotLightsTest {
       "number of recommended products vs. product reviews should be same"
     );
   }
-
 }

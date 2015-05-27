@@ -19,18 +19,6 @@
 
 package com.bazaarvoice.seo.sdk.url;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.StringTokenizer;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
-
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVCoreConfig;
@@ -40,6 +28,17 @@ import com.bazaarvoice.seo.sdk.model.ContentSubType;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
 import com.bazaarvoice.seo.sdk.util.BVUtility;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Builds the proper url to access the bazaarvoice content.
@@ -152,6 +151,9 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
   }
 
   private URI httpUri(String path) {
+    boolean isTesting = Boolean.parseBoolean(bvConfiguration.getProperty(
+      BVClientConfig.TESTING.getPropertyName()
+    ));
     boolean isStaging = Boolean.parseBoolean(bvConfiguration.getProperty(
       BVClientConfig.STAGING.getPropertyName()
     ));
@@ -159,15 +161,28 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
       BVClientConfig.SSL_ENABLED.getPropertyName()
     ));
 
-    String s3Hostname = isStaging ? bvConfiguration.getProperty(
-      BVCoreConfig.STAGING_S3_HOSTNAME.getPropertyName()
-    ) : bvConfiguration.getProperty(
-      BVCoreConfig.PRODUCTION_S3_HOSTNAME.getPropertyName()
-    );
 
+    String s3Hostname;
+    if (isTesting)
+    {
+      s3Hostname = isStaging ? bvConfiguration.getProperty(
+        BVCoreConfig.TESTING_STAGING_S3_HOSTNAME.getPropertyName()
+      ) : bvConfiguration.getProperty(
+        BVCoreConfig.TESTING_PRODUCTION_S3_HOSTNAME.getPropertyName()
+      );
+    }
+    else
+    {
+      s3Hostname = isStaging ? bvConfiguration.getProperty(
+        BVCoreConfig.STAGING_S3_HOSTNAME.getPropertyName()
+      ) : bvConfiguration.getProperty(
+        BVCoreConfig.PRODUCTION_S3_HOSTNAME.getPropertyName()
+      );
+    }
     String cloudKey = bvConfiguration.getProperty(
       BVClientConfig.CLOUD_KEY.getPropertyName()
     );
+
     String urlPath = "/" + cloudKey + "/" + path;
     URIBuilder builder = new URIBuilder();
 
