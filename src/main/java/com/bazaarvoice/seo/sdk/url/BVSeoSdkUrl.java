@@ -38,6 +38,13 @@ public interface BVSeoSdkUrl {
   URI seoContentUri();
 
   /**
+   * retrieves the fragment string.
+   *
+   * @return fragmentString.
+   */
+  String fragmentString();
+
+  /**
    * retrieves the query string.
    *
    * @return queryString.

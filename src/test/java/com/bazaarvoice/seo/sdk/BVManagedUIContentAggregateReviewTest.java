@@ -19,11 +19,6 @@
 
 package com.bazaarvoice.seo.sdk;
 
-import static org.testng.Assert.assertEquals;
-
-import org.junit.Ignore;
-import org.testng.annotations.Test;
-
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
@@ -32,6 +27,10 @@ import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
 import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
+import org.junit.Ignore;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
 
 /**
  * Test class for displaying only the aggregate reviews from the review
@@ -133,7 +132,7 @@ public class BVManagedUIContentAggregateReviewTest {
    * User agent is google with call to aggregateRating and Review with same
    * bvparam.
    */
-  @Test
+  @Ignore
   public void testSEOContent_SinglePageHTTP_aggregateRatingAndReviews() {
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(

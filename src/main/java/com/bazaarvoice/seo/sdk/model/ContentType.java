@@ -82,4 +82,28 @@ public enum ContentType {
 
     return null;
   }
+
+  public static ContentType ctFromBVStateKeyword(String ctxKeyword) {
+    if (ctxKeyword.equalsIgnoreCase("r")) {
+      return REVIEWS;
+    }
+
+    if (ctxKeyword.equalsIgnoreCase("q")) {
+      return QUESTIONS;
+    }
+
+    if (ctxKeyword.equalsIgnoreCase("s")) {
+      return STORIES;
+    }
+
+    if (ctxKeyword.equalsIgnoreCase("sp")) {
+      return SPOTLIGHTS;
+    }
+
+    if (ctxKeyword.equalsIgnoreCase("u")) {
+      return UNIVERSAL;
+    }
+
+    return null;
+  }
 }

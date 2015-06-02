@@ -19,12 +19,13 @@
 
 package com.bazaarvoice.seo.sdk.footer;
 
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.bazaarvoice.seo.sdk.config.BVClientConfig;
+import com.bazaarvoice.seo.sdk.config.BVConfiguration;
+import com.bazaarvoice.seo.sdk.config.BVCoreConfig;
+import com.bazaarvoice.seo.sdk.exception.BVSdkException;
+import com.bazaarvoice.seo.sdk.model.BVParameters;
+import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
+import com.bazaarvoice.seo.sdk.util.BVUtility;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -33,13 +34,11 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bazaarvoice.seo.sdk.config.BVClientConfig;
-import com.bazaarvoice.seo.sdk.config.BVConfiguration;
-import com.bazaarvoice.seo.sdk.config.BVCoreConfig;
-import com.bazaarvoice.seo.sdk.exception.BVSdkException;
-import com.bazaarvoice.seo.sdk.model.BVParameters;
-import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
-import com.bazaarvoice.seo.sdk.util.BVConstant;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation class for adding bazaarvoice footer in the bazaarvoice seo
@@ -107,8 +106,7 @@ public class BVHTMLFooter implements BVFooter {
     Template template = _velocityEngine.getTemplate(FOOTER_FILE);
     VelocityContext context = new VelocityContext();
 
-    if (_bvParameters !=null && _bvParameters.getPageURI() != null &&
-        _bvParameters.getPageURI().contains(BVConstant.BVREVEAL_DEBUG)) {
+    if (BVUtility.isRevealDebugEnabled(_bvParameters)) {
       Map<String, String> revealMap = null;
       revealMap = new HashMap<String, String>();
       String configName = null;

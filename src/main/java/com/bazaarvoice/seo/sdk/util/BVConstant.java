@@ -26,8 +26,15 @@ package com.bazaarvoice.seo.sdk.util;
  */
 public final class BVConstant {
 
-  public static final String BVREVEAL = "bvreveal";
   public static final String BVREVEAL_DEBUG = "bvreveal=debug";
+  public static final String BVSTATE_REGEX = "bvstate=((([^?&/%:])*:([^?&/%])*)(/)?)+";
+  public static final String BVSTATE_REGEX_WITH_TRAILING_SEPARATOR = BVSTATE_REGEX + "(&|%26){0,1}";
+  public static final String BVSTATE_REVEAL_DEBUG_REGEX = "bvstate=((([^?&/%:])*:([^?&/%])*)(/)?)+(reveal:debug)";
+  public static final String BVSTATE_KEYVALUE_SEPARATOR_CHAR = ":";
+  public static final String BVSTATE_TOKEN_SEPARATOR_CHAR = "/";
+  public static final String ESCAPED_FRAGMENT_KEY = "_escaped_fragment_=";
+  public static final String ESCAPED_FRAGMENT_MULTIVALUE_SEPARATOR = "%26";
+  public static final String FRAGMENT_MARKER = "#!";
   public static final String JS_DISPLAY_MSG = "JavaScript-only Display;";
   public static final String INCLUDE_PAGE_URI = "{INSERT_PAGE_URI}";
 

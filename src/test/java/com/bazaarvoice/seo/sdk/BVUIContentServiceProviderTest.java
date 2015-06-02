@@ -19,18 +19,15 @@
 
 package com.bazaarvoice.seo.sdk;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
-import com.bazaarvoice.seo.sdk.url.BVSeoSdkURLBuilder;
-import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Test class for {@link BVUIContentServiceProvider}
@@ -143,9 +140,8 @@ public class BVUIContentServiceProviderTest {
     bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "False");
     bvParameters = new BVParameters();
     bvParameters.setPageURI("http://localhost:8080/sampleapp/thecontent.jsp?product=abc");
-    BVSeoSdkUrl bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParameters);
     bvUIContentService = new BVUIContentServiceProvider(bvConfiguration);
-    bvUIContentService.setBVSeoSdkUrl(bvSeoSdkUrl);
+    bvUIContentService.setBVParameters(bvParameters);
     isSdkEnabled = bvUIContentService.isSdkEnabled();
     assertFalse(isSdkEnabled, "SDK enabled should be false here.");
 
@@ -154,12 +150,27 @@ public class BVUIContentServiceProviderTest {
      */
     bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "False");
     bvParameters = new BVParameters();
-    bvParameters.setPageURI("http://localhost:8080/sampleapp/thecontent.jsp?product=abc&bvreveal");
-    bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParameters);
+    bvParameters.setPageURI(
+      "http://localhost:8080/sampleapp/thecontent.jsp?product=abc&bvreveal=debug"
+    );
     bvUIContentService = new BVUIContentServiceProvider(bvConfiguration);
-    bvUIContentService.setBVSeoSdkUrl(bvSeoSdkUrl);
+    bvUIContentService.setBVParameters(bvParameters);
     isSdkEnabled = bvUIContentService.isSdkEnabled();
     assertTrue(isSdkEnabled, "SDK enabled should be true here.");
+
+    /*
+     * Disable SDK but upon reveal:debug in bvstate sdkEnabled should be true.
+     */
+    bvConfiguration.addProperty(BVClientConfig.SEO_SDK_ENABLED, "False");
+    bvParameters = new BVParameters();
+    bvParameters.setPageURI(
+      "http://localhost:8080/sampleapp/thecontent.jsp?product=abc" +
+      "&bvstate=ct:q/pg:1/st:p/reveal:debug"
+    );
+    bvUIContentService = new BVUIContentServiceProvider(bvConfiguration);
+    bvUIContentService.setBVParameters(bvParameters);
+    isSdkEnabled = bvUIContentService.isSdkEnabled();
+    assertTrue(isSdkEnabled, "SDK enabled reveal:debug should be true here.");
   }
 
 }

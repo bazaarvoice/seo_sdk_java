@@ -91,7 +91,42 @@ public class BVHTMLFooterTest {
     bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
 
     String displayFooter = bvFooter.displayFooter("getContent");
-    String expectedFooterPattern = getDbgFtrPtrn();
+    String expectedFooterPattern = getDbgFtrPtrn(bvParameters.getPageURI());
+
+    displayFooter = displayFooter.replaceAll("\\n", "");
+
+    assertTrue(
+      displayFooter.matches(expectedFooterPattern),
+      "The contents are changed either fix expectedFooterPattern or displayFooter"
+    );
+
+  }
+
+  /**
+   * Test case to test display footer method for bvstate keyvalue pair reveal:debug.
+   */
+  @Test
+  public void testDisplayFooter_debug_bvstate() {
+
+    BVConfiguration bvConfiguration = new BVSdkConfiguration();
+    bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "true");
+
+    BVParameters bvParameters = new BVParameters();
+    bvParameters.setContentType(ContentType.REVIEWS);
+    bvParameters.setPageURI("http://localhost:8080/Sample/Example-1.jsp?bvstate=ct:r/reveal:debug");
+    bvParameters.setSubjectType(SubjectType.PRODUCT);
+    bvParameters.setSubjectId("12345");
+
+    BVSeoSdkUrl _bvSeoSdkUrl = new BVSeoSdkURLBuilder(
+      bvConfiguration,
+      bvParameters
+    );
+
+    BVFooter bvFooter = new BVHTMLFooter(bvConfiguration, bvParameters);
+    bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
+
+    String displayFooter = bvFooter.displayFooter("getContent");
+    String expectedFooterPattern = getDbgFtrPtrn(bvParameters.getPageURI());
 
     displayFooter = displayFooter.replaceAll("\\n", "");
 
@@ -171,7 +206,76 @@ public class BVHTMLFooterTest {
     );
   }
 
-  private String getDbgFtrPtrn() {
+  /**
+   * Test case to test display footer method for reveal:debug bvstate key-value.
+   * Rules :
+   * display URLs only when HTTP method is invoked and not for local files.
+   */
+  @Test
+  public void testDisplayFooter_URL_debug_bvstate() {
+
+    BVConfiguration bvConfiguration = new BVSdkConfiguration();
+    bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, "cloud123");
+    bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, "bvRootFolder");
+    bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "false");
+
+    BVParameters bvParameters = new BVParameters();
+    bvParameters.setPageURI("http://localhost:8080/Sample/Example-1.jsp?bvstate=ct:r/reveal:debug");
+    bvParameters.setSubjectType(SubjectType.PRODUCT);
+    bvParameters.setContentType(ContentType.REVIEWS);
+    bvParameters.setSubjectId("product1");
+
+    BVSeoSdkUrl _bvSeoSdkUrl = new BVSeoSdkURLBuilder(
+      bvConfiguration,
+      bvParameters
+    );
+
+    BVFooter bvFooter = new BVHTMLFooter(bvConfiguration, bvParameters);
+    bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
+
+    String displayFooter = bvFooter.displayFooter("getContent");
+    displayFooter = displayFooter.replaceAll("\n", "");
+
+    String expectedUrlPattern = ".*(\\s\\s\\Q\\E<li data-bvseo=\"contentURL\">http://seo.bazaarvoice.com/cloud123/bvRootFolder/reviews/product/1/product1.htm</li>\\Q\\E).*";
+    String expectedContentTagPtrn = ".*(data-bvseo=\"contentURL\").*";
+
+    assertTrue(
+      displayFooter.matches(expectedUrlPattern),
+      "The contents are changed either fix expectedUrlPattern or displayFooter"
+    );
+    assertTrue(
+      displayFooter.matches(expectedContentTagPtrn),
+      "The contents are changed either fix expectedContentTagPtrn or displayFooter"
+    );
+
+    /*
+     * When loading from files it should not display URL.
+     */
+    bvConfiguration = new BVSdkConfiguration();
+    bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "true");
+
+    bvParameters = new BVParameters();
+    bvParameters.setPageURI("http://localhost:8080/Sample/Example-1.jsp?bvstate=ct:r/reveal:debug");
+    bvParameters.setSubjectType(SubjectType.PRODUCT);
+    bvParameters.setContentType(ContentType.REVIEWS);
+
+    _bvSeoSdkUrl = new BVSeoSdkURLBuilder(bvConfiguration, bvParameters);
+
+    bvFooter = new BVHTMLFooter(bvConfiguration, bvParameters);
+    bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
+
+    displayFooter = bvFooter.displayFooter("getContent");
+    displayFooter = displayFooter.replaceAll("\n", "");
+
+    expectedContentTagPtrn = ".*(data-bvseo=\"contentURL\").*";
+
+    assertFalse(
+      displayFooter.matches(expectedContentTagPtrn),
+      "The contents are changed either fix expectedContentTagPtrn or displayFooter"
+    );
+  }
+
+  private String getDbgFtrPtrn(String pageURI) {
     StringBuilder sBuilder = new StringBuilder();
     sBuilder.append("\\Q<ul id=\"BVSEOSDK_meta\" style=\"display:none !important\">\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-\\E\\d.\\d.\\d.\\d\\Q</li>\\E")
@@ -203,7 +307,7 @@ public class BVHTMLFooterTest {
       .append("\\s\\s\\Q<li data-bvseo=\"botDetection\">${config.value}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"userAgent\">${_bvParameters.userAgent}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"baseURI\">${_bvParameters.baseURI}</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"pageURI\">?bvreveal=debug</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"pageURI\">"+pageURI+"</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"subjectId\">12345</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"contentType\">REVIEWS</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"subjectType\">PRODUCT</li>\\E")

@@ -24,7 +24,6 @@ import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.exception.BVSdkException;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
-import com.bazaarvoice.seo.sdk.util.BVConstant;
 import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
 import com.bazaarvoice.seo.sdk.util.BVThreadPool;
 import com.bazaarvoice.seo.sdk.util.BVUtility;
@@ -99,10 +98,9 @@ public class BVUIContentServiceProvider
       sb.append(loadContentFromHttp(seoContentUrl));
     }
 
-    BVUtility.replaceString(
+    BVUtility.replacePageURIFromContent(
       sb,
-      BVConstant.INCLUDE_PAGE_URI,
-      baseUri + (baseUri.contains("?") ? "&" : "?")
+      baseUri
     );
   }
 
@@ -293,9 +291,7 @@ public class BVUIContentServiceProvider
       sdkEnabled = Boolean.parseBoolean(_bvConfiguration.getProperty(
         BVClientConfig.SEO_SDK_ENABLED.getPropertyName()
       ));
-      sdkEnabled = sdkEnabled || _bvSeoSdkUrl.queryString().contains(
-        BVConstant.BVREVEAL
-      );
+      sdkEnabled = sdkEnabled || BVUtility.isRevealDebugEnabled(_bvParameters);
     }
 
     return sdkEnabled;

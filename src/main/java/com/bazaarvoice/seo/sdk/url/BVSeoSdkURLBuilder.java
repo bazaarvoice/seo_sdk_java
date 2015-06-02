@@ -27,6 +27,7 @@ import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.model.ContentSubType;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
+import com.bazaarvoice.seo.sdk.util.BVConstant;
 import com.bazaarvoice.seo.sdk.util.BVUtility;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -39,6 +40,8 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Builds the proper url to access the bazaarvoice content.
@@ -48,11 +51,13 @@ import java.util.StringTokenizer;
 public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
 
   private static final String BV_PAGE = "bvpage";
+  private static final String BV_STATE = "bvstate";
   private static final String NUM_ONE_STR = "1";
   private static final String HTML_EXT = ".htm";
 
   private BVConfiguration bvConfiguration;
   private BVParameters bvParameters;
+  private String fragmentString;
   private String queryString;
 
   public BVSeoSdkURLBuilder(
@@ -62,6 +67,7 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
     this.bvConfiguration = bvConfiguration;
     this.bvParameters = bvParameters;
     this.queryString = queryString();
+    this.fragmentString = fragmentString();
   }
 
   /**
@@ -70,18 +76,23 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
    * @return String Corrected baseUri.
    */
   public String correctedBaseUri() {
-    String baseUri = bvParameters.getBaseURI() == null ? "" : bvParameters.getBaseURI();
+    return BVUtility.removeBVParameters(
+      bvParameters.getBaseURI() == null ? "" : bvParameters.getBaseURI()
+    );
+  }
 
-    if (
-      StringUtils.contains(baseUri, "bvrrp") ||
-      StringUtils.contains(baseUri, "bvqap") ||
-      StringUtils.contains(baseUri, "bvsyp") ||
-      StringUtils.contains(baseUri, "bvpage")
-    ) {
-       baseUri = BVUtility.removeBVQuery(baseUri);
+  /**
+   * Returns the fragmentString.
+   * Note: Usually server-side doesn't see the fragment but if the client
+   * passes in pageURI containing the fragment then we would see this.
+   *
+   * @return String The fragment string.
+   */
+  public String fragmentString() {
+    if (this.fragmentString == null) {
+      this.fragmentString = BVUtility.getFragmentString(bvParameters.getPageURI());
     }
-
-    return baseUri;
+    return this.fragmentString;
   }
 
   /**
@@ -97,16 +108,72 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
   }
 
   /**
+   * Returns the _escaped_fragment_ value from queryString
+   * @return String The _escaped_fragment_ value
+   */
+  private String getEscapedFragmentValue()
+  {
+    if (
+      queryString != null &&
+      queryString.contains(BVConstant.ESCAPED_FRAGMENT_KEY) &&
+      !queryString.endsWith(BVConstant.ESCAPED_FRAGMENT_KEY)
+    ) {
+      return queryString.split(
+        BVConstant.ESCAPED_FRAGMENT_KEY
+      )[1];
+    }
+    return "";
+  }
+
+  /**
    * forms the url to the seo content.
    * Implementation includes seo content url to load from
-   * 1. file system for C2013.
-   * 2. http url for C2013.
-   * 3. file system for PRR.
-   * 4. http url for PRR.
+   * 1. file system for bvstate
+   * 2. http url for bvstate
+   * 3. file system for C2013.
+   * 4. http url for C2013.
+   * 5. file system for PRR.
+   * 6. http url for PRR.
    *
    * @throws URISyntaxException
    */
   public URI seoContentUri() {
+    String pageURI = bvParameters.getPageURI();
+
+    // Extract content url from bvstate
+    if (pageURI != null && pageURI.contains(BV_STATE)) {
+      URI uri;
+      Pattern pattern = Pattern.compile(BVConstant.BVSTATE_REGEX);
+      // Url fragment has highest priority for bvstate
+      uri = bvstateMatcherAndURIExtractor(
+        pattern,
+        fragmentString
+      );
+
+      if (uri == null) {
+        // Next priority - bvstate in ESCAPED_FRAGMENT
+        // Assuming that spec for escaped fragment is being followed and
+        // that it is the last query string parameter
+        uri = bvstateMatcherAndURIExtractor(
+          pattern,
+          getEscapedFragmentValue()
+        );
+
+        // Finally, try bvstate in query parameter
+        if (uri == null) {
+          uri = bvstateMatcherAndURIExtractor(
+            pattern,
+            queryString
+          );
+        }
+      }
+      if (uri != null) {
+        return uri;
+      }
+    }
+
+    // Fallback to extract from bvpage
+    // We can think about removing this when we no longer support legacy parameters
     /*
      * if bvParameters.pageUri contains bvpage then we consider it as C2013 implementation.
      */
@@ -200,6 +267,116 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
     return null;
   }
 
+  private URI bvstateMatcherAndURIExtractor(
+    Pattern pattern,
+    String bvstateInputStr
+  )
+  {
+    if (bvstateInputStr != null && bvstateInputStr.contains(BV_STATE)) {
+      Matcher matcher = pattern.matcher(bvstateInputStr);
+      if (matcher.find()) {
+        return bvstateUri(matcher.group());
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Get URI from bvstate
+   * @param bvstateQueryString input containing bvstate key-value pairs
+   * @return URI when bvstate is valid, null otherwise
+   */
+  private URI bvstateUri(String bvstateQueryString) {
+    ContentType contentType = null;
+    SubjectType subjectType = null;
+    String subjectId = null;
+    String pageNumber = null;
+
+    List<NameValuePair> parameters = URLEncodedUtils.parse(
+      bvstateQueryString,
+      Charset.forName("UTF-8")
+    );
+
+    for(NameValuePair parameter : parameters) {
+      if (parameter.getName().equals(BV_STATE)) {
+        StringTokenizer tokens = new StringTokenizer(
+          parameter.getValue(),
+          BVConstant.BVSTATE_TOKEN_SEPARATOR_CHAR
+        );
+        while (tokens.hasMoreTokens()) {
+          String token = tokens.nextToken();
+          if (token.startsWith("pg")) {
+            pageNumber = extractValueFromBVStateKeyValueString(token);
+          } else if (token.startsWith("ct")) {
+            contentType = ContentType.ctFromBVStateKeyword(
+              extractValueFromBVStateKeyValueString(token)
+            );
+          } else if (token.startsWith("st")) {
+            subjectType = SubjectType.subjectType(
+              extractValueFromBVStateKeyValueString(token)
+            );
+          } else if (token.startsWith("id")) {
+            subjectId = extractValueFromBVStateKeyValueString(token);
+          }
+        }
+      }
+    }
+
+    /**
+     * Ignore bvstate values if
+     * 1. contentType is missing (or)
+     * 2. bvstate contentType doesn't match with bvParameters contentType
+     */
+    if (
+      contentType == null ||
+      (
+        bvParameters.getContentType() != null &&
+        !contentType.uriValue().equalsIgnoreCase(
+          bvParameters.getContentType().uriValue()
+        )
+      )
+    ) {
+      // when no uri is returned, it falls back to legacy seo parameters
+      return null;
+    }
+
+    // Defaulting logic if no subjectType is provided
+    if (subjectType == null) {
+      subjectType = (contentType == ContentType.SPOTLIGHTS)
+        ?
+        SubjectType.CATEGORY
+        :
+        SubjectType.PRODUCT;
+    }
+    subjectId = (StringUtils.isBlank(subjectId))
+      ?
+      bvParameters.getSubjectId()
+      :
+      subjectId;
+    bvParameters.setSubjectId(subjectId);
+
+    if (
+      StringUtils.isBlank(pageNumber) ||
+      !StringUtils.isNumeric(pageNumber)
+    ) {
+      pageNumber = NUM_ONE_STR;
+    }
+    bvParameters.setPageNumber(pageNumber);
+
+    String path = getPath(
+      contentType,
+      subjectType,
+      bvParameters.getPageNumber(),
+      subjectId,
+      bvParameters.getContentSubType()
+    );
+    if (isContentFromFile()) {
+      return fileUri(path);
+    }
+
+    return httpUri(path);
+  }
+
   /**
    * TODO: This method can be further optimized. But make sure that the
    * functionality doesn't break.
@@ -265,6 +442,16 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
 
   private String getValue(String valueString) {
     return valueString.substring(2, valueString.length());
+  }
+
+  private String extractValueFromBVStateKeyValueString(String keyValueString) {
+    if (
+      keyValueString.contains(BVConstant.BVSTATE_KEYVALUE_SEPARATOR_CHAR) &&
+      !keyValueString.endsWith(BVConstant.BVSTATE_KEYVALUE_SEPARATOR_CHAR)
+    ) {
+      return keyValueString.split(BVConstant.BVSTATE_KEYVALUE_SEPARATOR_CHAR)[1];
+    }
+    return "";
   }
 
   private String getPath(

@@ -241,19 +241,6 @@ public class BVManagedUIContent_SpotLightsTest {
       aggregateElementByCategory.toString()),
       "There should be aggregateSection Elements."
     );
-
-    Elements aggregateElementByRating = jsoupDocument.select(
-      "div[itemprop=aggregateRating]"
-    );
-    Assert.assertFalse(
-      "".equals(aggregateElementByRating.toString()),
-      "There should be aggregateSection Elements."
-    );
-    Assert.assertEquals(
-      aggregateElementByCategory.toString(),
-      aggregateElementByRating.toString(),
-      "aggregatRating section with varying attribute section should be same"
-    );
   }
 
   /**
