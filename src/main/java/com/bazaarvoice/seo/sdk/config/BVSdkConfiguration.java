@@ -49,9 +49,7 @@ public class BVSdkConfiguration implements BVConfiguration {
   public BVSdkConfiguration() {
     _instanceConfiguration = new HashMap<String, String>();
 
-    /*
-     * Adding bvcore properties.
-     */
+    // Adding bvcore properties.
     _instanceConfiguration.put(
       BVCoreConfig.PRODUCTION_S3_HOSTNAME.getPropertyName(),
       BVConstant.PRODUCTION_S3_HOSTNAME
@@ -71,7 +69,8 @@ public class BVSdkConfiguration implements BVConfiguration {
 
     addProperty(
       BVClientConfig.EXECUTION_TIMEOUT,
-      BVConstant.EXECUTION_TIMEOUT);
+      BVConstant.EXECUTION_TIMEOUT
+    );
     addProperty(
       BVClientConfig.EXECUTION_TIMEOUT_BOT,
       BVConstant.EXECUTION_TIMEOUT_BOT
@@ -82,7 +81,8 @@ public class BVSdkConfiguration implements BVConfiguration {
     );
     addProperty(
       BVClientConfig.CONNECT_TIMEOUT,
-      BVConstant.CONNECT_TIMEOUT);
+      BVConstant.CONNECT_TIMEOUT
+    );
     addProperty(
       BVClientConfig.SOCKET_TIMEOUT,
       BVConstant.SOCKET_TIMEOUT

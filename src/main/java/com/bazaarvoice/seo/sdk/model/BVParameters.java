@@ -38,6 +38,13 @@ public class BVParameters {
   private SubjectType subjectType;
   private ContentSubType contentSubType;
 
+  public BVParameters () {
+    // Most usage is for content type REVIEWS and subject type PRODUCT, so we
+    // default to those values.
+    this.setContentType(ContentType.REVIEWS);
+    this.setSubjectType(SubjectType.PRODUCT);
+  }
+
   public String getUserAgent() {
     return userAgent;
   }

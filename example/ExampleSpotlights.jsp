@@ -68,9 +68,10 @@ BVParameters _bvParam = new BVParameters();
 _bvParam.setUserAgent(request.getHeader( "User-Agent" ));
 // This should be URI/URL of the current page with all URL parameters.
 _bvParam.setPageURI(request.getRequestURI() + "?" + request.getQueryString());
-// Set to SPOTLIGHTS
+
+// Override the default settings of REVIEWS and PRODUCT with SPOTLIGHTS and
+// CATEGORY.
 _bvParam.setContentType(ContentType.SPOTLIGHTS);
-// Set to CATEGORY
 _bvParam.setSubjectType(SubjectType.CATEGORY);
 
 /**

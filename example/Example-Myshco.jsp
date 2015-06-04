@@ -63,9 +63,13 @@ BVParameters _bvParam = new BVParameters();
 _bvParam.setUserAgent(request.getHeader( "User-Agent" ));
 // This should be URI/URL of the current page with all URL parameters.
 _bvParam.setPageURI(request.getRequestURI() + "?" + request.getQueryString());
-// Set to REVIEWS, QUESTIONS, etc.
-_bvParam.setContentType(ContentType.REVIEWS);
-_bvParam.setSubjectType(SubjectType.PRODUCT);
+
+// Set to REVIEWS, or to QUESTIONS, etc.
+//
+// The following are the default values. These properties only need to be set
+// explicitly if using other values.
+//_bvParam.setContentType(ContentType.REVIEWS);
+//_bvParam.setSubjectType(SubjectType.PRODUCT);
 
 /**
  * baseURI and subjectId must be configured for each page.
