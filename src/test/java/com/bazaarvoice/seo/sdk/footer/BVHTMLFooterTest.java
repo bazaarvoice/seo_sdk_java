@@ -57,7 +57,7 @@ public class BVHTMLFooterTest {
     StringBuilder expectedFooterPattern = new StringBuilder();
     expectedFooterPattern.append("\\Q<ul id=\"BVSEOSDK_meta\" style=\"display:none !important\">\\E")
     .append("\\s\\s\\Q<li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-\\E\\d.\\d.\\d.\\d\\Q</li>\\E")
-    .append("\\s\\s\\Q<li data-bvseo=\"sp_mt\">getContent, method:CLOUD, 0ms</li>\\E")
+    .append("\\s\\s\\Q<li data-bvseo=\"sp_mt\">CLOUD, getContent, 0ms</li>\\E")
     .append("\\s\\s\\Q<li data-bvseo=\"ct_st\">REVIEWS, PRODUCT</li>\\E")
     .append("\\Q</ul>\\E");
     displayFooter = displayFooter.replaceAll("\\n", "");
@@ -279,7 +279,7 @@ public class BVHTMLFooterTest {
     StringBuilder sBuilder = new StringBuilder();
     sBuilder.append("\\Q<ul id=\"BVSEOSDK_meta\" style=\"display:none !important\">\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-\\E\\d.\\d.\\d.\\d\\Q</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"sp_mt\">getContent, method:LOCAL, 0ms</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"sp_mt\">LOCAL, getContent, 0ms</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"ct_st\">REVIEWS, PRODUCT</li>\\E")
       .append("\\Q</ul>\\E")
       .append("\\Q<ul id=\"BVSEOSDK_meta_debug\" style=\"display:none !important\">\\E")

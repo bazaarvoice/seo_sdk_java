@@ -1,7 +1,7 @@
 
 <ul id="BVSEOSDK_meta" style="display:none !important">
   <li data-bvseo="sdk">bvseo_sdk, java_sdk, bvseo-${project.version}</li>
-  <li data-bvseo="sp_mt">${accessMethod}, method:${methodType}, ${executionTime}ms</li>
+  <li data-bvseo="sp_mt">${methodType}, ${accessMethod}, ${executionTime}ms</li>
   <li data-bvseo="ct_st">${_bvParameters.contentType}, ${_bvParameters.subjectType}</li>
 #if (${message})
   <li data-bvseo="ms">bvseo-msg: ${message}</li>
