@@ -61,7 +61,9 @@ public class BVValidatorTest {
     errorMessage = bvValidator.validate(bvConfig, bvParams);
     assertEquals(
       errorMessage.contains(
-        "userAgent in BVParameters is null.;SubjectId cannot be null or empty.;subjectType is null in BVParameters.;"
+        "CLOUD_KEY is not configured in BVConfiguration.;BV_ROOT_FOLDER is not"
+        + " configured in BVConfiguration.;userAgent in BVParameters is "
+        + "null.;SubjectId cannot be null or empty.;"
       ),
       true,
       "Error Messages are different."
