@@ -250,6 +250,15 @@ public class BVSeoSdkURLBuilder implements BVSeoSdkUrl {
       BVClientConfig.CLOUD_KEY.getPropertyName()
     );
 
+
+    if (bvParameters.getSubjectType() == SubjectType.SELLER)
+    {
+      String prefix = isTesting ?
+        ( isStaging ? BVConstant.ENVIRONMENT_TESTING_STAGING : BVConstant.ENVIRONMENT_TESTING) :
+        ( isStaging ? BVConstant.ENVIRONMENT_STAGING : BVConstant.ENVIRONMENT_PROD);
+      s3Hostname = BVConstant.SELLER_RATINGS_S3_HOSTNAME + "/" + prefix;
+    }
+
     String urlPath = "/" + cloudKey + "/" + path;
     URIBuilder builder = new URIBuilder();
 

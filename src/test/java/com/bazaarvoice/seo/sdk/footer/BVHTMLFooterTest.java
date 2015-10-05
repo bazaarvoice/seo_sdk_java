@@ -103,6 +103,41 @@ public class BVHTMLFooterTest {
   }
 
   /**
+   * Test case to test display footer method for reveal=debug for Seller Ratings Display.
+   */
+  @Test
+  public void testDisplayFooter_debug_seller() {
+
+    BVConfiguration bvConfiguration = new BVSdkConfiguration();
+    bvConfiguration.addProperty(BVClientConfig.LOAD_SEO_FILES_LOCALLY, "true");
+
+    BVParameters bvParameters = new BVParameters();
+    bvParameters.setContentType(ContentType.REVIEWS);
+    bvParameters.setPageURI("?bvreveal=debug");
+    bvParameters.setSubjectType(SubjectType.SELLER);
+    bvParameters.setSubjectId("12345");
+
+    BVSeoSdkUrl _bvSeoSdkUrl = new BVSeoSdkURLBuilder(
+      bvConfiguration,
+      bvParameters
+    );
+
+    BVFooter bvFooter = new BVHTMLFooter(bvConfiguration, bvParameters);
+    bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
+
+    String displayFooter = bvFooter.displayFooter("getContent");
+    String expectedFooterPattern = getDbgFtrPtrn(bvParameters.getPageURI());
+
+    displayFooter = displayFooter.replaceAll("\\n", "");
+
+    assertTrue(
+      !displayFooter.contains("productionS3Hostname"),
+      "Contents should not include productionS3Hostname"
+    );
+
+  }
+
+  /**
    * Test case to test display footer method for bvstate keyvalue pair reveal:debug.
    */
   @Test

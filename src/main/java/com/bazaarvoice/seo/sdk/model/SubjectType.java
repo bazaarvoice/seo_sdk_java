@@ -28,7 +28,8 @@ public enum SubjectType {
   PRODUCT ("p"),
   CATEGORY ("c"),
   ENTRY ("e"),
-  DETAIL ("d");
+  DETAIL ("d"),
+  SELLER ("s");
 
   private String cs2013Text;
 
@@ -59,6 +60,10 @@ public enum SubjectType {
 
     if (subjectType.equalsIgnoreCase("d")) {
       return DETAIL;
+    }
+
+    if (subjectType.equalsIgnoreCase("s")) {
+      return SELLER;
     }
 
     return null;

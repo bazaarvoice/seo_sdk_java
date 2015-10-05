@@ -24,6 +24,7 @@ import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVCoreConfig;
 import com.bazaarvoice.seo.sdk.exception.BVSdkException;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
+import com.bazaarvoice.seo.sdk.model.SubjectType;
 import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
 import com.bazaarvoice.seo.sdk.util.BVUtility;
 import org.apache.commons.lang3.StringUtils;
@@ -110,9 +111,11 @@ public class BVHTMLFooter implements BVFooter {
       Map<String, String> revealMap = null;
       revealMap = new HashMap<String, String>();
       String configName = null;
-      for (BVCoreConfig bvCoreConfig : BVCoreConfig.values()) {
-        configName = bvCoreConfig.getPropertyName();
-        revealMap.put(configName, _bvConfiguration.getProperty(configName));
+      if (_bvParameters.getSubjectType() != SubjectType.SELLER) {
+        for (BVCoreConfig bvCoreConfig : BVCoreConfig.values()) {
+          configName = bvCoreConfig.getPropertyName();
+          revealMap.put(configName, _bvConfiguration.getProperty(configName));
+        }
       }
 
       for (BVClientConfig bvClientConfig : BVClientConfig.values()) {

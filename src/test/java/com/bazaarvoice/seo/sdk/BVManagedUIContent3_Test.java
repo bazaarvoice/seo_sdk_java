@@ -93,6 +93,35 @@ public class BVManagedUIContent3_Test {
     );
   }
 
+  /**
+   * Test case to get single page Seller Ratings review content.
+   */
+  @Test
+  public void test_SinglePage_SellerRatings() {
+    BVParameters bvParameters = new BVParameters();
+    bvParameters.setUserAgent("google");
+    bvParameters.setSubjectType(SubjectType.SELLER);
+    bvParameters.setSubjectId("seller");
+    bvParameters.setContentType(ContentType.REVIEWS);
+    bvParameters.setBaseURI("http://www.example.com/sellerRatings.htm");
+    bvParameters.setPageURI("http://www.example.com/sellerRatings.htm?someparams=something");
+    String errorMessage = null;
+    String content = null;
+    try {
+      content = _bvUIContent.getContent(bvParameters);
+    } catch (BVSdkException e) {
+      errorMessage = e.getMessage();
+    }
+    assertNull(errorMessage, "There should not be any errorMessage");
+    assertNotNull(
+      content,
+      "There should be content to proceed further.");
+    assertFalse(
+      content.contains("HTTP 403 Forbidden"),
+      "There should be valid content."
+    );
+  }
+
   @Test
   public void test_SinglePage_Question() {
     BVParameters bvParameters = new BVParameters();
