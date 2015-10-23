@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+
+* Added support for seller ratings.
+
 ## 2.3.0.0
 
 * Added default value for BVParameters.contentType to ContentType.REVIEWS if
