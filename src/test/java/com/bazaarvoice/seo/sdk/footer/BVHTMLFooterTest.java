@@ -43,8 +43,7 @@ public class BVHTMLFooterTest {
   /**
    * Test case to test display footer method plain tags.
    */
-  // test is currently broken due to version pattern changing
-  // @Test
+  @Test
   public void testDisplayFooter() {
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
 
@@ -57,7 +56,7 @@ public class BVHTMLFooterTest {
 
     StringBuilder expectedFooterPattern = new StringBuilder();
     expectedFooterPattern.append("\\Q<ul id=\"BVSEOSDK_meta\" style=\"display:none !important\">\\E")
-    .append("\\s\\s\\Q<li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-\\E\\d.\\d.\\d.\\d\\Q</li>\\E")
+    .append("\\s\\s\\Q<li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-\\E\\d+\\.\\d+\\.\\d+\\Q</li>\\E")
     .append("\\s\\s\\Q<li data-bvseo=\"sp_mt\">CLOUD, getContent, 0ms</li>\\E")
     .append("\\s\\s\\Q<li data-bvseo=\"ct_st\">REVIEWS, PRODUCT</li>\\E")
     .append("\\Q</ul>\\E");
@@ -71,8 +70,7 @@ public class BVHTMLFooterTest {
   /**
    * Test case to test display footer method for reveal=debug.
    */
-  // test invalid because of changed version pattern and jenkins altering the order of the metadata lines
-  // @Test
+  @Test
   public void testDisplayFooter_debug() {
 
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
@@ -142,8 +140,7 @@ public class BVHTMLFooterTest {
   /**
    * Test case to test display footer method for bvstate keyvalue pair reveal:debug.
    */
-  // test invalid because of changed version pattern and jenkins altering the order of the metadata lines"
-  // @Test
+  @Test
   public void testDisplayFooter_debug_bvstate() {
 
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
@@ -316,33 +313,33 @@ public class BVHTMLFooterTest {
   private String getDbgFtrPtrn(String pageURI) {
     StringBuilder sBuilder = new StringBuilder();
     sBuilder.append("\\Q<ul id=\"BVSEOSDK_meta\" style=\"display:none !important\">\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-\\E\\d.\\d.\\d.\\d\\Q</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-\\E\\d+\\.\\d+\\.\\d+\\Q</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"sp_mt\">LOCAL, getContent, 0ms</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"ct_st\">REVIEWS, PRODUCT</li>\\E")
       .append("\\Q</ul>\\E")
       .append("\\Q<ul id=\"BVSEOSDK_meta_debug\" style=\"display:none !important\">\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.enabled\">true</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"botDetection\">${config.value}</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"bv.root.folder\">${config.value}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"cloudKey\">${config.value}</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"staging\">false</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"loadSEOFilesLocally\">true</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"includeDisplayIntegrationCode\">${config.value}</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.ssl.enabled\">${config.value}</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"stagingS3Hostname\">seo-stg.bazaarvoice.com</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.execution.timeout\">500</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"connectTimeout\">2000</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"crawlerAgentPattern\">msnbot|google|teoma|bingbot|yandexbot|yahoo</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"includeDisplayIntegrationCode\">${config.value}</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"loadSEOFilesLocally\">true</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"localSEOFileRoot\">${config.value}</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"productionS3Hostname\">seo.bazaarvoice.com</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.charset\">${config.value}</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.enabled\">true</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.execution.timeout\">500</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.execution.timeout.bot\">2000</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.http.proxy.host\">none</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.http.proxy.port\">0</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.ssl.enabled\">${config.value}</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"socketTimeout\">2000</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"staging\">false</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"stagingS3Hostname\">seo-stg.bazaarvoice.com</li>\\E")
+      .append("\\s\\s\\Q<li data-bvseo=\"testing\">false</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"testingProductionS3Hostname\">seo-qa.bazaarvoice.com</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"testingStagingS3Hostname\">seo-qa-stg.bazaarvoice.com</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.charset\">${config.value}</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"bv.root.folder\">${config.value}</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"localSEOFileRoot\">${config.value}</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.http.proxy.host\">none</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"connectTimeout\">2000</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.http.proxy.port\">0</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"socketTimeout\">2000</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.execution.timeout.bot\">2000</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"productionS3Hostname\">seo.bazaarvoice.com</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"testing\">false</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"botDetection\">${config.value}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"userAgent\">${_bvParameters.userAgent}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"baseURI\">${_bvParameters.baseURI}</li>\\E")
       .append("\\s\\s\\Q<li data-bvseo=\"pageURI\">"+pageURI+"</li>\\E")

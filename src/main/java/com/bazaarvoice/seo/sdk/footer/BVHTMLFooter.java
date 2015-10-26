@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
@@ -109,7 +109,7 @@ public class BVHTMLFooter implements BVFooter {
 
     if (BVUtility.isRevealDebugEnabled(_bvParameters)) {
       Map<String, String> revealMap = null;
-      revealMap = new HashMap<String, String>();
+      revealMap = new TreeMap<String, String>();
       String configName = null;
       if (_bvParameters.getSubjectType() != SubjectType.SELLER) {
         for (BVCoreConfig bvCoreConfig : BVCoreConfig.values()) {
