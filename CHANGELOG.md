@@ -1,4 +1,7 @@
 # Changelog
+## 3.1.1
+* Added direct dependency to commons-collections 3.2.2 to avoid older vulnerable library(3.2.1) from being included from velocity. 
+* Force ordering on some footer metadata tags
 
 ## 3.1.0
 
