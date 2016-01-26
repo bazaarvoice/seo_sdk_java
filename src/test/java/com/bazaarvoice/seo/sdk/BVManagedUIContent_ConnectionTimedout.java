@@ -22,6 +22,7 @@ package com.bazaarvoice.seo.sdk;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -46,11 +47,12 @@ public class BVManagedUIContent_ConnectionTimedout {
    */
   @Test
   public void testConnectionTimeOut() {
+    DefaultRequestContext.initialize();
     bvConfiguration = new BVSDKConfigurationSimulator();
 
     BVParameters _bvParam = new BVParameters();
     _bvParam.setUserAgent("google");
-    // Tthis value is used to build pagination links.
+    // This value is used to build pagination links.
     _bvParam.setBaseURI("/thispage.htm");
     // This value is used to needed BV URL parameters.
     _bvParam.setPageURI("http://localhost:8080/abcd?notSure=1&letSee=2");
@@ -130,6 +132,10 @@ public class BVManagedUIContent_ConnectionTimedout {
       );
       propertyMap.put(
         BVClientConfig.EXECUTION_TIMEOUT.getPropertyName(),
+        "1000"
+      );
+      propertyMap.put(
+        BVClientConfig.EXECUTION_TIMEOUT_BOT.getPropertyName(),
         "1000"
       );
     }

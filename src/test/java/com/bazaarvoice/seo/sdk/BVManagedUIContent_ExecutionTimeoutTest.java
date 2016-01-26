@@ -21,6 +21,7 @@ package com.bazaarvoice.seo.sdk;
 
 import static org.testng.Assert.assertEquals;
 
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -43,6 +44,7 @@ public class BVManagedUIContent_ExecutionTimeoutTest {
    */
   @Test
   public void testExecutionTimeout() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -117,6 +119,7 @@ public class BVManagedUIContent_ExecutionTimeoutTest {
    */
   @Test
   public void testExecutionTimeout_ZeroTest() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -191,6 +194,7 @@ public class BVManagedUIContent_ExecutionTimeoutTest {
    */
   @Test
   public void testExecutionTimeoutBot() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -254,6 +258,7 @@ public class BVManagedUIContent_ExecutionTimeoutTest {
    */
   @Test
   public void testThreadCreation() {
+    DefaultRequestContext.initialize();
     //http://seo.bazaarvoice.com.s3.amazonaws.com/myshco-126b543c32d9079f120a575ece25bad6/9344ia/reviews/product/1/3000001.htm
     for (int i = 0; i < 1000; i++) {
       BVConfiguration bvConfig = new BVSdkConfiguration();

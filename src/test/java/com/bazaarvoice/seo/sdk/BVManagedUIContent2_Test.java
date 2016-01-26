@@ -26,6 +26,7 @@ import com.bazaarvoice.seo.sdk.exception.BVSdkException;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.junit.Ignore;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -69,6 +70,7 @@ public class BVManagedUIContent2_Test {
    */
   @Test
   public void test_PageNumber_PRR() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
     bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
     bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
@@ -106,6 +108,7 @@ public class BVManagedUIContent2_Test {
    */
   @Ignore
   public void test_PageNumber_PRR_LocalFiles() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
     bvConfiguration.addProperty(
       BVClientConfig.BV_ROOT_FOLDER,
@@ -162,6 +165,7 @@ public class BVManagedUIContent2_Test {
    */
   @Ignore
   public void test_PageNumber_CONV_LocalFiles() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
     bvConfiguration.addProperty(
       BVClientConfig.BV_ROOT_FOLDER,
@@ -217,6 +221,7 @@ public class BVManagedUIContent2_Test {
    */
   @Test
   public void test_PageNumber_C2013() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
     bvConfiguration.addProperty(BVClientConfig.BV_ROOT_FOLDER, "Main_Site-en_US");
     bvConfiguration.addProperty(BVClientConfig.CLOUD_KEY, "agileville-78B2EF7DE83644CAB5F8C72F2D8C8491");
@@ -246,6 +251,7 @@ public class BVManagedUIContent2_Test {
 
   @Test
   public void test_InteractivePage_Question() {
+    DefaultRequestContext.initialize();
     BVParameters bvParameters = new BVParameters();
     bvParameters.setUserAgent("google");
     bvParameters.setSubjectType(SubjectType.PRODUCT);
@@ -275,6 +281,7 @@ public class BVManagedUIContent2_Test {
 
   @Test
   public void test_InteractivePage_Stories() {
+    DefaultRequestContext.initialize();
     BVParameters bvParameters = new BVParameters();
     bvParameters.setUserAgent("google");
     bvParameters.setSubjectType(SubjectType.PRODUCT);

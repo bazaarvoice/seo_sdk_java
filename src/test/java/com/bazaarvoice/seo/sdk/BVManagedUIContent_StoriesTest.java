@@ -19,6 +19,7 @@
 
 package com.bazaarvoice.seo.sdk;
 
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
@@ -37,6 +38,7 @@ public class BVManagedUIContent_StoriesTest {
 
   @Test
   public void storyTest() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
     bvConfiguration.addProperty(
       BVClientConfig.BV_ROOT_FOLDER,

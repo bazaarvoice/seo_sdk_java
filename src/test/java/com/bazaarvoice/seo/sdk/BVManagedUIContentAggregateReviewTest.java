@@ -26,6 +26,7 @@ import com.bazaarvoice.seo.sdk.helpers.SeoTestcaseConstants;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.model.ContentType;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
 import org.junit.Ignore;
 import org.testng.annotations.Test;
@@ -45,6 +46,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Test
   public void testSEOContentFromHTTP_SinglePagePRR_AggregateRating() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -89,6 +91,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Test
   public void testSEOContentFromHTTP_SinglePagePRR_Reviews() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -134,6 +137,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Ignore
   public void testSEOContent_SinglePageHTTP_aggregateRatingAndReviews() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,
@@ -201,6 +205,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Ignore
   public void testSEOContent_SinglePageHTTP_getReviews_ERR0013() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,
@@ -257,6 +262,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Ignore
   public void testSEOContent_SinglePageHTTP_getReviews_Blank_page_test() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,
@@ -317,6 +323,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Ignore
   public void testSEOContent_SinglePageHTTP_aggregateRating_IfNotPresent() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,
@@ -374,6 +381,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Test
   public void testAggregate_WithoutPagination() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,
@@ -428,6 +436,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Test
   public void testGetContent_SDK_Disabled() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,
@@ -481,6 +490,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Ignore
   public void testGetAggregateRating_SDK_Disabled() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,
@@ -533,6 +543,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Ignore
   public void testGetReview_SDK_Disabled() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,
@@ -585,6 +596,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Test
   public void testSEOContentFromHTTP_SinglePagePRR_CrawlerOverride() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -701,6 +713,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Test
   public void testAggregate_NullSubjectID() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,
@@ -757,6 +770,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Test
   public void testAggregate_InvalidURL() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,
@@ -818,6 +832,7 @@ public class BVManagedUIContentAggregateReviewTest {
    */
   @Ignore
   public void testSEOContent_BVContents_blank_page_AggregateRating() {
+    DefaultRequestContext.initialize();
     /*
      * Test scenario when invoking getAggregateRating but receive blank
      * page.

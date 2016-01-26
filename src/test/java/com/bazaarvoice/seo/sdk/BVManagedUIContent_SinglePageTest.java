@@ -22,6 +22,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.net.URL;
 
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.junit.Ignore;
 import org.testng.annotations.Test;
 
@@ -50,6 +51,7 @@ public class BVManagedUIContent_SinglePageTest {
    */
   @Ignore
   public void testSEOContentFromFile_SinglePagePRR() {
+    DefaultRequestContext.initialize();
     URL url = getClass().getResource("/seo_local_files/myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
 
     BVConfiguration bvConfig = new BVSdkConfiguration();
@@ -93,6 +95,7 @@ public class BVManagedUIContent_SinglePageTest {
    */
   @Ignore
   public void testSEOContentFromFile_SinglePagePRR_pageUri() {
+    DefaultRequestContext.initialize();
     URL url = getClass().getResource("/seo_local_files/myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
 
     BVConfiguration bvConfig = new BVSdkConfiguration();
@@ -133,6 +136,7 @@ public class BVManagedUIContent_SinglePageTest {
 
   @Test
   public void testSEOContentFromHTTP_SinglePagePRR() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -174,6 +178,7 @@ public class BVManagedUIContent_SinglePageTest {
    */
   @Test
   public void testSEOContentFromHTTP_SinglePageC2013() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -212,6 +217,7 @@ public class BVManagedUIContent_SinglePageTest {
    */
   @Ignore
   public void testSEOContentFromHTTP_BlankPageTest() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -263,6 +269,7 @@ public class BVManagedUIContent_SinglePageTest {
    */
   @Ignore
   public void testSEOContentFromFile_SinglePageC2013() {
+    DefaultRequestContext.initialize();
     URL url = getClass().getResource("/seo_local_files/myshco-359c29d8a8cbe3822bc0d7c58cb9f9ca");
 
     BVConfiguration bvConfig = new BVSdkConfiguration();
@@ -304,6 +311,7 @@ public class BVManagedUIContent_SinglePageTest {
    */
   @Test
   public void testSEOContent_SinglePage_File_FileUnavailableError() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -352,6 +360,7 @@ public class BVManagedUIContent_SinglePageTest {
    */
   @Test
   public void testSEOContent_SinglePage_File_FileUnavailableError_bvReveal() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -405,6 +414,7 @@ public class BVManagedUIContent_SinglePageTest {
    */
   @Test
   public void testSEOContent_SinglePage_HTTP_FileUnavailableError() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,
@@ -445,6 +455,7 @@ public class BVManagedUIContent_SinglePageTest {
    */
   @Ignore
   public void testSEOContentFromHTTP_withOutIntegrationScript() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(BVClientConfig.CLOUD_KEY, "");
     bvConfig.addProperty(BVClientConfig.BV_ROOT_FOLDER, "");
@@ -468,6 +479,7 @@ public class BVManagedUIContent_SinglePageTest {
    */
   @Test
   public void testSEOContentFromHTTP_InvalidCloudKey() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY,

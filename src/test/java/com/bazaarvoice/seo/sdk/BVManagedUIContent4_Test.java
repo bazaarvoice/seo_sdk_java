@@ -33,6 +33,7 @@ import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -81,6 +82,7 @@ public class BVManagedUIContent4_Test {
    */
   @Test
   public void test_InteractivePage_Review() {
+    DefaultRequestContext.initialize();
     BVParameters bvParameters = new BVParameters();
     bvParameters.setUserAgent("google");
     bvParameters.setSubjectType(SubjectType.PRODUCT);
@@ -105,6 +107,7 @@ public class BVManagedUIContent4_Test {
 
   @Test
   public void test_InlinePage_Question() {
+    DefaultRequestContext.initialize();
     BVParameters bvParameters = new BVParameters();
     bvParameters.setUserAgent("google");
     bvParameters.setSubjectType(SubjectType.PRODUCT);
@@ -129,6 +132,7 @@ public class BVManagedUIContent4_Test {
 
   @Test
   public void test_InlinePage_Stories() {
+    DefaultRequestContext.initialize();
     BVParameters bvParameters = new BVParameters();
     bvParameters.setUserAgent("google");
     bvParameters.setSubjectType(SubjectType.PRODUCT);
@@ -165,6 +169,7 @@ public class BVManagedUIContent4_Test {
    */
   @Test
   public void testSEOContentFrom_Using_HTTPS() throws NoSuchAlgorithmException, KeyManagementException, CertificateException, FileNotFoundException, IOException, KeyStoreException, UnrecoverableKeyException, NoSuchProviderException {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfig = new BVSdkConfiguration();
     bvConfig.addProperty(
       BVClientConfig.SSL_ENABLED,

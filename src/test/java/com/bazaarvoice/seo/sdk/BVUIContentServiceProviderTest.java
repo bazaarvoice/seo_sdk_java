@@ -57,7 +57,7 @@ public class BVUIContentServiceProviderTest {
 
     boolean showUserAgent = bvUIContentService.showUserAgentSEOContent();
     StringBuilder message = bvUIContentService.getMessage();
-    assertFalse(showUserAgent, "value retuned should be false");
+    assertFalse(showUserAgent, "value returned should be false");
     assertTrue(
       message.toString().isEmpty(),
       "there should not be any message."
@@ -67,7 +67,7 @@ public class BVUIContentServiceProviderTest {
     bvUIContentService.setBVParameters(bvParameters);
     showUserAgent = bvUIContentService.showUserAgentSEOContent();
     message = bvUIContentService.getMessage();
-    assertFalse(showUserAgent, "value retuned should be false");
+    assertFalse(showUserAgent, "value returned should be false");
     assertTrue(
       message.toString().isEmpty(),
       "there should not be any message."
@@ -76,7 +76,7 @@ public class BVUIContentServiceProviderTest {
     bvParameters.setUserAgent("some other string representation");
     showUserAgent = bvUIContentService.showUserAgentSEOContent();
     message = bvUIContentService.getMessage();
-    assertFalse(showUserAgent, "value retuned should be false");
+    assertFalse(showUserAgent, "value returned should be false");
     assertTrue(
       message.toString().isEmpty(),
       "there should not be any message."
@@ -92,7 +92,7 @@ public class BVUIContentServiceProviderTest {
     bvParameters.setUserAgent("custombot");
     showUserAgent = bvUIContentService.showUserAgentSEOContent();
     message = bvUIContentService.getMessage();
-    assertTrue(showUserAgent, "value retuned should be true");
+    assertTrue(showUserAgent, "value returned should be true");
     assertTrue(
       message.toString().isEmpty(),
       "there should not be any message."
@@ -108,7 +108,7 @@ public class BVUIContentServiceProviderTest {
     bvParameters.setUserAgent("googlebot");
     showUserAgent = bvUIContentService.showUserAgentSEOContent();
     message = bvUIContentService.getMessage();
-    assertTrue(showUserAgent, "value retuned should be true");
+    assertTrue(showUserAgent, "value returned should be true");
     assertTrue(
       message.toString().isEmpty(),
       "there should not be any message."

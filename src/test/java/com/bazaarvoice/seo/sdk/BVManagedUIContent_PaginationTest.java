@@ -19,6 +19,7 @@
 
 package com.bazaarvoice.seo.sdk;
 
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
@@ -37,6 +38,7 @@ public class BVManagedUIContent_PaginationTest {
 
   @Test
   public void testPagination() {
+    DefaultRequestContext.initialize();
     BVConfiguration _bvConfig = new BVSdkConfiguration();
     _bvConfig.addProperty(
       BVClientConfig.SEO_SDK_ENABLED,

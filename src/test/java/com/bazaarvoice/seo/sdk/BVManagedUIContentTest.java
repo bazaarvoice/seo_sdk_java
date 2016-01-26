@@ -22,6 +22,7 @@ package com.bazaarvoice.seo.sdk;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
@@ -47,6 +48,7 @@ public class BVManagedUIContentTest {
    */
   @Test
   public void testSearchContentNullBVQueryParams() {
+    DefaultRequestContext.initialize();
     BVUIContent bvUIContent = new BVManagedUIContent();
     String bvContent = null;
 
@@ -69,7 +71,7 @@ public class BVManagedUIContentTest {
    */
   @Test
   public void testBase_PageUri() {
-
+    DefaultRequestContext.initialize();
     /*
      * When base uri and page uri are null.
      */

@@ -38,16 +38,26 @@ public class BVParameters {
   private SubjectType subjectType;
   private ContentSubType contentSubType;
 
-  public BVParameters () {
+  public BVParameters() {
     // Most usage is for content type REVIEWS and subject type PRODUCT, so we
     // default to those values.
     this.setContentType(ContentType.REVIEWS);
     this.setSubjectType(SubjectType.PRODUCT);
   }
 
+  /**
+   * @deprecated Should use {@link com.bazaarvoice.seo.sdk.servlet.RequestContext#getHeader(String)} with 'User-Agent'.
+   */
+  @Deprecated
   public String getUserAgent() {
     return userAgent;
   }
+
+  /**
+   * @deprecated Should instead configure the web.xml for your application to use
+   * {@link com.bazaarvoice.seo.sdk.servlet.RequestFilter} as a filter to allow the SDK to auto-discover the User-Agent.
+   */
+  @Deprecated
   public void setUserAgent(String userAgent) {
     this.userAgent = userAgent;
   }
@@ -55,6 +65,7 @@ public class BVParameters {
   public String getBaseURI() {
     return baseURI;
   }
+
   public void setBaseURI(String baseURI) {
     this.baseURI = baseURI;
   }
@@ -62,6 +73,7 @@ public class BVParameters {
   public String getPageURI() {
     return pageURI;
   }
+
   public void setPageURI(String pageURI) {
     this.pageURI = pageURI;
   }
@@ -69,6 +81,7 @@ public class BVParameters {
   public String getSubjectId() {
     return subjectId;
   }
+
   public void setSubjectId(String subjectId) {
     this.subjectId = subjectId;
   }
@@ -76,6 +89,7 @@ public class BVParameters {
   public String getPageNumber() {
     return pageNumber;
   }
+
   public void setPageNumber(String pageNumber) {
     this.pageNumber = pageNumber;
   }
@@ -83,6 +97,7 @@ public class BVParameters {
   public ContentType getContentType() {
     return contentType;
   }
+
   public void setContentType(ContentType contentType) {
     this.contentType = contentType;
   }
@@ -90,6 +105,7 @@ public class BVParameters {
   public SubjectType getSubjectType() {
     return subjectType;
   }
+
   public void setSubjectType(SubjectType subjectType) {
     this.subjectType = subjectType;
   }
@@ -97,6 +113,7 @@ public class BVParameters {
   public ContentSubType getContentSubType() {
     return contentSubType;
   }
+
   public void setContentSubType(ContentSubType contentSubType) {
     this.contentSubType = contentSubType;
   }
@@ -118,13 +135,13 @@ public class BVParameters {
     BVParameters rhs = (BVParameters) obj;
     EqualsBuilder eqBuilder = new EqualsBuilder();
     eqBuilder.append(getBaseURI(), rhs.getBaseURI())
-    .append(getContentType(), rhs.getContentType())
-    .append(getPageURI(), rhs.getPageURI())
-    .append(getSubjectId(), rhs.getSubjectId())
-    .append(getSubjectType(), rhs.getSubjectType())
-    .append(getUserAgent(), rhs.getUserAgent())
-    .append(getPageNumber(), rhs.getPageNumber())
-    .append(getContentSubType(), rhs.getContentSubType());
+      .append(getContentType(), rhs.getContentType())
+      .append(getPageURI(), rhs.getPageURI())
+      .append(getSubjectId(), rhs.getSubjectId())
+      .append(getSubjectType(), rhs.getSubjectType())
+      .append(getUserAgent(), rhs.getUserAgent())
+      .append(getPageNumber(), rhs.getPageNumber())
+      .append(getContentSubType(), rhs.getContentSubType());
 
     return eqBuilder.isEquals();
   }
@@ -133,13 +150,13 @@ public class BVParameters {
   public int hashCode() {
     HashCodeBuilder hBuilder = new HashCodeBuilder(17, 31);
     hBuilder.append(getUserAgent())
-    .append(getBaseURI())
-    .append(getPageURI())
-    .append(getSubjectId())
-    .append(getContentType())
-    .append(getSubjectType())
-    .append(getContentSubType())
-    .append(getPageNumber());
+      .append(getBaseURI())
+      .append(getPageURI())
+      .append(getSubjectId())
+      .append(getContentType())
+      .append(getSubjectType())
+      .append(getContentSubType())
+      .append(getPageNumber());
 
     return hBuilder.hashCode();
   }

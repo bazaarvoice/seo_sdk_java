@@ -23,6 +23,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -69,6 +70,7 @@ public class BVManagedUIContent3_Test {
    */
   @Test
   public void test_SinglePage_Review() {
+    DefaultRequestContext.initialize();
     BVParameters bvParameters = new BVParameters();
     bvParameters.setUserAgent("google");
     bvParameters.setSubjectType(SubjectType.PRODUCT);
@@ -98,6 +100,7 @@ public class BVManagedUIContent3_Test {
    */
   @Test
   public void test_SinglePage_SellerRatings() {
+    DefaultRequestContext.initialize();
     BVParameters bvParameters = new BVParameters();
     bvParameters.setUserAgent("google");
     bvParameters.setSubjectType(SubjectType.SELLER);
@@ -124,6 +127,7 @@ public class BVManagedUIContent3_Test {
 
   @Test
   public void test_SinglePage_Question() {
+    DefaultRequestContext.initialize();
     BVParameters bvParameters = new BVParameters();
     bvParameters.setUserAgent("google");
     bvParameters.setSubjectType(SubjectType.PRODUCT);
@@ -148,6 +152,7 @@ public class BVManagedUIContent3_Test {
 
   @Test
   public void test_SinglePage_Stories() {
+    DefaultRequestContext.initialize();
     BVParameters bvParameters = new BVParameters();
     bvParameters.setUserAgent("google");
     bvParameters.setSubjectType(SubjectType.PRODUCT);
@@ -173,7 +178,7 @@ public class BVManagedUIContent3_Test {
   /**
    * TODO: Need to code this implementation.
    */
-  @Test
+  @Test(enabled=false)
   public void test_SinglePage_AllContents() {
 
   }

@@ -17,7 +17,7 @@ public class SpotlightsTestcaseConstants {
 
   private static final String testCloudKey = "spotlight-five-311f5a3337b8d5e0d817adb7af279b0a";
   private static final String testRootFolder = "Main_Site-en_US";
-  private static final String testProduct_1 = "category-3";
+  private static final String testProduct_1 = "category-2";
 
   /**
    * Returns the test client's cloud key that is defined in

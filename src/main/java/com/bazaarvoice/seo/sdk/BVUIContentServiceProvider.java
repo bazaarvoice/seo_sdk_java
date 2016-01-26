@@ -23,10 +23,13 @@ import com.bazaarvoice.seo.sdk.config.BVClientConfig;
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.exception.BVSdkException;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
+import com.bazaarvoice.seo.sdk.servlet.RequestContext;
+import com.bazaarvoice.seo.sdk.servlet.RequestFilter;
 import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
 import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
 import com.bazaarvoice.seo.sdk.util.BVThreadPool;
 import com.bazaarvoice.seo.sdk.util.BVUtility;
+import com.bazaarvoice.seo.sdk.util.Environment;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +43,7 @@ import java.net.*;
 import java.net.Proxy.Type;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
+import java.util.Iterator;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
@@ -52,39 +56,82 @@ import java.util.regex.Pattern;
 public class BVUIContentServiceProvider
   implements BVUIContentService, Callable<StringBuilder> {
 
-  private final static Logger _logger = LoggerFactory.getLogger(
+  private final static Logger LOGGER = LoggerFactory.getLogger(
     BVUIContentServiceProvider.class
   );
-  private BVConfiguration _bvConfiguration;
-  private BVParameters _bvParameters;
-  private StringBuilder _message;
-  private StringBuilder _uiContent;
-  private BVSeoSdkUrl _bvSeoSdkUrl;
+  private final static String HTTP_HEADER_USER_AGENT = "User-Agent";
+
+  private BVConfiguration bvConfiguration;
+  private BVParameters bvParameters;
+  private StringBuilder message;
+  private StringBuilder uiContent;
+  private BVSeoSdkUrl bvSeoSdkUrl;
   private Boolean sdkEnabled;
 
   public BVUIContentServiceProvider(BVConfiguration bvConfiguration) {
-    _bvConfiguration = bvConfiguration;
+    this.bvConfiguration = bvConfiguration;
 
-    _message = new StringBuilder();
-    _uiContent = new StringBuilder();
+    message = new StringBuilder();
+    uiContent = new StringBuilder();
   }
 
   public StringBuilder call() throws Exception {
 
-    URI seoContentUrl = null;
-
     try {
       // Includes integration script if one is enabled.
       includeIntegrationCode();
-      seoContentUrl = _bvSeoSdkUrl.seoContentUri();
-      String correctedBaseUri = _bvSeoSdkUrl.correctedBaseUri();
-      getBvContent(_uiContent, seoContentUrl, correctedBaseUri);
+      URI seoContentUrl = bvSeoSdkUrl.seoContentUri();
+      String correctedBaseUri = bvSeoSdkUrl.correctedBaseUri();
+      getBvContent(uiContent, seoContentUrl, correctedBaseUri);
 
     } catch (BVSdkException e) {
-      _message.append(e.getMessage());
+      message.append(e.getMessage());
     }
 
-    return _uiContent;
+    return uiContent;
+  }
+
+  /**
+   * Format for UserAgent Header values used in outgoing requests.
+   * Includes Operating System, JRE Version, and Package version.
+   */
+  private static final String USER_AGENT_FORMAT = String.format("JRE/%s;bv_java_sdk/%s;",
+    Environment.getJreVersion() != null ? Environment.getJreVersion() : "unknown",
+    Environment.getPackageSpecificationVersion()
+  ) + "%s";
+
+  /**
+   * UserAgent Header value to use when making requests.
+   */
+  private String getUserAgent()
+  {
+    String requestUserAgent = getRequestUserAgent();
+    String userAgent = requestUserAgent != null ? requestUserAgent : getParameterUserAgent();
+    if (userAgent == null || userAgent.isEmpty())
+    {
+      LOGGER.debug(BVMessageUtil.getMessage("MSG0007"));
+    }
+    return String.format(USER_AGENT_FORMAT, userAgent);
+  }
+
+  /**
+   * The UserAgent as specified by bvParameters
+   */
+  private String getParameterUserAgent()
+  {
+    String paramUserAgent = bvParameters.getUserAgent();
+    return StringUtils.isBlank(paramUserAgent) ? null : paramUserAgent;
+  }
+
+  /**
+   * The user agent as specified on the incoming request.
+   */
+  private String getRequestUserAgent() {
+    String userAgent = RequestContext.getHeader(HTTP_HEADER_USER_AGENT);
+    if (StringUtils.isNotBlank(userAgent)) {
+      return userAgent;
+    }
+    return null;
   }
 
   private void getBvContent(
@@ -105,23 +152,22 @@ public class BVUIContentServiceProvider
   }
 
   private boolean isContentFromFile() {
-    boolean loadFromFile = Boolean.parseBoolean(_bvConfiguration.getProperty(
+    return Boolean.parseBoolean(bvConfiguration.getProperty(
       BVClientConfig.LOAD_SEO_FILES_LOCALLY.getPropertyName()
     ));
-    return loadFromFile;
   }
 
   private String loadContentFromHttp(URI path) {
-    int connectionTimeout = Integer.parseInt(_bvConfiguration.getProperty(
+    int connectionTimeout = Integer.parseInt(bvConfiguration.getProperty(
       BVClientConfig.CONNECT_TIMEOUT.getPropertyName()
     ));
-    int socketTimeout = Integer.parseInt(_bvConfiguration.getProperty(
+    int socketTimeout = Integer.parseInt(bvConfiguration.getProperty(
       BVClientConfig.SOCKET_TIMEOUT.getPropertyName()
     ));
-    String proxyHost = _bvConfiguration.getProperty(
+    String proxyHost = bvConfiguration.getProperty(
       BVClientConfig.PROXY_HOST.getPropertyName()
     );
-    String charsetConfig = _bvConfiguration.getProperty(
+    String charsetConfig = bvConfiguration.getProperty(
       BVClientConfig.CHARSET.getPropertyName()
     );
     Charset charset = null;
@@ -129,7 +175,7 @@ public class BVUIContentServiceProvider
       charset = charsetConfig == null ?
         Charset.defaultCharset() : Charset.forName(charsetConfig);
     } catch (Exception e) {
-      _logger.error(BVMessageUtil.getMessage("ERR0024"));
+      LOGGER.error(BVMessageUtil.getMessage("ERR0024"));
       charset = Charset.defaultCharset();
     }
 
@@ -139,11 +185,12 @@ public class BVUIContentServiceProvider
     try {
       URL url = path.toURL();
 
+
       if (
         !StringUtils.isBlank(proxyHost) &&
-        !"none".equalsIgnoreCase(proxyHost)
-      ) {
-        int proxyPort = Integer.parseInt(_bvConfiguration.getProperty(
+          !"none".equalsIgnoreCase(proxyHost)
+        ) {
+        int proxyPort = Integer.parseInt(bvConfiguration.getProperty(
           BVClientConfig.PROXY_PORT.getPropertyName()
         ));
         SocketAddress socketAddress = new InetSocketAddress(
@@ -158,6 +205,7 @@ public class BVUIContentServiceProvider
 
       httpUrlConnection.setConnectTimeout(connectionTimeout);
       httpUrlConnection.setReadTimeout(socketTimeout);
+      httpUrlConnection.setRequestProperty(HTTP_HEADER_USER_AGENT, getUserAgent());
 
       is = httpUrlConnection.getInputStream();
 
@@ -208,7 +256,7 @@ public class BVUIContentServiceProvider
       if (es != null) {
         IOUtils.toByteArray(es);
       }
-    } catch(IOException ioe) {
+    } catch (IOException ioe) {
       // Swallow any errors.
     } finally {
       IOUtils.closeQuietly(es);
@@ -221,7 +269,7 @@ public class BVUIContentServiceProvider
       File file = new File(path);
       content = FileUtils.readFileToString(
         file,
-        _bvConfiguration.getProperty(BVClientConfig.CHARSET.getPropertyName())
+        bvConfiguration.getProperty(BVClientConfig.CHARSET.getPropertyName())
       );
     } catch (IOException e) {
       throw new BVSdkException("ERR0012");
@@ -231,7 +279,7 @@ public class BVUIContentServiceProvider
   }
 
   private void includeIntegrationCode() {
-    String includeScriptStr = _bvConfiguration.getProperty(
+    String includeScriptStr = bvConfiguration.getProperty(
       BVClientConfig.INCLUDE_DISPLAY_INTEGRATION_CODE.getPropertyName()
     );
     boolean includeIntegrationScript = Boolean.parseBoolean(includeScriptStr);
@@ -241,26 +289,26 @@ public class BVUIContentServiceProvider
     }
 
     Object[] params = {
-      _bvParameters.getSubjectType().uriValue(),
-      _bvParameters.getSubjectId()
+      bvParameters.getSubjectType().uriValue(),
+      bvParameters.getSubjectId()
     };
-    String integrationScriptValue = _bvConfiguration.getProperty(
-      _bvParameters.getContentType().getIntegrationScriptProperty()
+    String integrationScriptValue = bvConfiguration.getProperty(
+      bvParameters.getContentType().getIntegrationScriptProperty()
     );
     String integrationScript = MessageFormat.format(
       integrationScriptValue,
       params
     );
 
-    _uiContent.append(integrationScript);
+    uiContent.append(integrationScript);
   }
 
   public boolean showUserAgentSEOContent() {
-    if (_bvParameters == null || _bvParameters.getUserAgent() == null) {
+    if (bvParameters == null || bvParameters.getUserAgent() == null) {
       return false;
     }
 
-    String crawlerAgentPattern = _bvConfiguration.getProperty(
+    String crawlerAgentPattern = bvConfiguration.getProperty(
       BVClientConfig.CRAWLER_AGENT_PATTERN.getPropertyName()
     );
     if (!StringUtils.isBlank(crawlerAgentPattern)) {
@@ -270,28 +318,28 @@ public class BVUIContentServiceProvider
       crawlerAgentPattern,
       Pattern.CASE_INSENSITIVE
     );
-    _logger.debug("userAgent is : " + _bvParameters.getUserAgent());
+    LOGGER.debug("userAgent is : " + bvParameters.getUserAgent());
 
     return (
-      pattern.matcher(_bvParameters.getUserAgent()).matches() ||
-      _bvParameters.getUserAgent().toLowerCase().contains("google")
+      pattern.matcher(bvParameters.getUserAgent()).matches() ||
+        bvParameters.getUserAgent().toLowerCase().contains("google")
     );
   }
 
   public void setBVParameters(BVParameters bvParameters) {
-    _bvParameters = bvParameters;
+    this.bvParameters = bvParameters;
   }
 
   public void setBVSeoSdkUrl(BVSeoSdkUrl bvSeoSdkUrl) {
-    _bvSeoSdkUrl = bvSeoSdkUrl;
+    this.bvSeoSdkUrl = bvSeoSdkUrl;
   }
 
   public boolean isSdkEnabled() {
     if (sdkEnabled == null) {
-      sdkEnabled = Boolean.parseBoolean(_bvConfiguration.getProperty(
+      sdkEnabled = Boolean.parseBoolean(bvConfiguration.getProperty(
         BVClientConfig.SEO_SDK_ENABLED.getPropertyName()
       ));
-      sdkEnabled = sdkEnabled || BVUtility.isRevealDebugEnabled(_bvParameters);
+      sdkEnabled = sdkEnabled || BVUtility.isRevealDebugEnabled(bvParameters);
     }
 
     return sdkEnabled;
@@ -305,33 +353,39 @@ public class BVUIContentServiceProvider
    */
   public StringBuilder executeCall(boolean reload) {
     if (reload) {
-      return new StringBuilder(_uiContent);
+      return new StringBuilder(uiContent);
     }
+
+    /**
+     * StringBuilder depends on Length to reference the position of the next character;
+     * We can effectively clear the StringBuilder by resetting it's length to '0'.
+     */
+    uiContent.setLength(0);
 
     boolean isSearchBot = showUserAgentSEOContent();
     long executionTimeout = isSearchBot ? Long.parseLong(
-      _bvConfiguration.getProperty(
+      bvConfiguration.getProperty(
         BVClientConfig.EXECUTION_TIMEOUT_BOT.getPropertyName()
       )
-    ) : Long.parseLong(_bvConfiguration.getProperty(
+    ) : Long.parseLong(bvConfiguration.getProperty(
       BVClientConfig.EXECUTION_TIMEOUT.getPropertyName()
     ));
 
     if (!isSearchBot && executionTimeout == 0) {
-      _message.append(BVMessageUtil.getMessage("MSG0004"));
+      message.append(BVMessageUtil.getMessage("MSG0004"));
       return null;
     }
 
     if (isSearchBot && executionTimeout < 100) {
       executionTimeout = 100;
-      _message.append(BVMessageUtil.getMessage("MSG0005"));
+      message.append(BVMessageUtil.getMessage("MSG0005"));
     }
 
     ExecutorService executorService = BVThreadPool.getExecutorService();
     Future<StringBuilder> future = executorService.submit(this);
 
     try {
-      _uiContent = future.get(executionTimeout, TimeUnit.MILLISECONDS);
+      uiContent = future.get(executionTimeout, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       // TODO: handle this.
     } catch (ExecutionException e) {
@@ -340,16 +394,16 @@ public class BVUIContentServiceProvider
       }
     } catch (TimeoutException e) {
       String err = isSearchBot ? "ERR0026" : "ERR0018";
-      _message.append(MessageFormat.format(
+      message.append(MessageFormat.format(
         BVMessageUtil.getMessage(err),
         new Object[]{executionTimeout}
       ));
     }
 
-    return new StringBuilder(_uiContent);
+    return new StringBuilder(uiContent);
   }
 
   public StringBuilder getMessage() {
-    return _message;
+    return message;
   }
 }

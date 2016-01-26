@@ -1,5 +1,6 @@
 package com.bazaarvoice.seo.sdk;
 
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -30,7 +31,7 @@ public class BVManagedUIContent_SpotLightsTest {
    */
   @Test
   public void testGetContent_Invalid_Product() {
-
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
     bvConfiguration.addProperty(
       BVClientConfig.BV_ROOT_FOLDER,
@@ -82,6 +83,7 @@ public class BVManagedUIContent_SpotLightsTest {
    */
   @Test
   public void testGetContent_Valid_Product() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
     bvConfiguration.addProperty(
       BVClientConfig.BV_ROOT_FOLDER,
@@ -136,7 +138,7 @@ public class BVManagedUIContent_SpotLightsTest {
    */
   @Test
   public void testGetAggregate() {
-
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
     bvConfiguration.addProperty(
       BVClientConfig.BV_ROOT_FOLDER,
@@ -185,6 +187,7 @@ public class BVManagedUIContent_SpotLightsTest {
    */
   @Test
   public void testGetReviews() {
+    DefaultRequestContext.initialize();
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
     bvConfiguration.addProperty(
       BVClientConfig.BV_ROOT_FOLDER,

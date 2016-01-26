@@ -23,6 +23,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 
+import com.bazaarvoice.seo.sdk.servlet.DefaultRequestContext;
 import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVClientConfig;
@@ -55,6 +56,7 @@ public class BVManagedUIContent_CharacterEncoding_Test {
    */
   @Test
   public void testDefaultUTF_8_Review() {
+    DefaultRequestContext.initialize();
     BVUIContent _bvUIContent = getUTF8Configuration();
 
     BVParameters bvParameters = new BVParameters();
@@ -86,7 +88,7 @@ public class BVManagedUIContent_CharacterEncoding_Test {
    */
   @Test
   public void testDefault_Shift_JIS_Review() {
-
+    DefaultRequestContext.initialize();
     BVUIContent _bvUIContent = getJIS_EcodingConfiguration();
 
     BVParameters bvParameters = new BVParameters();
