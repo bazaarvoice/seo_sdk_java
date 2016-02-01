@@ -46,6 +46,7 @@ import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Implementation class for {@link BVUIContentService}. This class is a self
@@ -60,6 +61,8 @@ public class BVUIContentServiceProvider
     BVUIContentServiceProvider.class
   );
   private final static String HTTP_HEADER_USER_AGENT = "User-Agent";
+  private final static String HTTP_HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+  private final static String HTTP_HEADER_ACCEPT_ENCODING_GZIP = "gzip";
 
   private BVConfiguration bvConfiguration;
   private BVParameters bvParameters;
@@ -206,8 +209,12 @@ public class BVUIContentServiceProvider
       httpUrlConnection.setConnectTimeout(connectionTimeout);
       httpUrlConnection.setReadTimeout(socketTimeout);
       httpUrlConnection.setRequestProperty(HTTP_HEADER_USER_AGENT, getUserAgent());
+      httpUrlConnection.setRequestProperty(HTTP_HEADER_ACCEPT_ENCODING, HTTP_HEADER_ACCEPT_ENCODING_GZIP);
 
       is = httpUrlConnection.getInputStream();
+      if(httpUrlConnection.getContentEncoding().equalsIgnoreCase(HTTP_HEADER_ACCEPT_ENCODING_GZIP)){
+        is = new GZIPInputStream(is);
+      }
 
       byte[] byteArray = IOUtils.toByteArray(is);
       is.close();
