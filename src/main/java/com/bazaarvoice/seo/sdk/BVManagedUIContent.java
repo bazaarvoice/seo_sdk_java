@@ -56,7 +56,6 @@ public class BVManagedUIContent implements BVUIContent {
   private BVFooter bvFooter;
   private StringBuilder message;
   private BVParameters bvParameters;
-  private boolean reloadContent;
   private BVUIContentService bvUiContentService;
   private String validationError;
 
@@ -94,7 +93,7 @@ public class BVManagedUIContent implements BVUIContent {
 
     if (StringUtils.isBlank(validationError)) {
       if (bvUiContentService.isSdkEnabled()) {
-        uiContent = bvUiContentService.executeCall(reloadContent);
+        uiContent = bvUiContentService.executeCall();
       } else {
         _logger.info(BVMessageUtil.getMessage("MSG0003"));
         uiContent = new StringBuilder();
@@ -123,7 +122,7 @@ public class BVManagedUIContent implements BVUIContent {
     StringBuilder uiContent = null;
     if (StringUtils.isBlank(validationError)) {
       if (bvUiContentService.isSdkEnabled()) {
-        uiContent = bvUiContentService.executeCall(reloadContent);
+        uiContent = bvUiContentService.executeCall();
       } else {
         _logger.info(BVMessageUtil.getMessage("MSG0003"));
         uiContent = new StringBuilder();
@@ -174,7 +173,7 @@ public class BVManagedUIContent implements BVUIContent {
     if (StringUtils.isBlank(validationError)) {
 
       if (bvUiContentService.isSdkEnabled()) {
-        uiContent = bvUiContentService.executeCall(reloadContent);
+        uiContent = bvUiContentService.executeCall();
       } else {
         _logger.info(BVMessageUtil.getMessage("MSG0003"));
         uiContent = new StringBuilder();
@@ -234,19 +233,14 @@ public class BVManagedUIContent implements BVUIContent {
       return;
     }
 
-    reloadContent = bvParameters.equals(this.bvParameters);
+    this.bvParameters = bvParameters;
 
-    if (!reloadContent) {
+    bvSeoSdkUrl = new BVSeoSdkURLBuilder(_bvConfiguration, bvParameters);
 
-      this.bvParameters = bvParameters;
-
-      bvSeoSdkUrl = new BVSeoSdkURLBuilder(_bvConfiguration, bvParameters);
-
-      bvUiContentService = new BVUIContentServiceProvider(_bvConfiguration);
-      bvUiContentService.setBVParameters(this.bvParameters);
-      bvUiContentService.setBVSeoSdkUrl(bvSeoSdkUrl);
-      bvFooter.setBvSeoSdkUrl(bvSeoSdkUrl);
-    }
+    bvUiContentService = new BVUIContentServiceProvider(_bvConfiguration);
+    bvUiContentService.setBVParameters(this.bvParameters);
+    bvUiContentService.setBVSeoSdkUrl(bvSeoSdkUrl);
+    bvFooter.setBvSeoSdkUrl(bvSeoSdkUrl);
 
   }
 

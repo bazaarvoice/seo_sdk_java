@@ -67,22 +67,19 @@ public class BVUIContentServiceProvider
   private BVConfiguration bvConfiguration;
   private BVParameters bvParameters;
   private StringBuilder message;
-  private StringBuilder uiContent;
   private BVSeoSdkUrl bvSeoSdkUrl;
   private Boolean sdkEnabled;
 
   public BVUIContentServiceProvider(BVConfiguration bvConfiguration) {
     this.bvConfiguration = bvConfiguration;
-
     message = new StringBuilder();
-    uiContent = new StringBuilder();
   }
 
   public StringBuilder call() throws Exception {
-
+    StringBuilder uiContent = new StringBuilder();
     try {
       // Includes integration script if one is enabled.
-      includeIntegrationCode();
+      includeIntegrationCode(uiContent);
       URI seoContentUrl = bvSeoSdkUrl.seoContentUri();
       String correctedBaseUri = bvSeoSdkUrl.correctedBaseUri();
       getBvContent(uiContent, seoContentUrl, correctedBaseUri);
@@ -285,7 +282,7 @@ public class BVUIContentServiceProvider
     return content;
   }
 
-  private void includeIntegrationCode() {
+  private void includeIntegrationCode(StringBuilder uiContent) {
     String includeScriptStr = bvConfiguration.getProperty(
       BVClientConfig.INCLUDE_DISPLAY_INTEGRATION_CODE.getPropertyName()
     );
@@ -352,22 +349,16 @@ public class BVUIContentServiceProvider
     return sdkEnabled;
   }
 
+  public StringBuilder executeCall(boolean reload) {
+    return executeCall();
+  }
+
   /**
    * Self executioner method.
    *
-   * @param reload
    * @return
    */
-  public StringBuilder executeCall(boolean reload) {
-    if (reload) {
-      return new StringBuilder(uiContent);
-    }
-
-    /**
-     * StringBuilder depends on Length to reference the position of the next character;
-     * We can effectively clear the StringBuilder by resetting it's length to '0'.
-     */
-    uiContent.setLength(0);
+  public StringBuilder executeCall() {
 
     boolean isSearchBot = showUserAgentSEOContent();
     long executionTimeout = isSearchBot ? Long.parseLong(
@@ -392,7 +383,7 @@ public class BVUIContentServiceProvider
     Future<StringBuilder> future = executorService.submit(this);
 
     try {
-      uiContent = future.get(executionTimeout, TimeUnit.MILLISECONDS);
+      return future.get(executionTimeout, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       // TODO: handle this.
     } catch (ExecutionException e) {
@@ -406,8 +397,13 @@ public class BVUIContentServiceProvider
         new Object[]{executionTimeout}
       ));
     }
+    /*
+     * Returning empty StringBuilder in error case to provide backwards compatibility
+     * after removing size 1 cache for SEO-1194. This is a slight change in behavior in
+     * that previously the previous uiContent value would have been returned.
+     */
 
-    return new StringBuilder(uiContent);
+    return new StringBuilder();
   }
 
   public StringBuilder getMessage() {

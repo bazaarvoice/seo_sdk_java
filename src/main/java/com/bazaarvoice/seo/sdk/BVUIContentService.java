@@ -41,16 +41,20 @@ public interface BVUIContentService {
 
   /**
    * Executes the server side call or the file level call within a specified
-   * execution timeout. When reload is set true then it gives from the cache
-   * that was already executed in the previous call. This reduces the number hit
-   * to the server.
+   * execution timeout.
    *
    * Any related message after execution is stored in getMessage which can be
    * retrieved for later use.
    *
-   * @param reload
    * @return StringBuilder representation of the content.
    */
+  StringBuilder executeCall();
+
+  /**
+   * @deprecated
+   * Use executeCall() instead. reload parameter is no longer supported.
+   */
+  @Deprecated
   StringBuilder executeCall(boolean reload);
 
   /**
