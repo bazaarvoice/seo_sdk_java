@@ -1,5 +1,5 @@
 package com.bazaarvoice.seo.sdk.util;
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 /**
  * Helper class for accessing environment information.

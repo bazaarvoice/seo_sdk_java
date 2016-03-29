@@ -27,19 +27,13 @@ import com.bazaarvoice.seo.sdk.model.BVParameters;
 import com.bazaarvoice.seo.sdk.model.SubjectType;
 import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
 import com.bazaarvoice.seo.sdk.util.BVUtility;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation class for adding bazaarvoice footer in the bazaarvoice seo
@@ -50,18 +44,13 @@ import java.util.Map;
  */
 public class BVHTMLFooter implements BVFooter {
 
-  private static final String VE_LOGGER = "ve_logger";
-  private static final Logger veLogger = LoggerFactory.getLogger(VE_LOGGER);
-
-  private static final String LOG4J_CHUTE = "org.apache.velocity.runtime.log.Log4JLogChute";
-  private static final String LOG4J_LOGGER = "runtime.log.logsystem.log4j.logger";
-  private static final String FOOTER_FILE = "footer.txt";
+  private static final String FOOTER_FILE = "footer.mustache";
 
   private BVConfiguration _bvConfiguration;
   private BVParameters _bvParameters;
   private BVSeoSdkUrl _bvSeoSdkUrl;
 
-  private VelocityEngine _velocityEngine;
+  private Mustache _compiledFooterTemplate;
 
   private long executionTime;
   private List<String> messageList;
@@ -77,24 +66,9 @@ public class BVHTMLFooter implements BVFooter {
     _bvConfiguration = bvConfiguration;
     _bvParameters = bvParameters;
 
-    _velocityEngine = new VelocityEngine();
-    _velocityEngine.setProperty(
-      RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-      LOG4J_CHUTE
-    );
-    _velocityEngine.setProperty(
-      LOG4J_LOGGER,
-      VE_LOGGER
-    );
-    _velocityEngine.addProperty(
-      "file.resource.loader.class",
-      "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
-    );
-    _velocityEngine.addProperty(
-      "file.resource.loader.cache",
-      true
-    );
-    veLogger.debug("Initialized velocity engine.");
+    MustacheFactory mustacheFactory = new DefaultMustacheFactory();
+    _compiledFooterTemplate = mustacheFactory.compile(FOOTER_FILE);
+
 
     messageList = new ArrayList<String>();
   }
@@ -104,12 +78,10 @@ public class BVHTMLFooter implements BVFooter {
    * @return String footer.
    */
   public String displayFooter(String accessMethod) {
-    Template template = _velocityEngine.getTemplate(FOOTER_FILE);
-    VelocityContext context = new VelocityContext();
+    HashMap<String, Object> context = new HashMap<String, Object>();
 
     if (BVUtility.isRevealDebugEnabled(_bvParameters)) {
-      Map<String, String> revealMap = null;
-      revealMap = new TreeMap<String, String>();
+      Map<String, String> revealMap = new TreeMap<String, String>();
       String configName = null;
       if (_bvParameters.getSubjectType() != SubjectType.SELLER) {
         for (BVCoreConfig bvCoreConfig : BVCoreConfig.values()) {
@@ -123,7 +95,8 @@ public class BVHTMLFooter implements BVFooter {
         revealMap.put(configName, _bvConfiguration.getProperty(configName));
       }
 
-      context.put("revealMap", revealMap);
+      context.put("revealMap", true);
+      context.put("revealMapEntries", revealMap.entrySet());
     }
 
     String methodType = Boolean.parseBoolean(_bvConfiguration.getProperty(
@@ -156,7 +129,7 @@ public class BVHTMLFooter implements BVFooter {
     context.put("url", url);
 
     StringWriter writer = new StringWriter();
-    template.merge(context, writer);
+    _compiledFooterTemplate.execute(writer, context);
 
     return writer.toString();
   }
