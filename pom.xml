@@ -211,13 +211,7 @@
         <configuration>
           <finalName>${project.artifactId}-${project.version}-osgi</finalName>
           <instructions>
-            <!--
-              commons-collections needs to be removed from generated osgi jar, since
-              we added that as a direct dependency only to mitigate de-serialization
-              vulnerability. Consumer of osgi jar needs to make sure they add reference
-              to right version (after 3.2.2) of commons-collections jar.
-            -->
-            <Embed-Dependency>scope=compile|runtime;inline=true;artifactId=!commons-collections</Embed-Dependency>
+            <Embed-Dependency>scope=compile|runtime;inline=true;</Embed-Dependency>
             <rebuildBundle>true</rebuildBundle>
             <Import-Package>
               !com.werken.*,!org.apache.log.*,!org.apache.oro.*,!org.apache.tools.*,!org.jdom.*,
