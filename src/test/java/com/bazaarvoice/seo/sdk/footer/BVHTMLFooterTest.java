@@ -29,8 +29,9 @@ import com.bazaarvoice.seo.sdk.url.BVSeoSdkURLBuilder;
 import com.bazaarvoice.seo.sdk.url.BVSeoSdkUrl;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import java.util.ResourceBundle;
+
+import static org.testng.Assert.*;
 
 /**
  * Test class for BVHTMLFooter.
@@ -40,9 +41,18 @@ import static org.testng.Assert.assertTrue;
  */
 public class BVHTMLFooterTest {
 
-  /**
-   * Test case to test display footer method plain tags.
-   */
+  private final static String VERSION = ResourceBundle.getBundle("sdk").getString("version");
+  private final static String LINE_SEPARATOR = System.lineSeparator();
+
+  private static StringBuilder buildString(String[] lines){
+    StringBuilder stringBuilder = new StringBuilder();
+    for(String line: lines){
+      stringBuilder.append(line)
+              .append(LINE_SEPARATOR);
+    }
+    return stringBuilder;
+  }
+
   @Test
   public void testDisplayFooter() {
     BVConfiguration bvConfiguration = new BVSdkConfiguration();
@@ -54,17 +64,14 @@ public class BVHTMLFooterTest {
     BVFooter bvFooter = new BVHTMLFooter(bvConfiguration, bvParameters);
     String displayFooter = bvFooter.displayFooter("getContent");
 
-    StringBuilder expectedFooterPattern = new StringBuilder();
-    expectedFooterPattern.append("\\Q<ul id=\"BVSEOSDK_meta\" style=\"display:none !important\">\\E")
-    .append("\\s\\s\\Q<li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-\\E\\d+\\.\\d+\\.\\d+(\\-SNAPSHOT)?\\Q</li>\\E")
-    .append("\\s\\s\\Q<li data-bvseo=\"sp_mt\">CLOUD, getContent, 0ms</li>\\E")
-    .append("\\s\\s\\Q<li data-bvseo=\"ct_st\">REVIEWS, PRODUCT</li>\\E")
-    .append("\\Q</ul>\\E");
-    displayFooter = displayFooter.replaceAll("\\n", "");
-    assertTrue(
-      displayFooter.matches(expectedFooterPattern.toString()),
-      "The contents are changed either fix expectedFooterPattern or displayFooter"
-    );
+    StringBuilder expectedFooter = buildString(new String[] {
+            "<ul id=\"BVSEOSDK_meta\" style=\"display:none !important\">",
+            "  <li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-" + VERSION + "</li>",
+            "  <li data-bvseo=\"sp_mt\">CLOUD, getContent, 0ms</li>",
+            "  <li data-bvseo=\"ct_st\">REVIEWS, PRODUCT</li>",
+            "</ul>"
+    });
+    assertEquals(displayFooter, expectedFooter.toString(), "Footer did not match the expected value.");
   }
 
   /**
@@ -91,14 +98,9 @@ public class BVHTMLFooterTest {
     bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
 
     String displayFooter = bvFooter.displayFooter("getContent");
-    String expectedFooterPattern = getDbgFtrPtrn(bvParameters.getPageURI());
+    String expectedFooter = getDbgFtrPtrn(bvParameters.getPageURI());
 
-    displayFooter = displayFooter.replaceAll("\\n", "");
-
-    assertTrue(
-      displayFooter.matches(expectedFooterPattern),
-      "The contents are changed either fix expectedFooterPattern or displayFooter"
-    );
+    assertEquals(displayFooter, expectedFooter, "Footer did not match the expected value.");
 
   }
 
@@ -126,7 +128,6 @@ public class BVHTMLFooterTest {
     bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
 
     String displayFooter = bvFooter.displayFooter("getContent");
-    String expectedFooterPattern = getDbgFtrPtrn(bvParameters.getPageURI());
 
     displayFooter = displayFooter.replaceAll("\\n", "");
 
@@ -161,14 +162,9 @@ public class BVHTMLFooterTest {
     bvFooter.setBvSeoSdkUrl(_bvSeoSdkUrl);
 
     String displayFooter = bvFooter.displayFooter("getContent");
-    String expectedFooterPattern = getDbgFtrPtrn(bvParameters.getPageURI());
+    String expectedFooter = getDbgFtrPtrn(bvParameters.getPageURI());
 
-    displayFooter = displayFooter.replaceAll("\\n", "");
-
-    assertTrue(
-      displayFooter.matches(expectedFooterPattern),
-      "The contents are changed either fix expectedFooterPattern or displayFooter"
-    );
+    assertEquals(displayFooter, expectedFooter, "Footer did not match the expected value.");
 
   }
 
@@ -311,42 +307,44 @@ public class BVHTMLFooterTest {
   }
 
   private String getDbgFtrPtrn(String pageURI) {
-    StringBuilder sBuilder = new StringBuilder();
-    sBuilder.append("\\Q<ul id=\"BVSEOSDK_meta\" style=\"display:none !important\">\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-\\E\\d+\\.\\d+\\.\\d+(\\-SNAPSHOT)?\\Q</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"sp_mt\">LOCAL, getContent, 0ms</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"ct_st\">REVIEWS, PRODUCT</li>\\E")
-      .append("\\Q</ul>\\E")
-      .append("\\Q<ul id=\"BVSEOSDK_meta_debug\" style=\"display:none !important\">\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"botDetection\"></li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"bv.root.folder\"></li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"cloudKey\"></li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"connectTimeout\">2000</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"crawlerAgentPattern\">msnbot|google|teoma|bingbot|yandexbot|yahoo</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"includeDisplayIntegrationCode\"></li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"loadSEOFilesLocally\">true</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"localSEOFileRoot\"></li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"productionS3Hostname\">seo.bazaarvoice.com</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.charset\"></li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.enabled\">true</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.execution.timeout\">500</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.execution.timeout.bot\">2000</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.http.proxy.host\">none</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.http.proxy.port\">0</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"seo.sdk.ssl.enabled\"></li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"socketTimeout\">2000</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"staging\">false</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"stagingS3Hostname\">seo-stg.bazaarvoice.com</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"testing\">false</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"testingProductionS3Hostname\">seo-qa.bazaarvoice.com</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"testingStagingS3Hostname\">seo-qa-stg.bazaarvoice.com</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"userAgent\"></li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"baseURI\"></li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"pageURI\">"+pageURI+"</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"subjectId\">12345</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"contentType\">REVIEWS</li>\\E")
-      .append("\\s\\s\\Q<li data-bvseo=\"subjectType\">PRODUCT</li>\\E")
-      .append("\\Q</ul>\\E");
+    StringBuilder sBuilder = buildString(new String[] {
+            "<ul id=\"BVSEOSDK_meta\" style=\"display:none !important\">",
+            "  <li data-bvseo=\"sdk\">bvseo_sdk, java_sdk, bvseo-" + VERSION + "</li>",
+            "  <li data-bvseo=\"sp_mt\">LOCAL, getContent, 0ms</li>",
+            "  <li data-bvseo=\"ct_st\">REVIEWS, PRODUCT</li>",
+            "</ul>",
+            "",
+            "<ul id=\"BVSEOSDK_meta_debug\" style=\"display:none !important\">",
+            "  <li data-bvseo=\"testingStagingS3Hostname\">seo-qa-stg.bazaarvoice.com</li>",
+            "  <li data-bvseo=\"testingProductionS3Hostname\">seo-qa.bazaarvoice.com</li>",
+            "  <li data-bvseo=\"stagingS3Hostname\">seo-stg.bazaarvoice.com</li>",
+            "  <li data-bvseo=\"productionS3Hostname\">seo.bazaarvoice.com</li>",
+            "  <li data-bvseo=\"botDetection\"></li>",
+            "  <li data-bvseo=\"bv.root.folder\"></li>",
+            "  <li data-bvseo=\"cloudKey\"></li>",
+            "  <li data-bvseo=\"loadSEOFilesLocally\">true</li>",
+            "  <li data-bvseo=\"localSEOFileRoot\"></li>",
+            "  <li data-bvseo=\"connectTimeout\">2000</li>",
+            "  <li data-bvseo=\"socketTimeout\">2000</li>",
+            "  <li data-bvseo=\"includeDisplayIntegrationCode\"></li>",
+            "  <li data-bvseo=\"crawlerAgentPattern\">msnbot|google|teoma|bingbot|yandexbot|yahoo</li>",
+            "  <li data-bvseo=\"seo.sdk.enabled\">true</li>",
+            "  <li data-bvseo=\"staging\">false</li>",
+            "  <li data-bvseo=\"testing\">false</li>",
+            "  <li data-bvseo=\"seo.sdk.execution.timeout\">500</li>",
+            "  <li data-bvseo=\"seo.sdk.execution.timeout.bot\">2000</li>",
+            "  <li data-bvseo=\"seo.sdk.http.proxy.host\">none</li>",
+            "  <li data-bvseo=\"seo.sdk.http.proxy.port\">0</li>",
+            "  <li data-bvseo=\"seo.sdk.charset\"></li>",
+            "  <li data-bvseo=\"seo.sdk.ssl.enabled\"></li>",
+            "  <li data-bvseo=\"userAgent\"></li>",
+            "  <li data-bvseo=\"baseURI\"></li>",
+            "  <li data-bvseo=\"pageURI\">"+pageURI+"</li>",
+            "  <li data-bvseo=\"subjectId\">12345</li>",
+            "  <li data-bvseo=\"contentType\">REVIEWS</li>",
+            "  <li data-bvseo=\"subjectType\">PRODUCT</li>",
+            "</ul>"
+    });
 
     return sBuilder.toString();
   }

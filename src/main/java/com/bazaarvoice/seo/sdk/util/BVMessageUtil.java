@@ -51,7 +51,7 @@ public final class BVMessageUtil {
    * Returns the same message code if it is not configured in resource bundle.
    *
    * @throws {@link MissingResourceException}
-   * @param String code A message code.
+   * @param code A message code.
    * @return String Message from resource bundle.
    */
   public static String getMessage(String code) {

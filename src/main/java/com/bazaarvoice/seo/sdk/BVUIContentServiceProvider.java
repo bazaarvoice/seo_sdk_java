@@ -209,7 +209,8 @@ public class BVUIContentServiceProvider
       httpUrlConnection.setRequestProperty(HTTP_HEADER_ACCEPT_ENCODING, HTTP_HEADER_ACCEPT_ENCODING_GZIP);
 
       is = httpUrlConnection.getInputStream();
-      if(httpUrlConnection.getContentEncoding().equalsIgnoreCase(HTTP_HEADER_ACCEPT_ENCODING_GZIP)){
+      String contentEncoding = httpUrlConnection.getContentEncoding();
+      if(contentEncoding != null && contentEncoding.equalsIgnoreCase(HTTP_HEADER_ACCEPT_ENCODING_GZIP)){
         is = new GZIPInputStream(is);
       }
 
