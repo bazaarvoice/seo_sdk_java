@@ -19,13 +19,16 @@
 
 package com.bazaarvoice.seo.sdk.validation;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 import org.testng.annotations.Test;
 
 import com.bazaarvoice.seo.sdk.config.BVConfiguration;
 import com.bazaarvoice.seo.sdk.config.BVSdkConfiguration;
 import com.bazaarvoice.seo.sdk.model.BVParameters;
+import uk.org.lidalia.slf4jtest.LoggingEvent;
+import uk.org.lidalia.slf4jtest.TestLogger;
+import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 /**
  * Test case implementation for BVParameterValidator.
@@ -33,6 +36,8 @@ import com.bazaarvoice.seo.sdk.model.BVParameters;
  * @author Anandan Narayanaswamy
  */
 public class BVValidatorTest {
+
+  TestLogger logger = TestLoggerFactory.getTestLogger(BVDefaultValidator.class);
 
   /**
    * Test case for validate method in BVParameterValidator.
@@ -62,12 +67,16 @@ public class BVValidatorTest {
     assertEquals(
       errorMessage.contains(
         "CLOUD_KEY is not configured in BVConfiguration.;BV_ROOT_FOLDER is not"
-        + " configured in BVConfiguration.;userAgent in BVParameters is "
-        + "null.;SubjectId cannot be null or empty.;"
+        + " configured in BVConfiguration.;"
+        + "SubjectId cannot be null or empty.;"
       ),
       true,
       "Error Messages are different."
     );
+    assertTrue(logger.getLoggingEvents().contains(LoggingEvent.warn("userAgent in BVParameters is null and"
+            + " com.bazaarvoice.seo.sdk.servlet.RequestFilter was not configured as a filter"
+            + " in the web.xml for your application."
+            + " Please configure one of these to provide userAgent information.;")));
 
   }
 

@@ -22,20 +22,12 @@ public class RequestContext {
    */
   public static Iterator<String> getHeaderNames() {
     Map<String, String> headers = HEADERS_THREAD_LOCAL.get();
-    return (validateRequestBasedThreadLocal(headers) ? headers.keySet().iterator() : new HashSet<String>().iterator());
+    return (headers != null ? headers.keySet().iterator() : Collections.<String>emptyIterator());
   }
 
   public static String getHeader(String headerName){
     Map<String, String> headers = HEADERS_THREAD_LOCAL.get();
-    return validateRequestBasedThreadLocal(headers) ? headers.get(headerName.toLowerCase()) : null;
-  }
-
-  private static boolean validateRequestBasedThreadLocal(Object local){
-    if(local != null){
-      return true;
-    }
-    LOGGER.warn(BVMessageUtil.getMessage("WRN0000"));
-    return false;
+    return headers != null ? headers.get(headerName.toLowerCase()) : null;
   }
 
   /**

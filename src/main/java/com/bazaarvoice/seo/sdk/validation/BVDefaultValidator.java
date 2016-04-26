@@ -22,6 +22,7 @@ package com.bazaarvoice.seo.sdk.validation;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.bazaarvoice.seo.sdk.servlet.RequestContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ import com.bazaarvoice.seo.sdk.util.BVMessageUtil;
 public class BVDefaultValidator implements BVValidator {
 
   private static final Logger _logger = LoggerFactory.getLogger(BVDefaultValidator.class);
+  private final static String HTTP_HEADER_USER_AGENT = "User-Agent";
 
   private StringBuilder errorMessages;
 
@@ -84,8 +86,9 @@ public class BVDefaultValidator implements BVValidator {
       errorMessages.append(BVMessageUtil.getMessage("ERR0021"));
     }
 
-    if (StringUtils.isBlank(bvParams.getUserAgent())) {
-      errorMessages.append(BVMessageUtil.getMessage("ERR0017"));
+    if (StringUtils.isBlank(bvParams.getUserAgent())
+            && StringUtils.isBlank(RequestContext.getHeader(HTTP_HEADER_USER_AGENT))) {
+      _logger.warn(BVMessageUtil.getMessage("WRN0000"));
     }
 
     URI uri = null;
