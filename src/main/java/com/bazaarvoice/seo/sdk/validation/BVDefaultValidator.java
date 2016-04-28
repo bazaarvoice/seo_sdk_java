@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import com.bazaarvoice.seo.sdk.servlet.RequestContext;
+import com.bazaarvoice.seo.sdk.servlet.RequestFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +88,7 @@ public class BVDefaultValidator implements BVValidator {
     }
 
     if (StringUtils.isBlank(bvParams.getUserAgent())
-            && StringUtils.isBlank(RequestContext.getHeader(HTTP_HEADER_USER_AGENT))) {
+            && !RequestFilter.getIsConfigured()) {
       _logger.warn(BVMessageUtil.getMessage("WRN0000"));
     }
 

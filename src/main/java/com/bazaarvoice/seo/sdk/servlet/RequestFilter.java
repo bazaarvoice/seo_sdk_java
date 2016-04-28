@@ -33,7 +33,10 @@ public class RequestFilter implements Filter {
     RequestFilter.class
   );
 
+  private static boolean configured = false;
+
   public void init(FilterConfig filterConfig) throws ServletException {
+      configured = true;
   }
 
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -48,6 +51,10 @@ public class RequestFilter implements Filter {
   }
 
   public void destroy() {
+  }
+
+  public static boolean getIsConfigured(){
+      return configured;
   }
 
 

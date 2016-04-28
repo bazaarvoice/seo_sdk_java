@@ -59,7 +59,6 @@ public class BVValidatorTest {
       true, "Error Messages are different."
     );
 
-    errorMessage = null;
     bvConfig = new BVSdkConfiguration();
     bvParams = new BVParameters();
     bvValidator = new BVDefaultValidator();
