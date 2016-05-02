@@ -1,4 +1,9 @@
 # Changelog
+## 3.2.0
+* Pass-through of User Agent to gather statistics.
+* Support gzip compression from CloudFront
+* Improve memory usage
+
 ## 3.1.1
 * Added direct dependency to commons-collections 3.2.2 to avoid older vulnerable library(3.2.1) from being included from velocity. 
 * Force ordering on some footer metadata tags
