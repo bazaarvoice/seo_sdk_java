@@ -7,7 +7,7 @@ import org.apache.commons.lang3.SystemUtils;
 public class Environment {
 
   static {
-    Package pkg = Package.class.getPackage();
+    Package pkg = Environment.class.getPackage();
     packageSpecificationVersion = pkg.getSpecificationVersion();
     jreVersion = SystemUtils.JAVA_VERSION;
   }
