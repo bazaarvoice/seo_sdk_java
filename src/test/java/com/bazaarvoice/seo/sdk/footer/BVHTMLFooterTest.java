@@ -42,7 +42,7 @@ import static org.testng.Assert.*;
 public class BVHTMLFooterTest {
 
   private final static String VERSION = ResourceBundle.getBundle("sdk").getString("version");
-  private final static String LINE_SEPARATOR = System.lineSeparator();
+  private final static String LINE_SEPARATOR = System.getProperty("line.separator");
 
   private static StringBuilder buildString(String[] lines){
     StringBuilder stringBuilder = new StringBuilder();

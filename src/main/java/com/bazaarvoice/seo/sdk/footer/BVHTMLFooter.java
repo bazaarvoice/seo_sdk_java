@@ -42,7 +42,7 @@ import java.util.*;
  */
 public class BVHTMLFooter implements BVFooter {
 
-  private static final String LINE_SEPARATOR = System.lineSeparator();
+  private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
   private BVConfiguration _bvConfiguration;
   private BVParameters _bvParameters;
