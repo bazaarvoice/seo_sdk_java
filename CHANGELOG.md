@@ -1,4 +1,8 @@
 # Changelog
+## 4.0.0
+* Change minimum JRE version to 1.6
+* Remove code utilizing JRE 1.7 features
+
 ## 3.2.0
 * Pass-through of User Agent to gather statistics.
 * Support gzip compression from CloudFront
