@@ -82,7 +82,7 @@ public class RequestFilter_Test {
 
     doAnswer(new Answer<Void>() {
       public Void answer(InvocationOnMock invocation) {
-        Enumeration<String> emptyEnumeration = Collections.emptyEnumeration();
+        Enumeration<String> emptyEnumeration = Collections.enumeration(Collections.<String>emptyList());
         Assert.assertEquals(RequestContext.getHeaderNames(), emptyEnumeration);
         return null;
       }

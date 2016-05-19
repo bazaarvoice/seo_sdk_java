@@ -22,7 +22,7 @@ public class RequestContext {
    */
   public static Iterator<String> getHeaderNames() {
     Map<String, String> headers = HEADERS_THREAD_LOCAL.get();
-    return (headers != null ? headers.keySet().iterator() : Collections.<String>emptyIterator());
+    return (headers != null ? headers.keySet().iterator() : Collections.<String>emptyList().iterator());
   }
 
   public static String getHeader(String headerName){

@@ -29,7 +29,7 @@ public class DefaultRequestContext {
 
     when(request.getHeaderNames()).thenAnswer(new Answer<Enumeration<String>>(){
       public Enumeration<String> answer(InvocationOnMock invocationOnMock) throws Throwable {
-        return Collections.emptyEnumeration();
+        return Collections.enumeration(Collections.<String>emptyList());
       }
     });
 
