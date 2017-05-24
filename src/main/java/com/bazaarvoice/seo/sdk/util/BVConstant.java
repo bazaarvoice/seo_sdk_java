@@ -45,8 +45,8 @@ public final class BVConstant {
   /*
    * Some of the default property values.
    */
-  public static final String STAGING_S3_HOSTNAME = "seo-stg.bazaarvoice.com";
-  public static final String PRODUCTION_S3_HOSTNAME = "seo.bazaarvoice.com";
+  public static final String STAGING_S3_HOSTNAME = "seo-stg-bazaarvoice-com.atgnow.com";
+  public static final String PRODUCTION_S3_HOSTNAME = "seo-bazaarvoice-com.atgnow.com";
   public static final String SELLER_RATINGS_S3_HOSTNAME = "srd.bazaarvoice.com";
   public static final String TESTING_PRODUCTION_S3_HOSTNAME = "seo-qa.bazaarvoice.com";
   public static final String TESTING_STAGING_S3_HOSTNAME = "seo-qa-stg.bazaarvoice.com";
